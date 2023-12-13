@@ -7,10 +7,10 @@ export interface ProductType {
   nombre: string;
   precio: number;
   stock?: number;
-  marca?: string; 
-  color: string | string[] | undefined;
+  marca?: string;
+  color: string | string[];
   descripcion?: string;
-  
+  color_stock?: Record<string, number>;
 }
 
 interface FilterState {
@@ -20,7 +20,6 @@ interface FilterState {
   selectedMarca: string | null;
   activeFilter: string | undefined;
   selectedCategory: string | null;
-  
 }
 
 const initialState: FilterState = {

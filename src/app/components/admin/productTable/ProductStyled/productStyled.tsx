@@ -1,7 +1,9 @@
 import styled, { keyframes } from "styled-components";
+
 type StyledButtonProps = {
   $isDeleteButton?: boolean;
-}
+};
+
 const fadeIn = keyframes`
   from {
     opacity: 0;
@@ -10,43 +12,55 @@ const fadeIn = keyframes`
     opacity: 1;
   }
 `;
+
 export const StyledSelect = styled.select`
   width: 100%;
-  padding: 0.7em;
-  border: 2px solid #ccc;
+  padding: 12px 15px;
+  border: 1px solid #e5ded0;
   border-radius: 5px;
-  font-size: 1em;
-  transition: box-shadow 0.3s ease, border 0.3s ease;
+  background-color: #f7f2e8;
+  color: #6d6d6d;
+  font-size: 16px;
+  font-family: "Georgia", serif;
+  appearance: none;
+  cursor: pointer;
+  transition: background-color 0.3s, border 0.3s;
+
+  &:hover {
+    background-color: #e5ded0;
+    border-color: #d3c9bb;
+  }
 
   &:focus {
-    box-shadow: 0 0 10px rgba(81, 203, 238, 1);
-    border: 2px solid rgba(81, 203, 238, 1);
+    outline: none;
+    background-color: #e5ded0;
+    border-color: #d3c9bb;
   }
 `;
 
 export const ProductContainer = styled.div`
   margin: 2rem;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Georgia", serif;
   display: flex;
   flex-direction: column;
   align-items: center;
   animation: ${fadeIn} 1s ease-in;
+  color: #6d6d6d;
 `;
 
 export const StyledTable = styled.table`
   width: 100%;
   border-collapse: separate;
   border-spacing: 0 15px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
   overflow: hidden;
   animation: ${fadeIn} 1.5s ease-in;
 
   thead {
-    background-color: #009879;
+    background-color: #ff97b5;
     color: white;
-    font-size: 1.3em;
-    text-shadow: 2px 2px 2px #000;
+    font-size: 1.2em;
   }
 
   th,
@@ -56,60 +70,101 @@ export const StyledTable = styled.table`
     transition: background-color 0.3s ease;
 
     &:hover {
-      background-color: rgba(0, 0, 0, 0.05);
+      background-color: #f7f2e8;
     }
   }
 
   th {
-    border-bottom: 3px solid #ddd;
+    border-bottom: 2px solid #f7f2e8;
   }
 
   tbody tr {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
 
     &:hover {
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 4px 12px rgba(255, 151, 181, 0.2);
     }
   }
 `;
 
 export const StyledButton = styled.button<StyledButtonProps>`
-  padding: 0.5em 1em;
+  padding: 10px 20px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin: 0 0.2em;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+  font-size: 16px;
+  font-family: "Georgia", serif;
+  transition: background-color 0.3s, transform 0.3s ease;
   background-color: ${({ $isDeleteButton }) =>
-    $isDeleteButton ? "#e74c3c" : "#1d72b8"};
+    $isDeleteButton ? "#e74c3c" : "#ff97b5"};
   color: white;
 
   &:hover {
     background-color: ${({ $isDeleteButton }) =>
-      $isDeleteButton ? "#c0392b" : "#155a8a"};
+      $isDeleteButton ? "#c0392b" : "#e8719e"};
     transform: scale(1.05);
   }
 `;
 
 export const StyledInput = styled.input`
   width: 100%;
-  padding: 0.7em;
-  border: 2px solid #ccc;
+  padding: 12px 15px;
+  border: 1px solid #e5ded0;
   border-radius: 5px;
-  font-size: 1em;
-  transition: box-shadow 0.3s ease, border 0.3s ease;
+  background-color: #f7f2e8;
+  color: #6d6d6d;
+  font-size: 16px;
+  font-family: "Georgia", serif;
+  transition: background-color 0.3s, border 0.3s;
+
+  &:hover {
+    background-color: #e5ded0;
+    border-color: #d3c9bb;
+  }
 
   &:focus {
-    box-shadow: 0 0 10px rgba(81, 203, 238, 1);
-    border: 2px solid rgba(81, 203, 238, 1);
+    outline: none;
+    background-color: #e5ded0;
+    border-color: #d3c9bb;
   }
 `;
 
 export const StyledH2 = styled.h2`
-  color: #009879;
-  font-size: 2em;
-  margin-bottom: 1em;
+  color: #6d6d6d;
+  font-family: "Georgia", serif;
+  font-size: 24px;
+  margin-bottom: 25px;
   text-align: center;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  border-bottom: 2px solid #ff97b5;
+  padding-bottom: 10px;
+`;
+export const SuccessMessage = styled.div`
+  margin: 10px 0;
+  padding: 10px 15px;
+  border-radius: 5px;
+  background-color: #d3f9d8;
+  color: #05840a;
+  font-weight: 500;
+`;
+
+export const ErrorMessage = styled(SuccessMessage)`
+  background-color: #ffe2e2;
+  color: #e01e1e;
+`;
+
+export const PrimaryButton = styled(StyledButton)`
+  background-color: #ff97b5;
+
+  &:hover {
+    background-color: #e8719e;
+  }
+`;
+
+export const SecondaryButton = styled(StyledButton)`
+  background-color: #a7a4e0;
+
+  &:hover {
+    background-color: #8e89d1;
+  }
 `;

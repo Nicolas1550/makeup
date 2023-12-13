@@ -1,22 +1,24 @@
+// index.tsx
 import React from "react";
 import FeatureRow from "@/app/components/acercaDe/featureRow";
 import AcercaaDe from "@/app/components/acercaDe/acercaDe";
+
 const AcercaDe: React.FC = () => {
   return (
     <div>
       <FeatureRow
-        imageSrc="/img/2.jpg"
-        title="Título del Feature 1"
-        description="Descripción del Feature 1"
+        imageSrc="/img/makeup-session.jpg"
+        title="Innovación en Maquillaje"
+        description="Descubre las técnicas más avanzadas y tendencias actuales que ofrecemos."
         marginTop
       />
       <AcercaaDe />
       <FeatureRow
-        imageSrc="/img/1.jpg"
-        title="Título del Feature 2"
-        description="Descripción del Feature 2"
+        imageSrc="/img/makeup-products.jpg"
+        title="Calidad en Cada Producto"
+        description="Nuestros productos están diseñados para realzar tu belleza y confianza."
         reverse
-      />{" "}
+      />
     </div>
   );
 };

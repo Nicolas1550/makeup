@@ -18,6 +18,8 @@ export const StyledFormContainer = styled.div`
   padding: 2em;
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  background: #f7f2e8; // Color de fondo modificado a crema claro
+
   &:hover {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     transition: box-shadow 0.3s ease;
@@ -32,8 +34,11 @@ export const StyledSelect = styled.select`
   transition: box-shadow 0.3s ease, border 0.3s ease;
 
   &:focus {
-    box-shadow: 0 0 10px rgba(81, 203, 238, 1);
-    border: 2px solid rgba(81, 203, 238, 1);
+    box-shadow: 0 0 10px rgba(248, 151, 181, 0.6); // Color de sombra cambiado a rosa claro
+    border: 2px solid #ff97b5; // Color de borde cambiado a rosa claro
+  }
+  option:disabled {
+    color: #ccc;
   }
 `;
 
@@ -52,10 +57,10 @@ export const StyledDiv = styled.div`
 `;
 
 export const StyledLabel = styled.label`
+  font-family: "Georgia", serif; // Añadido tipo de letra
   font-size: 1.2em;
-  color: #333;
+  color: #6d6d6d; // Color cambiado a gris oscuro para contraste
 `;
-
 export const StyledInput = styled.input`
   width: 100%;
   padding: 0.8em;
@@ -64,13 +69,12 @@ export const StyledInput = styled.input`
   transition: border-color 0.3s ease;
 
   &:focus {
-    border-color: #009879;
+    border-color: #ff97b5; // Color de borde cambiado a rosa claro
   }
   &:hover,
   &:focus {
-    border-color: #00765e;
-    box-shadow: 0 0 10px rgba(0, 152, 121, 0.3);
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    border-color: #e8719e; // Color de borde hover/focus cambiado a rosa oscuro
+    box-shadow: 0 0 10px rgba(248, 151, 181, 0.6); // Color de sombra hover/focus cambiado a rosa claro
   }
 `;
 
@@ -83,9 +87,11 @@ export const StyledButton = styled.button`
   cursor: pointer;
   transition: background-color 0.3s ease;
 
+  background-color: #ff97b5; // Color de fondo cambiado a rosa claro
+
   &:hover {
-    background-color: #00765e;
-    box-shadow: 0 0 10px rgba(0, 152, 121, 0.3);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    background-color: #e8719e; // Color de fondo hover cambiado a rosa oscuro
+    box-shadow: 0 0 10px rgba(248, 151, 181, 0.6); // Color de sombra hover cambiado a rosa claro
   }
+  cursor: pointer; // Estilo del cursor
 `;

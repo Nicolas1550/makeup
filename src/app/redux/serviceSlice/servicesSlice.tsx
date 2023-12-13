@@ -1,0 +1,1203 @@
+import {
+  createSlice,
+  PayloadAction,
+  createAsyncThunk,
+  createAction,
+} from "@reduxjs/toolkit";
+import { RootState } from "../../redux/store/rootReducer"; // Ajusta la ruta según corresponda
+import { SerializedError } from "@reduxjs/toolkit";
+
+import axios from "axios";
+import moment from "moment";
+
+interface Service {
+  id: number;
+  title: string;
+  description: string;
+  icon: string;
+  icon_name?: string; // Agregamos esta propiedad
+  category: string;
+  assistantId?: number;
+  color?: string;
+  image_url?: string;
+  modal_description?: string;
+  facebook_url?: string;
+  whatsapp_url?: string;
+  instagram_url?: string;
+  images: string[];
+  price: number;
+  options: ServiceOption[]; // Lista de opciones para este servicio
+}
+export interface ServiceOption {
+  id: number;
+  nombre: string;
+  description?: string;
+  precio?: number; // Costo adicional que esta opción podría agregar
+}
+interface Availability {
+  id: number;
+  usuario_id: number;
+  service_id: number;
+  fecha_inicio: string;
+  fecha_fin: string;
+  estado: string;
+  fecha_inicio_reserva?: string;
+  fecha_fin_reserva?: string;
+}
+interface ServiceOptions {
+  [serviceId: number]: ServiceOption[];
+}
+interface FetchReservationsSummaryArgs {
+  fechaInicio: string;
+  fechaFin: string;
+}
+interface ServicesState {
+  services: Service[];
+  availabilities: Availability[];
+  lastFetchedServiceId: number | null;
+  loading: boolean;
+  error: null | string;
+  isUserAssigned: boolean | null;
+  uploadProofOfPaymentStatus: "idle" | "loading" | "fulfilled" | "failed";
+  fetchedServiceIds: number[]; // <-- Añade esta línea
+  serviceImages: Record<number, string[]>; // Un objeto que mapea IDs de servicios a arrays de URLs de imágenes
+  serviceOptions: ServiceOptions;
+  reservationsForAssistant: Reservation[];
+  reservationsForUser: Reservation[];
+  reservationsSummary?: ReservationSummary; // Puede ser opcional si inicialmente no hay datos
+}
+interface ErrorResponse {
+  errorMessage: string;
+}
+
+export interface Reservation {
+  id: number;
+  usuario_id: number;
+  disponibilidad_id: number;
+  fecha_reserva: string;
+  estado: string;
+  comprobante_path: string;
+  precio: number;
+  serviceId: number;
+  fecha_inicio_reserva: string;
+  fecha_fin_reserva: string;
+  opciones_seleccionadas: string;
+  usuario_nombre: string;
+  serviceTitle: string;
+  servicio_nombre: string; // Agrega esta línea si la API devuelve esta propiedad
+}
+interface ReservationSummary {
+  totalIngresos: number;
+  totalReservasCompletadas: number;
+  totalIngresosPendientes: number;
+  totalReservasPendientes: number;
+  detallesCompletadas: Reservation[]; // Nombre actualizado
+  detallesPendientes: Reservation[]; // Nombre actualizado
+}
+
+const initialState: ServicesState = {
+  services: [],
+  availabilities: [],
+  lastFetchedServiceId: null,
+  loading: false,
+  error: null,
+  isUserAssigned: null,
+  uploadProofOfPaymentStatus: "idle",
+  fetchedServiceIds: [],
+  serviceImages: {},
+  serviceOptions: {},
+  reservationsForAssistant: [],
+  reservationsForUser: [],
+  reservationsSummary: {
+    totalIngresos: 0,
+    totalReservasCompletadas: 0,
+    totalIngresosPendientes: 0,
+    totalReservasPendientes: 0,
+    detallesCompletadas: [], // Nombre actualizado
+    detallesPendientes: [], // Nombre actualizado
+  },
+};
+
+const assignCategory = (serviceTitle: string): string => {
+  switch (serviceTitle) {
+    case "Maquillaje Artístico":
+    case "Quinceañeras":
+    case "Automaquillaje":
+      return "Maquillaje";
+    case "Uñas":
+    case "Depilación":
+    case "Dermatología":
+      return "Belleza";
+    default:
+      return "";
+  }
+};
+export const clearError = createAction("services/clearError");
+
+export const resetReservationsSummary = createAction(
+  "services/resetReservationsSummary"
+);
+
+export const fetchReservationsSummary = createAsyncThunk(
+  "services/fetchReservationsSummary",
+  async (args: FetchReservationsSummaryArgs, { rejectWithValue }) => {
+    // Verificar si las fechas son válidas antes de hacer la solicitud
+    if (
+      !args.fechaInicio ||
+      !args.fechaFin ||
+      !moment(args.fechaInicio, "YYYY-MM-DD", true).isValid() ||
+      !moment(args.fechaFin, "YYYY-MM-DD", true).isValid()
+    ) {
+      return rejectWithValue({
+        errorMessage: "Por favor, proporciona un rango de fechas válido.",
+      });
+    }
+
+    const userToken = localStorage.getItem("jwt"); // Obtiene el token del almacenamiento local
+    if (!userToken) {
+      return rejectWithValue({
+        errorMessage: "No estás autenticado. Por favor, inicia sesión.",
+      });
+    }
+
+    try {
+      const response = await axios.get(
+        `http://localhost:3002/api/servicios/reservas/cierreCaja`,
+        {
+          params: { fechaInicio: args.fechaInicio, fechaFin: args.fechaFin },
+          headers: {
+            "x-auth-token": userToken,
+          },
+        }
+      );
+      console.log("Reservas obtenidas del backend:", response.data);
+
+      // Verifica si la respuesta no contiene reservas
+      if (
+        response.data &&
+        response.data.detallesCompletadas.length === 0 &&
+        response.data.detallesPendientes.length === 0
+      ) {
+        return rejectWithValue({
+          errorMessage:
+            "No se encontraron reservas para el rango de fechas seleccionado.",
+        });
+      }
+
+      return response.data;
+    } catch (error) {
+      let errorMessage = "Error al obtener el resumen de reservas";
+      if (axios.isAxiosError(error)) {
+        // Acceso seguro al mensaje de error del backend si está disponible
+        errorMessage = error.response?.data?.message || errorMessage;
+      }
+      return rejectWithValue({ errorMessage });
+    }
+  }
+);
+
+export const markReservationAsPending = createAsyncThunk<
+  string,
+  number,
+  { rejectValue: { errorMessage: string } }
+>("services/markReservationAsPending", async (reservationId, thunkAPI) => {
+  try {
+    const response = await axios.put(
+      `http://localhost:3002/api/servicios/reservas/${reservationId}/pendiente`
+    );
+    return response.data.message;
+  } catch (error) {
+    return thunkAPI.rejectWithValue({ errorMessage: (error as Error).message });
+  }
+});
+
+export const deleteReservation = createAsyncThunk(
+  "services/deleteReservation",
+  async (reservationId: number, thunkAPI) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:3002/api/servicios/reservas/${reservationId}`
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue({
+        errorMessage: (error as Error).message,
+      });
+    }
+  }
+);
+export const markReservationAsCompleted = createAsyncThunk<
+  string,
+  number, // Pasar el ID de la reserva
+  { rejectValue: { errorMessage: string } }
+>("services/markReservationAsCompleted", async (reservationId, thunkAPI) => {
+  try {
+    const response = await axios.put(
+      `http://localhost:3002/api/servicios/reservas/${reservationId}/completar`
+    );
+    return response.data.message;
+  } catch (error) {
+    return thunkAPI.rejectWithValue({ errorMessage: (error as Error).message });
+  }
+});
+
+export const fetchReservationsForUser = createAsyncThunk<
+  Reservation[],
+  string | number
+>("services/fetchReservationsForUser", async (userId) => {
+  console.log("Dentro del thunk fetchReservationsForUser con userId:", userId);
+
+  const response = await axios.get(
+    `http://localhost:3002/api/servicios/reservasPorUsuario/${userId}`
+  );
+
+  console.log("Respuesta obtenida dentro del thunk:", response.data);
+  return response.data;
+});
+
+export const fetchReservationsForAssistant = createAsyncThunk<
+  Array<{ serviceId: number; reservations: Reservation[] }>,
+  { ayudanteId: number }
+>("services/fetchReservationsForAssistant", async (params, thunkAPI) => {
+  const state = thunkAPI.getState() as RootState;
+  const services = state.services.services;
+
+  const allReservations = [];
+
+  for (const service of services) {
+    const serviceId = service.id;
+    const response = await axios.get(
+      `http://localhost:3002/api/servicios/${serviceId}/reservasPorAyudante/${params.ayudanteId}`
+    );
+    if (response.data.length > 0) {
+      allReservations.push({
+        serviceId: serviceId,
+        reservations: response.data,
+      });
+    }
+  }
+
+  return allReservations;
+});
+
+export const deleteServiceOption = createAsyncThunk(
+  "services/deleteServiceOption",
+  async (optionId: number) => {
+    const userToken = localStorage.getItem("jwt");
+    if (!userToken) {
+      throw new Error("No estás autenticado. Por favor, inicia sesión.");
+    }
+    await axios.delete(
+      `http://localhost:3002/api/servicios/options/${optionId}`,
+      {
+        headers: {
+          "x-auth-token": userToken,
+        },
+      }
+    );
+    return optionId;
+  }
+);
+
+export const editServiceOption = createAsyncThunk(
+  "services/editServiceOption",
+  async (data: { optionId: number; name: string; price: number }) => {
+    const userToken = localStorage.getItem("jwt");
+    if (!userToken) {
+      throw new Error("No estás autenticado. Por favor, inicia sesión.");
+    }
+
+    const response = await axios.put(
+      `http://localhost:3002/api/servicios/options/${data.optionId}`,
+      {
+        nombre: data.name,
+        precio: data.price,
+      },
+      {
+        headers: {
+          "x-auth-token": userToken,
+        },
+      }
+    );
+
+    // Destructuramos el serviceId de la respuesta
+    const { serviceId } = response.data;
+
+    // Devolvemos el serviceId y la opción actualizada en el payload
+    return {
+      serviceId,
+      option: {
+        id: data.optionId,
+        nombre: data.name,
+        precio: data.price,
+      },
+    };
+  }
+);
+
+export const fetchServiceOptions = createAsyncThunk(
+  "services/fetchServiceOptions",
+  async (serviceId: number, thunkAPI) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3002/api/servicios/${serviceId}/options`
+      );
+      console.log("Opciones obtenidas del backend:", response.data);
+      return { serviceId, options: response.data };
+    } catch (error) {
+      let errorMessage = "Ha ocurrido un error desconocido";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      console.error(
+        "Error al obtener las opciones del servicio:",
+        errorMessage
+      );
+      return thunkAPI.rejectWithValue(errorMessage);
+    }
+  }
+);
+export const addServiceOption = createAsyncThunk(
+  "services/addServiceOption",
+  async (data: { serviceId: number; name: string; price: number }) => {
+    const userToken = localStorage.getItem("jwt");
+    if (!userToken) {
+      throw new Error("No estás autenticado. Por favor, inicia sesión.");
+    }
+    const response = await axios.post(
+      `http://localhost:3002/api/servicios/${data.serviceId}/options`,
+      {
+        nombre: data.name,
+        precio: data.price,
+      },
+      {
+        headers: {
+          "x-auth-token": userToken,
+        },
+      }
+    );
+    return response.data;
+  }
+);
+
+export const uploadServiceImages = createAsyncThunk(
+  "services/uploadServiceImages",
+  async (data: { serviceId: number; images: FormData }) => {
+    const userToken = localStorage.getItem("jwt");
+    if (!userToken) {
+      throw new Error("No estás autenticado. Por favor, inicia sesión.");
+    }
+
+    const formData = data.images;
+
+    try {
+      const response = await axios.post(
+        `http://localhost:3002/api/servicios/${data.serviceId}/uploadImages`,
+        formData,
+        {
+          headers: {
+            "x-auth-token": userToken,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log("Respuesta completa de uploadServiceImages:", response);
+      console.log("Data de respuesta de uploadServiceImages:", response.data);
+
+      // Extraer solo las rutas de las imágenes de la respuesta
+      const uploadedImagePaths = response.data.imagePaths;
+
+      return { serviceId: data.serviceId, imagePaths: uploadedImagePaths };
+    } catch (error) {
+      console.error("Error al subir imágenes:", error);
+      throw error;
+    }
+  }
+);
+
+export const deleteServiceImage = createAsyncThunk(
+  "services/deleteServiceImage",
+  async (data: { serviceId: number; imagePath: string }) => {
+    const userToken = localStorage.getItem("jwt");
+    if (!userToken) {
+      throw new Error("No estás autenticado. Por favor, inicia sesión.");
+    }
+
+    try {
+      const response = await axios.delete(
+        `http://localhost:3002/api/servicios/${data.serviceId}/deleteImage`,
+        {
+          headers: {
+            "x-auth-token": userToken,
+            "Content-Type": "application/json",
+          },
+          data: { imagePath: data.imagePath },
+        }
+      );
+      console.log("Respuesta completa al eliminar imagen:", response);
+
+      return { serviceId: data.serviceId, imagePath: data.imagePath };
+    } catch (error) {
+      console.error("Error al eliminar imagen:", error);
+      throw error;
+    }
+  }
+);
+
+export const fetchServiceImages = createAsyncThunk(
+  "services/fetchServiceImages",
+  async (serviceId: number) => {
+    const userToken = localStorage.getItem("jwt");
+    if (!userToken) {
+      throw new Error("No estás autenticado. Por favor, inicia sesión.");
+    }
+
+    try {
+      const response = await axios.get(
+        `http://localhost:3002/api/servicios/${serviceId}/images`,
+        {
+          headers: {
+            "x-auth-token": userToken,
+          },
+        }
+      );
+      console.log("Respuesta completa de fetchServiceImages:", response);
+      console.log("Data de respuesta de fetchServiceImages:", response.data);
+
+      return { serviceId, images: response.data };
+    } catch (error) {
+      console.error("Error al obtener imágenes:", error);
+      throw error;
+    }
+  }
+);
+
+export const updateSocialLinks = createAsyncThunk(
+  "services/updateSocialLinks",
+  async (data: {
+    serviceId: number;
+    facebook_url: string;
+    whatsapp_url: string;
+    instagram_url: string;
+  }) => {
+    const userToken = localStorage.getItem("jwt");
+    if (!userToken) {
+      throw new Error("No estás autenticado. Por favor, inicia sesión.");
+    }
+    await axios.put(
+      `http://localhost:3002/api/servicios/${data.serviceId}/socialLinks`,
+      {
+        facebook_url: data.facebook_url,
+        whatsapp_url: data.whatsapp_url,
+        instagram_url: data.instagram_url,
+      },
+      {
+        headers: {
+          "x-auth-token": userToken,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return {
+      serviceId: data.serviceId,
+      facebook_url: data.facebook_url,
+      whatsapp_url: data.whatsapp_url,
+      instagram_url: data.instagram_url,
+    };
+  }
+);
+
+export const updateServiceDescription = createAsyncThunk(
+  "services/updateServiceDescription",
+  async (data: { serviceId: number; newDescription: string }) => {
+    const userToken = localStorage.getItem("jwt");
+    if (!userToken) {
+      throw new Error("No estás autenticado. Por favor, inicia sesión.");
+    }
+    await axios.put(
+      `http://localhost:3002/api/servicios/${data.serviceId}`,
+      { modal_description: data.newDescription },
+      {
+        headers: {
+          "x-auth-token": userToken,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return { serviceId: data.serviceId, newDescription: data.newDescription };
+  }
+);
+
+export const uploadProofOfPayment = createAsyncThunk(
+  "services/uploadProofOfPayment",
+  async (data: {
+    serviceId: number;
+    disponibilidadId: number;
+    file: File;
+    selectedOptions: ServiceOption[];
+  }) => {
+    console.log("Data en thunk:", data); // <-- Añade este log
+
+    const userToken = localStorage.getItem("jwt");
+    if (!userToken) {
+      throw new Error("No estás autenticado. Por favor, inicia sesión.");
+    }
+
+    const totalPrecio = data.selectedOptions.reduce(
+      (sum, option) => sum + (option.precio || 0),
+      0
+    );
+
+    const formData = new FormData();
+    formData.append("comprobante", data.file);
+    formData.append("precio", totalPrecio.toString());
+    formData.append(
+      "selectedOptionNames",
+      JSON.stringify(data.selectedOptions.map((opt) => opt.nombre))
+    );
+
+    const response = await axios.post(
+      `http://localhost:3002/api/servicios/${data.serviceId}/availabilities/${data.disponibilidadId}/uploadProof`,
+      formData,
+      {
+        headers: {
+          "x-auth-token": userToken,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    return { availabilityId: response.data.availabilityId };
+  }
+);
+
+export const checkIfUserIsAssigned = createAsyncThunk(
+  "services/checkIfUserIsAssigned",
+  async (serviceId: number, {}) => {
+    const userToken = localStorage.getItem("jwt");
+    if (!userToken) {
+      throw new Error("No estás autenticado. Por favor, inicia sesión.");
+    }
+    const response = await axios.get(
+      `http://localhost:3002/api/servicios/${serviceId}/isUserAssigned`,
+      {
+        headers: {
+          "x-auth-token": userToken,
+        },
+      }
+    );
+    return response.data.isAssigned;
+  }
+);
+export const deleteAvailability = createAsyncThunk(
+  "services/deleteAvailability",
+  async (availabilityId: number) => {
+    const userToken = localStorage.getItem("jwt");
+    if (!userToken) {
+      throw new Error("No estás autenticado. Por favor, inicia sesión.");
+    }
+    await axios.delete(
+      `http://localhost:3002/api/servicios/availability/${availabilityId}`,
+      {
+        headers: {
+          "x-auth-token": userToken,
+        },
+      }
+    );
+    return availabilityId;
+  }
+);
+
+export const fetchAvailabilities = createAsyncThunk(
+  "services/fetchAvailabilities",
+  async (serviceId: number) => {
+    const userToken = localStorage.getItem("jwt");
+    if (!userToken) {
+      throw new Error("No estás autenticado. Por favor, inicia sesión.");
+    }
+    const response = await axios.get(
+      `http://localhost:3002/api/servicios/${serviceId}/availabilities`,
+      {
+        headers: {
+          "x-auth-token": userToken,
+        },
+      }
+    );
+    console.log("Recibido del servidor:", response.data);
+
+    return response.data as Availability[];
+  }
+);
+
+export const addAvailability = createAsyncThunk(
+  "services/addAvailability",
+  async (data: {
+    serviceId: number;
+    fechaInicio: string;
+    fechaFin: string;
+  }) => {
+    const userToken = localStorage.getItem("jwt");
+    if (!userToken) {
+      throw new Error("No estás autenticado. Por favor, inicia sesión.");
+    }
+    await axios.post(
+      `http://localhost:3002/api/servicios/${data.serviceId}/addAvailability`,
+      {
+        fechaInicio: data.fechaInicio,
+        fechaFin: data.fechaFin,
+        estado: "disponible", // por defecto
+      },
+      {
+        headers: {
+          "x-auth-token": userToken,
+        },
+      }
+    );
+
+    // Devolvemos el serviceId para usarlo más adelante
+    return data.serviceId;
+  }
+);
+
+export const fetchServices = createAsyncThunk(
+  "services/fetchServices",
+  async () => {
+    const response = await axios.get("http://localhost:3002/api/servicios");
+    const data = response.data as Service[];
+
+    const servicesWithCategoryAndIcon = data.map((service) => {
+      return {
+        ...service, // Se conservan todas las propiedades de service
+        icon: service.icon_name || "", // Asignar icon_name directamente
+        category: assignCategory(service.title), // Asignar categoría
+      };
+    });
+    return servicesWithCategoryAndIcon;
+  }
+);
+
+export const reserveAvailability = createAsyncThunk(
+  "services/reserveAvailability",
+  async (data: { serviceId: number; availabilityId: number }) => {
+    const userToken = localStorage.getItem("jwt");
+    if (!userToken) {
+      throw new Error("No estás autenticado. Por favor, inicia sesión.");
+    }
+    const response = await axios.post(
+      `http://localhost:3002/api/servicios/${data.serviceId}/reserve/${data.availabilityId}`,
+      {},
+      {
+        headers: {
+          "x-auth-token": userToken,
+        },
+      }
+    );
+    // Usar la respuesta para devolver las fechas de inicio y fin
+    return {
+      availabilityId: data.availabilityId,
+      fecha_inicio: response.data.fecha_inicio,
+      fecha_fin: response.data.fecha_fin,
+    };
+  }
+);
+
+export const completeReservation = createAsyncThunk(
+  "services/completeReservation",
+  async (reservaId: number) => {
+    const userToken = localStorage.getItem("jwt");
+    if (!userToken) {
+      throw new Error("No estás autenticado. Por favor, inicia sesión.");
+    }
+    await axios.post(
+      `http://localhost:3002/api/servicios/reservations/${reservaId}/complete`,
+      {},
+      {
+        headers: {
+          "x-auth-token": userToken,
+        },
+      }
+    );
+    return reservaId;
+  }
+);
+
+export const toggleServiceColor = createAsyncThunk(
+  "services/toggleServiceColor",
+  async (serviceId: number) => {
+    const userToken = localStorage.getItem("jwt");
+    if (!userToken) {
+      throw new Error("No estás autenticado. Por favor, inicia sesión.");
+    }
+    const response = await axios.put(
+      `http://localhost:3002/api/servicios/${serviceId}/toggleColor`,
+      {},
+      {
+        headers: {
+          "x-auth-token": userToken,
+        },
+      }
+    );
+    return { serviceId, color: response.data.color };
+  }
+);
+
+const servicesSlice = createSlice({
+  name: "services",
+  initialState,
+  reducers: {
+    updateAvailabilityStatus: (
+      state,
+      action: PayloadAction<{ availabilityId: number; newStatus: string }>
+    ) => {
+      console.log("Action payload:", action.payload); // <-- Añade esta línea
+      console.log(
+        "availabilityId en updateAvailabilityStatus:",
+        action.payload.availabilityId
+      ); // <-- Añade esta línea
+
+      console.log("State before:", state.availabilities); // <-- Añade esta línea
+      const { availabilityId, newStatus } = action.payload;
+      const availability = state.availabilities.find(
+        (a) => a.id === availabilityId
+      );
+      if (availability) {
+        availability.estado = newStatus;
+      }
+      console.log("State after:", state.availabilities); // <-- Añade esta línea
+    },
+    setServiceDescription: (
+      state,
+      action: PayloadAction<{ serviceId: number; newDescription: string }>
+    ) => {
+      // Desestructurando el payload para obtener serviceId y newDescription
+      const { serviceId, newDescription } = action.payload;
+
+      // Buscando el servicio correspondiente en state.services
+      const serviceToUpdate = state.services.find((s) => s.id === serviceId);
+
+      // Si se encuentra el servicio, actualiza su modal_description
+      if (serviceToUpdate) {
+        serviceToUpdate.modal_description = newDescription;
+      }
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(clearError, (state) => {
+        state.error = null;
+      })
+
+      .addCase(resetReservationsSummary, (state) => {
+        state.reservationsSummary = initialState.reservationsSummary;
+      })
+      .addCase(fetchReservationsSummary.fulfilled, (state, action) => {
+        state.reservationsSummary = action.payload;
+        state.error = null; // Limpia errores previos si la solicitud es exitosa
+      })
+      .addCase(
+        fetchReservationsSummary.rejected,
+        (
+          state,
+          action: PayloadAction<unknown, string, never, SerializedError>
+        ) => {
+          const error = action.error as SerializedError;
+          const payload = action.payload as ErrorResponse | undefined;
+          state.error = payload
+            ? payload.errorMessage
+            : error.message ||
+              "Error desconocido al obtener el resumen de reservas";
+        }
+      )
+      .addCase(markReservationAsPending.fulfilled, (state, action) => {
+        const reservationIdToUpdate = action.meta.arg;
+        const indexToUpdate = state.reservationsForAssistant.findIndex(
+          (reservation) => reservation.id === reservationIdToUpdate
+        );
+
+        if (indexToUpdate !== -1) {
+          state.reservationsForAssistant[indexToUpdate].estado = "pendiente";
+        }
+      })
+      .addCase(markReservationAsPending.rejected, (state, action) => {
+        console.error(
+          "Error al marcar la reserva como pendiente:",
+          action.payload?.errorMessage
+        );
+      })
+
+      .addCase(deleteReservation.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteReservation.fulfilled, (state, action) => {
+        state.loading = false;
+        // Remover la reserva de la lista en el estado
+        state.reservationsForAssistant = state.reservationsForAssistant.filter(
+          (reservation) => reservation.id !== action.meta.arg
+        );
+      })
+      .addCase(deleteReservation.rejected, (state, action) => {
+        state.loading = false;
+        const payload = action.payload as { errorMessage?: string };
+        if (payload && payload.errorMessage) {
+          state.error = payload.errorMessage;
+        } else {
+          state.error = action.error.message || null;
+        }
+      })
+
+      .addCase(markReservationAsCompleted.fulfilled, (state, action) => {
+        const reservationIdToUpdate = action.meta.arg;
+        const indexToUpdate = state.reservationsForAssistant.findIndex(
+          (reservation) => reservation.id === reservationIdToUpdate
+        );
+
+        if (indexToUpdate !== -1) {
+          state.reservationsForAssistant[indexToUpdate].estado = "completado";
+        }
+      })
+      .addCase(markReservationAsCompleted.rejected, (state, action) => {
+        console.error(
+          "Error al marcar la reserva como completada:",
+          action.payload?.errorMessage
+        );
+      })
+
+      .addCase(fetchReservationsForUser.fulfilled, (state, action) => {
+        state.reservationsForUser = action.payload;
+        state.loading = false;
+      })
+      .addCase(fetchReservationsForAssistant.pending, (state) => {
+        state.loading = true;
+      })
+
+      .addCase(fetchReservationsForAssistant.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          action.error.message || "Error fetching reservations for assistant";
+      })
+      .addCase(fetchReservationsForAssistant.fulfilled, (state, action) => {
+        state.loading = false;
+
+        for (const payload of action.payload) {
+          console.log(
+            "Reservas recibidas en el reducer:",
+            payload.reservations
+          );
+          console.log("Service ID recibido en el reducer:", payload.serviceId);
+
+          const newReservations = payload.reservations
+            .filter(
+              (reservation) =>
+                !state.reservationsForAssistant.some(
+                  (r) => r.id === reservation.id
+                )
+            )
+            .map((reservation) => ({
+              ...reservation,
+              serviceId: payload.serviceId,
+            }));
+
+          state.reservationsForAssistant = [
+            ...state.reservationsForAssistant,
+            ...newReservations,
+          ];
+        }
+      })
+
+      .addCase(addServiceOption.fulfilled, (state, action) => {
+        const { serviceId, option } = action.payload;
+        if (!state.serviceOptions[serviceId]) {
+          state.serviceOptions[serviceId] = [];
+        }
+        state.serviceOptions[serviceId].push(option);
+      })
+      .addCase(fetchServiceOptions.fulfilled, (state, action) => {
+        const { serviceId, options } = action.payload;
+        state.serviceOptions[serviceId] = options;
+      })
+      .addCase(editServiceOption.fulfilled, (state, action) => {
+        const { serviceId, option } = action.payload;
+
+        // Asegurarse de que state.serviceOptions[serviceId] exista antes de continuar.
+        if (!state.serviceOptions[serviceId]) {
+          console.warn(
+            `No options found for serviceId: ${serviceId}. Action payload:`,
+            action.payload
+          );
+          return;
+        }
+
+        const index = state.serviceOptions[serviceId].findIndex(
+          (opt) => opt.id === option.id
+        );
+
+        if (index !== -1) {
+          state.serviceOptions[serviceId][index] = option;
+        }
+      })
+
+      .addCase(deleteServiceOption.fulfilled, (state, action) => {
+        const optionId = action.payload;
+        for (const serviceId in state.serviceOptions) {
+          state.serviceOptions[serviceId] = state.serviceOptions[
+            serviceId
+          ].filter((opt) => opt.id !== optionId);
+        }
+      })
+
+      .addCase(uploadServiceImages.fulfilled, (state, action) => {
+        console.log(
+          "Payload recibido en uploadServiceImages.fulfilled:",
+          action.payload
+        );
+
+        const serviceToUpdate = state.services.find(
+          (s) => s.id === action.payload.serviceId
+        );
+
+        if (serviceToUpdate) {
+          // Actualizar las imágenes del servicio
+          if (Array.isArray(serviceToUpdate.images)) {
+            serviceToUpdate.images = [
+              ...serviceToUpdate.images,
+              ...action.payload.imagePaths,
+            ];
+          } else {
+            serviceToUpdate.images = [...action.payload.imagePaths];
+          }
+          console.log("Imagenes después de subirlas:", serviceToUpdate.images);
+
+          // Actualizar el objeto serviceImages
+          if (!state.serviceImages[action.payload.serviceId]) {
+            state.serviceImages[action.payload.serviceId] = [];
+          }
+          state.serviceImages[action.payload.serviceId] = [
+            ...state.serviceImages[action.payload.serviceId],
+            ...action.payload.imagePaths,
+          ];
+        }
+      })
+
+      .addCase(deleteServiceImage.fulfilled, (state, action) => {
+        const serviceToUpdate = state.services.find(
+          (s) => s.id === action.payload.serviceId
+        );
+        if (serviceToUpdate) {
+          const updatedImages = serviceToUpdate.images.filter(
+            (path) => path !== action.payload.imagePath
+          );
+          serviceToUpdate.images = updatedImages;
+          state.serviceImages[action.payload.serviceId] = updatedImages;
+          console.log("Imagenes después de eliminar:", updatedImages);
+        }
+      })
+
+      .addCase(fetchServiceImages.fulfilled, (state, action) => {
+        const serviceToUpdate = state.services.find(
+          (s) => s.id === action.payload.serviceId
+        );
+        if (serviceToUpdate) {
+          serviceToUpdate.images = action.payload.images;
+          state.serviceImages[action.payload.serviceId] = action.payload.images;
+        }
+      })
+
+      .addCase(updateSocialLinks.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(
+        updateSocialLinks.fulfilled,
+        (
+          state,
+          action: PayloadAction<{
+            serviceId: number;
+            facebook_url: string;
+            whatsapp_url: string;
+            instagram_url: string;
+          }>
+        ) => {
+          state.loading = false;
+          const { serviceId, facebook_url, whatsapp_url, instagram_url } =
+            action.payload;
+          const serviceToUpdate = state.services.find(
+            (s) => s.id === serviceId
+          );
+          if (serviceToUpdate) {
+            serviceToUpdate.facebook_url = facebook_url;
+            serviceToUpdate.whatsapp_url = whatsapp_url;
+            serviceToUpdate.instagram_url = instagram_url;
+          }
+        }
+      )
+
+      .addCase(updateSocialLinks.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Error updating social links";
+      })
+      .addCase(updateServiceDescription.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(
+        updateServiceDescription.fulfilled,
+        (
+          state,
+          action: PayloadAction<{ serviceId: number; newDescription: string }>
+        ) => {
+          state.loading = false;
+          const { serviceId, newDescription } = action.payload;
+          const serviceToUpdate = state.services.find(
+            (s) => s.id === serviceId
+          );
+          if (serviceToUpdate) {
+            serviceToUpdate.modal_description = newDescription;
+          }
+        }
+      )
+      .addCase(updateServiceDescription.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          action.error.message || "Error updating service description";
+      })
+      .addCase(uploadProofOfPayment.pending, (state) => {
+        state.uploadProofOfPaymentStatus = "loading"; // <-- Añade esta línea
+      })
+      .addCase(
+        uploadProofOfPayment.fulfilled,
+        (state, action: PayloadAction<{ availabilityId: number }>) => {
+          state.uploadProofOfPaymentStatus = "fulfilled"; // <-- Añade esta línea
+          state.loading = false;
+
+          // Asumiendo que recibimos availabilityId del backend
+          const availabilityId = action.payload.availabilityId;
+
+          // Encuentra y actualiza la disponibilidad en el estado
+          const availability = state.availabilities.find(
+            (a) => a.id === availabilityId
+          );
+          if (availability) {
+            availability.estado = "reservado";
+          }
+        }
+      )
+      .addCase(uploadProofOfPayment.rejected, (state) => {
+        state.uploadProofOfPaymentStatus = "failed"; // <-- Añade esta línea
+        // Aquí puedes manejar el error si lo deseas
+      })
+
+      .addCase(reserveAvailability.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(reserveAvailability.fulfilled, (state, action) => {
+        state.loading = false;
+        const availabilityToReserve = state.availabilities.find(
+          (availability) => availability.id === action.payload.availabilityId
+        );
+        if (availabilityToReserve) {
+          availabilityToReserve.estado = "reservado";
+          // Suponiendo que el backend retorna las fechas de reserva
+          availabilityToReserve.fecha_inicio_reserva =
+            action.payload.fecha_inicio;
+          availabilityToReserve.fecha_fin_reserva = action.payload.fecha_fin;
+        }
+      })
+      .addCase(reserveAvailability.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          action.error.message || "Error al reservar la disponibilidad";
+      })
+      .addCase(completeReservation.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(completeReservation.fulfilled, (state) => {
+        state.loading = false;
+        // Aquí puedes realizar cambios adicionales si es necesario, como marcar una reserva como 'completada'.
+      })
+      .addCase(completeReservation.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Error al completar la reserva";
+      })
+      .addCase(deleteAvailability.fulfilled, (state, action) => {
+        const availabilityId = action.payload;
+        state.availabilities = state.availabilities.filter(
+          (a) => a.id !== availabilityId
+        );
+      })
+      .addCase(deleteAvailability.rejected, (state, action) => {
+        state.error =
+          action.error.message || "Error al eliminar la disponibilidad";
+      })
+
+      .addCase(checkIfUserIsAssigned.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(
+        checkIfUserIsAssigned.fulfilled,
+        (state, action: PayloadAction<boolean>) => {
+          state.loading = false;
+          state.isUserAssigned = action.payload;
+        }
+      )
+      .addCase(checkIfUserIsAssigned.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          action.error.message || "Error al verificar la asignación";
+      })
+      .addCase(addAvailability.fulfilled, () => {
+        // Aquí puedes manejar cualquier cambio en el estado que desees hacer después de que una disponibilidad se ha agregado con éxito
+        // Por ahora, no haremos ningún cambio.
+        // Luego de agregar una disponibilidad, es importante refrescar las disponibilidades del servidor
+        // Así que invocamos la thunk para obtener las disponibilidades nuevamente
+      })
+      .addCase(fetchAvailabilities.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(
+        fetchAvailabilities.fulfilled,
+        (
+          state,
+          action: PayloadAction<Availability[], string, { arg: number }>
+        ) => {
+          state.loading = false;
+          state.availabilities = action.payload;
+          state.lastFetchedServiceId = action.meta.arg;
+
+          console.log("Estado actualizado:", state.availabilities);
+        }
+      )
+
+      .addCase(fetchAvailabilities.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          action.error.message || "Error al obtener las disponibilidades";
+      })
+      .addCase(addAvailability.rejected, (state, action) => {
+        state.error = action.error.message || "Error al agregar disponibilidad";
+      })
+      .addCase(fetchServices.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(
+        fetchServices.fulfilled,
+        (state, action: PayloadAction<Service[]>) => {
+          state.loading = false;
+          state.services = action.payload;
+        }
+      )
+      .addCase(fetchServices.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Error fetching services";
+      })
+      .addCase(toggleServiceColor.fulfilled, (state, action) => {
+        const { serviceId, color } = action.payload;
+        const service = state.services.find((s) => s.id === serviceId);
+        if (service) {
+          service.color = color;
+        }
+      });
+  },
+});
+export const { updateAvailabilityStatus, setServiceDescription } =
+  servicesSlice.actions;
+
+export default servicesSlice.reducer;

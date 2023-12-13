@@ -3,12 +3,12 @@ import styled from "styled-components";
 import { StyledFilterBar } from "./sideBarStyle";
 export const FilterButtons = styled(StyledFilterBar)`
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  flex-direction: row; // Mantiene los elementos en fila
+  flex-wrap: nowrap; // Evita el salto de línea automático
   gap: 15px;
-  width: 100%; // Ajusta a 100% para aprovechar todo el ancho disponible
-  justify-content: center;
-  align-items: center; // Centrar elementos verticalmente
+  width: 100%;
+  justify-content: flex-start; // Alinea los elementos al inicio del contenedor
+  align-items: center; // Centra los elementos verticalmente
 
   button {
     display: flex;
@@ -39,33 +39,31 @@ export const FilterButtons = styled(StyledFilterBar)`
   }
 
   @media (max-width: 768px) {
-    justify-content: center;
-    flex-direction: column;
+    justify-content: center; // Centra los botones horizontalmente en pantallas pequeñas
+    align-items: center; // Centra los botones verticalmente en pantallas pequeñas
+    flex-direction: column; // Los botones se apilan verticalmente en pantallas pequeñas
 
     button {
       width: 100%; // Ocupa todo el ancho disponible
+      margin: 5px 0; // Añade un margen vertical
       text-align: center;
       padding: 8px 10px;
-      margin: 5px 0;
     }
   }
 `;
 
 export const FilterOption = styled.button`
   background: none;
-  border: 2px solid ${colors.pinkDark}; // Borde cohesivo
-  padding: 8px 14px; // Aumentar el padding para un mejor aspecto
-  border-radius: 20px; // Radio cohesivo
-  margin-right: 12px;
-  margin-bottom: 12px;
+  border: 2px solid ${colors.pinkDark};
+  padding: 8px 14px;
+  border-radius: 20px;
   cursor: pointer;
   transition: background-color 0.3s, transform 0.3s, color 0.3s;
   color: ${colors.pinkDark};
-  font-weight: 600; // Peso de fuente cohesivo
+  font-weight: 600;
 
   &:hover {
     background-color: ${colors.pinkDark};
-    transform: scale(1.05);
     color: white;
   }
 
@@ -74,6 +72,9 @@ export const FilterOption = styled.button`
     color: white;
   }
   @media (max-width: 768px) {
-    // Estilos específicos para pantallas pequeñas, si es necesario
+    margin-right: 0; // Asegúrate de que no haya margen a la derecha en dispositivos móviles
+    margin-bottom: 12px; // Asegúrate de que haya consistencia en el margen inferior
+    width: 100%; // Ocupa todo el ancho disponible
+    // Si necesitas más estilos específicos para móviles, añádelos aquí
   }
 `;

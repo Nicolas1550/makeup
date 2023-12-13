@@ -5,33 +5,46 @@ import {
   ThunkDispatch,
 } from "@reduxjs/toolkit";
 import io from "socket.io-client";
+import jwt_decode from "jwt-decode";
+import axios from "axios";
 import { fetchUpdatedProducts } from "../productUpdateSlice/productUpdateSlice";
 import { syncCartWithUpdatedStock } from "../../cartSlice/cartSlice";
-import jwt_decode from "jwt-decode";
-import { loginSuccess } from "../../authSlice/authSlice";
-import axios from "axios";
-import { DecodedToken } from "../../../components/admin/productAction-reducer-types/types/types";
-import { Product } from "../../productManagementSlice/productManagementSlice";
-import { updateOrderState } from "../../orderSlice/orderSlice";
+import { fetchReservationDetails } from "./reservationSlice";
+import { RootState } from "../../store/rootReducer";
+import { fetchServiceImages } from "../../serviceSlice/servicesSlice";
+
+type DecodedToken = {
+  id: string;
+  role: string;
+  // Add any other fields from the decoded token if necessary
+};
+
 type ErrorType = { message?: string };
 
 const websocketMiddleware = (storeAPI: MiddlewareAPI) => {
+  const thunkDispatch = storeAPI.dispatch as ThunkDispatch<
+    RootState,
+    unknown,
+    AnyAction
+  >;
+
+  // Token validation and dispatch
   if (typeof window !== "undefined") {
     const token = localStorage.getItem("jwt");
 
     if (token) {
-      const decodedToken = jwt_decode(token) as DecodedToken;
-
       axios
         .post("http://localhost:3002/api/validateToken", { token })
         .then((response) => {
           if (response.data.isValid) {
-            storeAPI.dispatch(
-              loginSuccess({
+            const decodedToken: DecodedToken = jwt_decode(token);
+            storeAPI.dispatch({
+              type: "auth/loginSuccess",
+              payload: {
                 userRole: decodedToken.role,
                 userId: decodedToken.id,
-              })
-            );
+              },
+            });
           } else {
             localStorage.removeItem("jwt");
           }
@@ -43,32 +56,27 @@ const websocketMiddleware = (storeAPI: MiddlewareAPI) => {
     }
   }
 
+  // Websocket events
   const socket = io("http://localhost:3002");
-  socket.on("order-status-updated", (data) => {
-    console.log("Received order-status-updated event with data:", data);
+  console.log("Configurando escuchador de evento new-reservation...");
 
-    if (data.orderId && data.estado) {
-      const { orderId, estado } = data;
-      storeAPI.dispatch(updateOrderState({ orderId, newState: estado }));
-    }
+  socket.on("new-reservation", (data) => {
+    console.log("Evento new-reservation recibido:", data);
+    thunkDispatch(fetchReservationDetails(data.reservationId));
   });
+  console.log("Evento new-reservation configurado.");
 
   socket.on("stock-updated", () => {
     console.log("Evento stock-updated recibido.");
-
-    (storeAPI.dispatch as ThunkDispatch<ReturnType<typeof fetchUpdatedProducts>, undefined, AnyAction>)(
-      fetchUpdatedProducts()
-    )
+    thunkDispatch(fetchUpdatedProducts())
       .then((action: AnyAction) => {
         if (fetchUpdatedProducts.fulfilled.match(action)) {
           const updatedProducts = action.payload;
-
           console.log(
             "Productos actualizados después de fetchUpdatedProducts:",
             updatedProducts
           );
-
-          updatedProducts.forEach((product: Product) => {
+          updatedProducts.forEach((product) => {
             storeAPI.dispatch(syncCartWithUpdatedStock(product));
           });
         }
@@ -77,7 +85,10 @@ const websocketMiddleware = (storeAPI: MiddlewareAPI) => {
         console.error("Error obteniendo productos actualizados:", error);
       });
   });
-
+  socket.on("serviceImagesChanged", (data) => {
+    console.log("Evento serviceImagesChanged recibido:", data);
+    thunkDispatch(fetchServiceImages(data.serviceId));
+  });
   return (next: Dispatch<AnyAction>) => (action: AnyAction) => {
     return next(action);
   };

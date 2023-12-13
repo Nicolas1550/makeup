@@ -5,14 +5,17 @@ import {
   Button,
   StyledH1,
   ButtonContainer,
-  Message,
 } from "../adminPanelStyled/adminPanelStyled";
-import { useSelector } from "react-redux";
 
-import { RootState } from "../../../../redux/store/rootReducer";
 import { GetServerSideProps } from "next";
 import axios from "axios";
 import { Product } from "../../../../redux/productManagementSlice/productManagementSlice";
+import AssignAssistantToService from "@/app/components/servicesSection/assignAssistantToService/assignAssistantToService ";
+import AssignRoleToUser from "@/app/components/servicesSection/assignRoleToUser/assignRoleToUser";
+import ReservationsSummary from "../../productTable/productTable/adminReservationsSection";
+import { AnimatePresence, motion } from "framer-motion";
+import AdminOrdersSection from "../../productTable/productTable/adminOrdersSection";
+
 interface Props {
   products: Product[];
 }
@@ -20,10 +23,42 @@ interface Props {
 const AdminPanel: React.FC<Props> = ({ products }) => {
   const [showTable, setShowTable] = useState(false);
   const [showForm, setShowForm] = useState(false);
-
-  const productManagementState = useSelector(
-    (state: RootState) => state.productManagement
+  const [isAssignModalOpen, setAssignModalOpen] = useState(false);
+  const [assignModalButtonText, setAssignModalButtonText] = useState(
+    "Asignar Ayudante a Servicio"
   );
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [currentServiceId, setCurrentServiceId] = useState<number | null>(null);
+  const [isAssignRoleModalOpen, setAssignRoleModalOpen] = useState(false);
+  const [assignRoleModalButtonText, setAssignRoleModalButtonText] = useState(
+    "Asignar Rol a Usuario"
+  );
+  const [showReservationsSummary, setShowReservationsSummary] = useState(false);
+  const [showOrdersSummary, setShowOrdersSummary] = useState(false);
+
+  const toggleAssignModal = () => {
+    setAssignModalOpen(!isAssignModalOpen);
+    setAssignModalButtonText(
+      !isAssignModalOpen
+        ? "Ocultar Asignacion de Ayudante a Servicio"
+        : "Asignar Ayudante a Servicio"
+    );
+  };
+
+  const toggleAssignRoleModal = () => {
+    setAssignRoleModalOpen(!isAssignRoleModalOpen);
+    setAssignRoleModalButtonText(
+      !isAssignRoleModalOpen
+        ? "Ocultar Asignacion de Rol a Usuario"
+        : "Asignar Rol a Usuario"
+    );
+  };
+  const handleCloseOrdersSummary = () => {
+    setShowOrdersSummary(false);
+  };
+  const handleCloseReservationsSummary = () => {
+    setShowReservationsSummary(false);
+  };
 
   return (
     <div>
@@ -35,16 +70,59 @@ const AdminPanel: React.FC<Props> = ({ products }) => {
         <Button onClick={() => setShowForm(!showForm)}>
           {showForm ? "Ocultar Formulario" : "Mostrar Formulario"}
         </Button>
+        <Button onClick={toggleAssignModal}>{assignModalButtonText}</Button>
+        <Button onClick={toggleAssignRoleModal}>
+          {assignRoleModalButtonText}
+        </Button>
+        <Button
+          onClick={() => setShowReservationsSummary(!showReservationsSummary)}
+        >
+          {showReservationsSummary
+            ? "Ocultar Resumen de Reservas"
+            : "Mostrar Resumen de Reservas"}
+        </Button>
+        <Button onClick={() => setShowOrdersSummary(!showOrdersSummary)}>
+          {showOrdersSummary
+            ? "Ocultar Resumen de Órdenes"
+            : "Mostrar Resumen de Órdenes"}
+        </Button>
       </ButtonContainer>
-      {showForm && <ProductForm />}
-      {productManagementState.message && (
-        <Message $variant="success">{productManagementState.message}</Message>
-      )}
-      {productManagementState.error && (
-        <Message $variant="error">{productManagementState.error}</Message>
-      )}
 
-      {showTable && <ProductTable products={products} />}
+      <div style={{ margin: "20px 0" }}>
+        {showForm && <ProductForm />}
+        {showTable && <ProductTable products={products} />}
+        {showReservationsSummary && (
+          <ReservationsSummary onClose={handleCloseReservationsSummary} />
+        )}
+        {showOrdersSummary && (
+          <AdminOrdersSection onClose={handleCloseOrdersSummary} />
+        )}
+        <AnimatePresence>
+          {isAssignModalOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <AssignAssistantToService
+                serviceId={currentServiceId}
+                onClose={toggleAssignModal}
+              />
+            </motion.div>
+          )}
+          {isAssignRoleModalOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <AssignRoleToUser onClose={toggleAssignRoleModal} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 };

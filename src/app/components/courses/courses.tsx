@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import "./style.css";
+import Link from "next/link";
 
 interface StyledCardProps {
   $imageUrl: string;
@@ -9,8 +10,11 @@ interface StyledCardProps {
   description: string;
   price: string;
   borderStyle?: "lb" | "rb" | "bb";
+  courseId: string;
 }
-
+const isTouchDevice = () => {
+  return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+};
 const StyledCard: React.FC<StyledCardProps> = ({
   price,
   $imageUrl,
@@ -19,12 +23,16 @@ const StyledCard: React.FC<StyledCardProps> = ({
   title,
   description,
   borderStyle,
+  courseId,
 }) => {
+  console.log("courseId en StyledCard:", courseId);
+
   const cardRef = useRef<HTMLDivElement>(null);
   const angle = 15;
 
   useEffect(() => {
     const currentCardRef = cardRef.current;
+    if (!currentCardRef || isTouchDevice()) return; // Desactiva el efecto en dispositivos táctiles
 
     if (!currentCardRef) return;
 
@@ -73,7 +81,9 @@ const StyledCard: React.FC<StyledCardProps> = ({
         <h2 className="title">{title}</h2>
         <p className="description">{description}</p>
         <strong className="price">${price}</strong>
-        <button className="enroll-button">Inscribirse ahora</button>
+        <Link href={`/cursoDetalle/${courseId}`}>
+          <button className="enroll-button">Inscribirse ahora</button>
+        </Link>
       </div>
     </div>
   );

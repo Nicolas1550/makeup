@@ -8,7 +8,6 @@ export interface OrderDetail {
   imagen_url?: string;
 }
 
-
 export interface ShippingInfo {
   direccion: string;
   ciudad: string;
@@ -51,7 +50,7 @@ const initialState: {
 } = {
   orders: [],
   error: null,
-  newOrdersCount: 0, 
+  newOrdersCount: 0,
 };
 
 interface UserOrdersResponse {
@@ -251,6 +250,12 @@ const orderSlice = createSlice({
   name: "order",
   initialState,
   reducers: {
+    resetOrders: (state) => {
+      state.orders = [];
+      state.error = null;
+      state.newOrdersCount = 0;
+      // Restablece cualquier otro estado que necesites
+    },
     updateOrderState: (
       state,
       action: PayloadAction<{ orderId: number; newState: string }>
@@ -341,12 +346,7 @@ const orderSlice = createSlice({
             state.orders = action.payload;
             state.error = null;
           } else {
-            console.error(
-              "Error cargando órdenes del usuario:",
-              action.payload.action.error.message
-            );
-
-            state.error = action.payload.action.error.message;
+            // Manejo de error
           }
         }
       )
@@ -384,6 +384,7 @@ export const {
   resetNewOrdersCount,
   setNewOrdersCount,
   updateOrderState,
+  resetOrders,
 } = orderSlice.actions;
 
 export default orderSlice.reducer;

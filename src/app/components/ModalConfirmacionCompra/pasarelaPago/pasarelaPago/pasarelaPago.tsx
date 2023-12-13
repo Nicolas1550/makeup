@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Button } from "@mui/material";
 import axios from "axios";
 import { StyledPasarelaPago } from "../styledPasarelaPago/styledPasarelaPago";
@@ -9,9 +9,13 @@ import {
 } from "../../../../redux/store/appHooks";
 import { clearCart } from "../../../../redux/cartSlice/cartSlice";
 import { incrementNewOrdersCount } from "@/app/redux/orderSlice/orderSlice";
-import Image from 'next/image';
+import Image from "next/image";
 
 interface PasarelaPagoProps {
+  setLoadedComprobante: (comprobante: File | null) => void;
+  loadedComprobante: File | null;
+  countdown: number;
+  comprobanteMessage?: string | null;
   onPaymentSuccess: () => void;
   onPaymentFailure: () => void;
   total: number;
@@ -37,16 +41,21 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
   datosUsuario,
   datosEnvio,
   ordenId,
+  setLoadedComprobante,
+  loadedComprobante,
+  countdown,
+  comprobanteMessage,
 }) => {
   const cartItems = useAppSelector((state) => state.cart);
   const dispatch = useAppDispatch();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const depositPaymentRef = useRef<HTMLDivElement>(null);
 
   const [showUploadOption, setShowUploadOption] = useState(false);
   const [uploadSuccessMessage, setUploadSuccessMessage] = useState<
     string | null
   >(null);
-  const [loadedComprobante, setLoadedComprobante] = useState<File | null>(null);
+  const shouldShowShippingDetails = datosEnvio.metodo_envio !== "recoger";
 
   const closePaymentMethod = () => {
     setShowUploadOption(false);
@@ -54,10 +63,15 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
 
   const showPaymentMethod = () => {
     setShowUploadOption(true);
+
+    // Asegúrate de que el elemento está en el DOM antes de intentar desplazarte
+    setTimeout(() => {
+      depositPaymentRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 0); // El timeout puede ser necesario si el contenido se carga dinámicamente
   };
 
   const handleUploadSuccess = (data: { estado: string; comprobante: File }) => {
-    // Especifica el tipo aquí
+    console.log("Comprobante subido con éxito:", data);
     setUploadSuccessMessage("Comprobante cargado con éxito");
     setLoadedComprobante(data.comprobante);
 
@@ -65,9 +79,12 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
       dispatch(incrementNewOrdersCount());
     }
 
+    // Llamada a la función callback proporcionada por ModalConfirmacionCompra
+    setLoadedComprobante(data.comprobante); // Usar directamente aquí
+
     setTimeout(() => {
       setUploadSuccessMessage(null);
-      closePaymentMethod();
+      setShowUploadOption(false); // Puedes usar esta función para cerrar el método de pago
     }, 3000);
     dispatch(clearCart());
   };
@@ -77,6 +94,8 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
   };
 
   const handlePayment = async () => {
+    console.log("Iniciando proceso de pago");
+
     const paymentData = {
       orden_id: ordenId,
       total,
@@ -125,6 +144,36 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
       }
     }
   };
+  const renderShippingDetails = () => {
+    if (datosEnvio.metodo_envio === "recoger") {
+      // Mostrar "Buscar en tienda (direccion)" cuando el método de envío es "Recoger en Tienda"
+      return (
+        <p>
+          <strong>Buscar en tienda (direccion)</strong>
+        </p>
+      );
+    } else {
+      return (
+        <>
+          <p>
+            <strong>Dirección:</strong> {datosEnvio.direccion}
+          </p>
+          <p>
+            <strong>Ciudad:</strong> {datosEnvio.ciudad}
+          </p>
+          <p>
+            <strong>Estado:</strong> {datosEnvio.estado}
+          </p>
+          <p>
+            <strong>Código Postal:</strong> {datosEnvio.codigo_postal}
+          </p>
+          <p>
+            <strong>País:</strong> {datosEnvio.pais}
+          </p>
+        </>
+      );
+    }
+  };
   return (
     <StyledPasarelaPago>
       <h5 className="main-title">Pasarela de Pago</h5>
@@ -150,12 +199,19 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
           {cartItems.map((producto) => (
             <li key={producto.id}>
               <Image
-                src={producto?.imagen_url || "/path/to/default/image.jpg"}
+                src={
+                  producto?.imagen_url
+                    ? producto.imagen_url.startsWith("http")
+                      ? producto.imagen_url
+                      : `http://localhost:3002${producto.imagen_url}`
+                    : "/path/to/default/image.jpg"
+                }
                 alt={producto.nombre}
                 width={100}
                 height={100}
                 className="product-image"
               />
+
               <span>
                 <strong>{producto.nombre}</strong> - $
                 {producto.precio.toFixed(2)} x {producto.cantidad}
@@ -167,26 +223,7 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
 
       <div className="section-card shipping-section">
         <h6>Datos de envío:</h6>
-        <div className="shipping-details">
-          <p>
-            <strong>Método de Envío:</strong> {datosEnvio.metodo_envio}
-          </p>
-          <p>
-            <strong>Dirección:</strong> {datosEnvio.direccion}
-          </p>
-          <p>
-            <strong>Ciudad:</strong> {datosEnvio.ciudad}
-          </p>
-          <p>
-            <strong>Estado:</strong> {datosEnvio.estado}
-          </p>
-          <p>
-            <strong>Código Postal:</strong> {datosEnvio.codigo_postal}
-          </p>
-          <p>
-            <strong>País:</strong> {datosEnvio.pais}
-          </p>
-        </div>
+        <div className="shipping-details">{renderShippingDetails()}</div>
       </div>
 
       <div className="section-card payment-section">
@@ -215,13 +252,14 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
               >
                 Cerrar Método de Pago
               </Button>
-              <CargarComprobante
-                orderId={ordenId}
-                total={total}
-                loadedComprobante={loadedComprobante}
-                onUploadSuccess={handleUploadSuccess}
-                onUploadError={handleUploadError}
-              />
+              <div ref={depositPaymentRef}>
+                <CargarComprobante
+                  orderId={ordenId}
+                  total={total}
+                  onUploadSuccess={handleUploadSuccess}
+                  onUploadError={handleUploadError}
+                />
+              </div>
             </React.Fragment>
           )}
 
@@ -234,6 +272,11 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
       <div className="notifications">
         {uploadSuccessMessage && (
           <p className="success-message">{uploadSuccessMessage}</p>
+        )}
+        {comprobanteMessage && countdown > 0 && (
+          <p className="success-message">
+            {comprobanteMessage} Cerrando en {countdown} segundos...
+          </p>
         )}
         {errorMessage && <p className="error-message">{errorMessage}</p>}
       </div>

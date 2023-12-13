@@ -4,9 +4,17 @@ import jwt_decode from "jwt-decode";
 import { setLoginError, setLoading } from "../messagesSlice/messagesSlice";
 
 interface DecodedToken {
-  role: string;
-  id: string;
+  roles: string[];
+  id: string | number | null;
+  usuario_id: string | number | null;
+  username: string; // <-- Usa 'username' en lugar de 'name'
   [key: string]: unknown;
+}
+
+interface AuthThunkResponse {
+  userRoles: string[]; // ¡Nota el plural aquí!
+  userId: string | number | null;
+  userName: string;
 }
 
 interface RegisterUserData {
@@ -30,31 +38,36 @@ interface RegisterErrorResponse {
   };
 }
 
-export const verifyToken = createAsyncThunk("auth/verifyToken", async () => {
-  const token = localStorage.getItem("jwt");
-  if (!token) throw new Error("No token found");
+export const verifyToken = createAsyncThunk<AuthThunkResponse, void>(
+  "auth/verifyToken",
+  async (_, thunkAPI) => {
+    // Añade "thunkAPI" aquí
+    const token = localStorage.getItem("jwt");
+    if (!token) return thunkAPI.rejectWithValue("No token found"); // ¡Usa rejectWithValue!
 
-  try {
-    const decodedToken = jwt_decode(token) as DecodedToken;
-    const response = await axios.post(
-      "http://localhost:3002/api/validateToken",
-      { token }
-    );
+    try {
+      const decodedToken = jwt_decode(token) as DecodedToken;
+      const response = await axios.post(
+        "http://localhost:3002/api/validateToken",
+        { token }
+      );
 
-    if (!response.data.isValid) {
-      localStorage.removeItem("jwt");
-      throw new Error("Invalid token");
+      if (!response.data.isValid) {
+        localStorage.removeItem("jwt");
+        return thunkAPI.rejectWithValue("Invalid token"); // ¡Usa rejectWithValue!
+      }
+
+      return {
+        userRoles: decodedToken.roles,
+        userId: decodedToken.id || decodedToken.usuario_id,
+        userName: decodedToken.username,
+      };
+    } catch (error) {
+      console.error("Token verification failed:", error);
+      return thunkAPI.rejectWithValue("Token verification failed"); // ¡Usa rejectWithValue!
     }
-
-    return {
-      userRole: decodedToken.role,
-      userId: decodedToken.id,
-    };
-  } catch (error) {
-    console.error("Token verification failed:", error);
-    throw new Error("Token verification failed");
   }
-});
+);
 
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
@@ -75,8 +88,9 @@ export const loginUser = createAsyncThunk(
       thunkAPI.dispatch(setLoading(false));
 
       return {
-        userRole: decodedToken.role,
-        userId: decodedToken.id,
+        userRoles: decodedToken.roles, // Devuelve todos los roles
+        userId: decodedToken.id || decodedToken.usuario_id,
+        userName: decodedToken.username,
       };
     } catch (error: unknown) {
       thunkAPI.dispatch(setLoading(false));
@@ -109,7 +123,9 @@ export const registerUser = createAsyncThunk(
         "response" in error &&
         (error as RegisterErrorResponse).response.data.errors
       ) {
-        const validationErrors = (error as RegisterErrorResponse).response.data.errors.map((err) => err.msg);
+        const validationErrors = (
+          error as RegisterErrorResponse
+        ).response.data.errors.map((err) => err.msg);
         errorMessage = validationErrors.join(". ");
       } else if (
         typeof error === "object" &&
@@ -117,7 +133,8 @@ export const registerUser = createAsyncThunk(
         "response" in error &&
         (error as RegisterErrorResponse).response.data.error
       ) {
-        const serverErrorMessage = (error as RegisterErrorResponse).response.data.error;
+        const serverErrorMessage = (error as RegisterErrorResponse).response
+          .data.error;
         if (
           serverErrorMessage.includes("nombre de usuario ya está registrado")
         ) {

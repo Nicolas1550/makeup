@@ -6,6 +6,10 @@ import {
   StyledH2,
   ProductContainer,
   StyledSelect,
+  SecondaryButton,
+  PrimaryButton,
+  ErrorMessage,
+  SuccessMessage,
 } from "../ProductStyled/productStyled";
 import {
   useAppDispatch,
@@ -16,15 +20,14 @@ import {
   apiDeleteProduct,
   Product,
   apiGetAllProducts,
+  setMessage,
+  apiUpdateAllPrices,
+  apiRevertAndApplyNewPercentage,
 } from "../../../../redux/productManagementSlice/productManagementSlice";
-import tinycolor from "tinycolor2";
-import { ChromePicker } from "react-color";
-import GradientColorPicker from "./gradientColorPicker";
-
-export interface ProductTableProps {
-  products: Product[];
+import { io } from "socket.io-client";
+interface ProductTableProps {
+  products: Product[]; // Utiliza el tipo 'Product' en lugar de 'any[]'
 }
-
 const CATEGORIAS = ["Ojos", "Rostro", "Labios", "Uñas"];
 
 const ProductTable: React.FC<ProductTableProps> = ({}) => {
@@ -34,83 +37,76 @@ const ProductTable: React.FC<ProductTableProps> = ({}) => {
   const message = useAppSelector((state) => state.productManagement.message);
   const error = useAppSelector((state) => state.productManagement.error);
   const dispatch = useAppDispatch();
-  const [showColorPicker, setShowColorPicker] = useState(false);
 
   const [editingId, setEditingId] = useState<number | null>(null);
   const [updatedProduct, setUpdatedProduct] = useState<Product | null>(null);
 
+  const [percentage, setPercentage] = useState<number>(0);
+
   useEffect(() => {
     dispatch(apiGetAllProducts());
+  }, [dispatch]);
+
+  useEffect(() => {
+    const socket = io("http://localhost:3002");
+
+    socket.on("prices-updated", () => {
+      dispatch(apiGetAllProducts());
+    });
+
+    return () => {
+      socket.off("prices-updated");
+      socket.disconnect();
+    };
   }, [dispatch]);
 
   const startEditing = (product: Product) => {
     setEditingId(product.id);
     setUpdatedProduct(product);
   };
-
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
-    if (name === "categoria" && updatedProduct) {
+    if (name === "categoria" && updatedProduct && CATEGORIAS.includes(value)) {
       setUpdatedProduct({
         ...updatedProduct,
         categoria: value,
       });
+      console.log("Producto actualizado en componente:", updatedProduct);
     }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (updatedProduct) {
-      if (name === "color") {
-        // Convertir el string a un array
-        const colors = value.split(",").map((color) => color.trim());
-
-        // Usar tinycolor para generar un gradiente (si hay más de un color)
-        if (colors.length > 1) {
-          const gradientColors = generateGradient(colors);
-          setUpdatedProduct({
-            ...updatedProduct,
-            color: gradientColors,
-          });
-        } else {
-          setUpdatedProduct({
-            ...updatedProduct,
-            color: colors,
-          });
-        }
-      } else {
-        setUpdatedProduct({
-          ...updatedProduct,
-          [name]: value,
-        });
-      }
+      setUpdatedProduct({
+        ...updatedProduct,
+        [name]: value,
+      });
     }
   };
-  const generateGradient = (baseColors: string[]) => {
-    let gradientColors = [];
 
-    for (let i = 0; i < baseColors.length - 1; i++) {
-      const color1 = tinycolor(baseColors[i]);
-      const color2 = tinycolor(baseColors[i + 1]);
-
-      gradientColors.push(color1.toHexString()); // Agrega el primer color
-
-      // Aquí es donde generamos los colores intermedios
-      for (let j = 1; j <= 8; j++) {
-        const mixedColor = tinycolor.mix(color1, color2, j * 10);
-        gradientColors.push(mixedColor.toHexString());
-      }
-    }
-    gradientColors.push(
-      tinycolor(baseColors[baseColors.length - 1]).toHexString()
-    ); // Agrega el último color
-
-    return gradientColors;
-  };
   const handleUpdate = async () => {
     if (updatedProduct) {
+      const formData = new FormData();
+      Object.entries(updatedProduct).forEach(([key, value]) => {
+        if (value !== undefined) {
+          if (key === "imagen_url" && value instanceof File) {
+            formData.append("imagen", value, value.name); // Coincide con 'upload.single('imagen')' en el backend
+          } else {
+            formData.append(key, String(value));
+          }
+        }
+      });
+      console.log("Producto que se enviará al backend:", updatedProduct);
+
       try {
-        await dispatch(apiEditProduct(updatedProduct)).unwrap();
+        const resultAction = await dispatch(
+          apiEditProduct({ id: updatedProduct.id, formData })
+        ).unwrap();
+
+        // Suponiendo que el servidor devuelve el producto actualizado con una nueva ruta de imagen
+        // Actualizamos el estado local con el producto actualizado
+        setUpdatedProduct(resultAction); // actualiza el producto actual con los datos de respuesta
         setEditingId(null);
       } catch (error) {
         console.error("Error updating product:", error);
@@ -125,52 +121,64 @@ const ProductTable: React.FC<ProductTableProps> = ({}) => {
       console.error("Error deleting product:", error);
     }
   };
+  const handleImageChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    productId: number
+  ) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    if (file && updatedProduct && updatedProduct.id === productId) {
+      setUpdatedProduct({
+        ...updatedProduct,
+        imagen_url: file,
+      });
+    }
+  };
+  const getImageUrl = (image: string | File | undefined) => {
+    if (image instanceof File) {
+      return URL.createObjectURL(image);
+    } else if (typeof image === "string" && image.startsWith("/")) {
+      // Asegúrate de que `image` comienza con `/`
+      return `http://localhost:3002${image}`;
+    }
+    // Retornar una imagen por defecto o un placeholder si no hay imagen
+    return "/path_to_default_image.jpg";
+  };
+
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => {
+        dispatch(setMessage(null)); // Limpiamos el mensaje después de 3 segundos
+      }, 3000);
+
+      // Limpiamos el temporizador si el componente se desmonta antes de que se ejecute
+      return () => clearTimeout(timer);
+    }
+  }, [message, dispatch]);
 
   return (
-    <ProductContainer style={{ position: "relative" }}>
-      <StyledH2>Productos existentes</StyledH2>
-      {message && <div style={{ color: "green" }}>{message}</div>}
-      {error && <div style={{ color: "red" }}>{error}</div>}
-      {showColorPicker && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "rgba(0,0,0,0.5)", // Fondo opaco
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center", // Centrar el modal
-            zIndex: 1000,
-          }}
-          onClick={() => setShowColorPicker(false)} 
+    <ProductContainer>
+      <StyledH2>Administrar Precios</StyledH2>
+
+      <div>
+        <StyledInput
+          type="number"
+          value={percentage}
+          onChange={(e) => setPercentage(Number(e.target.value))}
+          placeholder="Introduce el porcentaje"
+        />
+        <PrimaryButton onClick={() => dispatch(apiUpdateAllPrices(percentage))}>
+          Aplicar Nuevo Porcentaje
+        </PrimaryButton>
+        <SecondaryButton
+          onClick={() => dispatch(apiRevertAndApplyNewPercentage(percentage))}
         >
-          <div
-            style={{
-              padding: "20px",
-              backgroundColor: "white",
-              borderRadius: "10px",
-              boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)",
-              minWidth: "50%",
-            }}
-            onClick={(e) => e.stopPropagation()} 
-          >
-            <GradientColorPicker
-              onColorsChange={(colors) => {
-                if (updatedProduct) {
-                  setUpdatedProduct({
-                    ...updatedProduct,
-                    color: colors,
-                  });
-                }
-              }}
-              onClose={() => setShowColorPicker(false)}
-            />
-          </div>
-        </div>
-      )}
+          Revertir y Aplicar Nuevo Porcentaje
+        </SecondaryButton>
+      </div>
+      <StyledH2>Productos existentes</StyledH2>
+
+      {message && <SuccessMessage>{message}</SuccessMessage>}
+      {error && <ErrorMessage>{error}</ErrorMessage>}
 
       <StyledTable>
         <thead>
@@ -179,6 +187,7 @@ const ProductTable: React.FC<ProductTableProps> = ({}) => {
             <th>Nombre</th>
             <th>Precio</th>
             <th>Stock</th>
+            <th>Imagen</th>
             <th>Categoría</th>
             <th>Descripción</th>
             <th>Color</th>
@@ -225,12 +234,27 @@ const ProductTable: React.FC<ProductTableProps> = ({}) => {
               </td>
               <td>
                 {editingId === product.id ? (
+                  <input
+                    type="file"
+                    onChange={(e) => handleImageChange(e, product.id)}
+                  />
+                ) : (
+                  <img
+                    src={getImageUrl(product.imagen_url)}
+                    alt={product.nombre}
+                    width={50}
+                    height={50}
+                  />
+                )}
+              </td>
+              <td>
+                {editingId === product.id ? (
                   <StyledSelect
                     name="categoria"
-                    value={updatedProduct?.categoria || "valor_por_defecto"}
+                    value={updatedProduct?.categoria || ""}
                     onChange={handleSelectChange}
                   >
-                    <option value="valor_por_defecto" disabled>
+                    <option value="" disabled>
                       Selecciona una categoría
                     </option>
                     {CATEGORIAS.map((categoria) => (
@@ -243,7 +267,6 @@ const ProductTable: React.FC<ProductTableProps> = ({}) => {
                   product.categoria
                 )}
               </td>
-
               <td>
                 {editingId === product.id ? (
                   <StyledInput
@@ -255,38 +278,17 @@ const ProductTable: React.FC<ProductTableProps> = ({}) => {
                   product.descripcion
                 )}
               </td>
-              <td style={{ textAlign: "center" }}>
+              <td>
                 {editingId === product.id ? (
                   <StyledInput
                     name="color"
-                    placeholder="Haz clic para seleccionar colores"
-                    value={
-                      updatedProduct?.color &&
-                      Array.isArray(updatedProduct.color)
-                        ? updatedProduct.color.join(", ")
-                        : ""
-                    }
-                    onFocus={() => setShowColorPicker(true)}
-                    readOnly
+                    value={updatedProduct?.color}
+                    onChange={handleInputChange}
                   />
-                ) : product.color && Array.isArray(product.color) ? (
-                  <div
-                    style={{
-                      width: "100px",
-                      height: "20px",
-                      background: `linear-gradient(to right, ${product.color.join(
-                        ","
-                      )})`,
-                      border: "1px solid #ccc",
-                      borderRadius: "5px",
-                    }}
-                    title={product.color.join(", ")}
-                  ></div>
                 ) : (
-                  ""
+                  product.color
                 )}
               </td>
-
               <td>
                 {editingId === product.id ? (
                   <StyledInput
@@ -301,7 +303,9 @@ const ProductTable: React.FC<ProductTableProps> = ({}) => {
               <td>
                 {editingId === product.id ? (
                   <>
-                    <StyledButton onClick={handleUpdate}>Guardar</StyledButton>
+                    <PrimaryButton onClick={handleUpdate}>
+                      Guardar
+                    </PrimaryButton>
                     <StyledButton
                       $isDeleteButton
                       onClick={() => setEditingId(null)}
@@ -311,11 +315,11 @@ const ProductTable: React.FC<ProductTableProps> = ({}) => {
                   </>
                 ) : (
                   <>
-                    <StyledButton onClick={() => startEditing(product)}>
+                    <SecondaryButton onClick={() => startEditing(product)}>
                       Editar
-                    </StyledButton>
+                    </SecondaryButton>
                     <StyledButton
-                      $isDeleteButton={true}
+                      $isDeleteButton
                       onClick={() => handleDelete(product.id)}
                     >
                       Eliminar

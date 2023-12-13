@@ -5,6 +5,7 @@ const nextConfig = {
   },
   images: {
     domains: [
+      'localhost:3002', 
       'localhost:3005',
       'localhost', 
       'tse1.mm.bing.net',

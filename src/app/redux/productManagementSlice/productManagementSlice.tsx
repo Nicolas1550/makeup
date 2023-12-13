@@ -8,9 +8,9 @@ export interface Product {
   descripcion?: string;
   precio: number;
   stock?: number;
-  imagen_url?: string;
+  imagen_url?: string | File;
   marca?: string;
-  color: string | string[] | undefined;
+  color?: string;
   categoria?: string;
 }
 
@@ -27,13 +27,86 @@ export const initialState: ProductManagementState = {
   error: null,
   isLoading: false,
 };
+
+export const apiUpdateAllPrices = createAsyncThunk(
+  "productManagement/updateAllPrices",
+  async (percentage: number, { dispatch }) => {
+    const response = await axios.put(
+      `http://localhost:3002/api/products/update-prices`,
+      { percentage }
+    );
+    dispatch(setMessage(`Precios actualizados exitosamente.`));
+    return response.data;
+  }
+);
+
+// Acción para revertir los precios al último porcentaje aplicado
+export const apiRevertLastPercentage = createAsyncThunk(
+  "productManagement/revertLastPercentage",
+  async (_, { dispatch }) => {
+    const response = await axios.put(
+      `http://localhost:3002/api/products/revert-last-percentage`
+    );
+    dispatch(setMessage(`Precios revertidos al último porcentaje aplicado.`));
+    return response.data;
+  }
+);
+
+// Acción para ajustar los precios al porcentaje anterior
+export const apiAdjustPricesToPreviousPercentage = createAsyncThunk(
+  "productManagement/adjustPricesToPreviousPercentage",
+  async (previousPercentage: number, { dispatch }) => {
+    const response = await axios.put(
+      `http://localhost:3002/api/products/adjust-prices`,
+      { previousPercentage }
+    );
+    dispatch(setMessage(`Precios ajustados al porcentaje anterior.`));
+    return response.data;
+  }
+);
+
+// Acción para revertir y aplicar un nuevo porcentaje
+export const apiRevertAndApplyNewPercentage = createAsyncThunk(
+  "productManagement/revertAndApplyNewPercentage",
+  async (newPercentage: number, { dispatch }) => {
+    const response = await axios.put(
+      `http://localhost:3002/api/products/revert-and-apply-percentage`,
+      { newPercentage }
+    );
+    dispatch(
+      setMessage(
+        `Precios revertidos al último porcentaje y aplicado el nuevo porcentaje.`
+      )
+    );
+    return response.data;
+  }
+);
+
 export const apiAddProduct = createAsyncThunk(
   "productManagement/addProduct",
   async (newProduct: Omit<Product, "id">, { dispatch }) => {
+    const formData = new FormData();
+    for (const key in newProduct) {
+      if (key === "imagen_url" && newProduct[key] instanceof File) {
+        // Se usa 'instanceof File' para verificar si es un objeto File
+        formData.append(key, newProduct[key] as File);
+      } else {
+        formData.append(
+          key,
+          String(newProduct[key as keyof typeof newProduct])
+        );
+      }
+    }
+
     try {
       const response = await axios.post(
         `http://localhost:3002/api/products`,
-        newProduct
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
       dispatch(setMessage(`Producto creado con éxito.`));
       return response.data;
@@ -55,25 +128,24 @@ export const apiDeleteProduct = createAsyncThunk(
     return id;
   }
 );
+
 export const apiEditProduct = createAsyncThunk(
   "productManagement/editProduct",
-  async (updatedProduct: Product, { dispatch }) => {
-    // Convertir el campo 'color' a una cadena JSON
-    const productToSend = {
-      ...updatedProduct,
-      color: Array.isArray(updatedProduct.color)
-        ? JSON.stringify(updatedProduct.color)
-        : updatedProduct.color,
-    };
-
+  async (
+    { id, formData }: { id: number; formData: FormData },
+    { dispatch }
+  ) => {
     const response = await axios.put(
-      `http://localhost:3002/api/products/${updatedProduct.id}`,
-      productToSend
+      `http://localhost:3002/api/products/${id}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
-    console.log("Respuesta del servidor después de editar:", response.data);
 
     dispatch(syncCartWithUpdatedStock(response.data));
-
     return response.data;
   }
 );
@@ -90,17 +162,6 @@ const productManagementSlice = createSlice({
   name: "productManagement",
   initialState,
   reducers: {
-    updateProductStock: (
-      state,
-      action: PayloadAction<{ productId: number; newStock: number }>
-    ) => {
-      const product = state.allProducts.find(
-        (p) => p.id === action.payload.productId
-      );
-      if (product) {
-        product.stock = action.payload.newStock;
-      }
-    },
     addProduct: (state, action: PayloadAction<Product>) => {
       state.allProducts.push(action.payload);
     },
@@ -114,7 +175,6 @@ const productManagementSlice = createSlice({
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
-
     validateForm: (
       state,
       action: PayloadAction<{ nombre: string; precio: number }>
@@ -175,37 +235,29 @@ const productManagementSlice = createSlice({
         state.message = null;
       })
       .addCase(apiGetAllProducts.fulfilled, (state, action) => {
-        state.allProducts = action.payload.map((product: any) => {
-          // Cambio de tipo aquí a "any" temporalmente para evitar problemas
-          let parsedColor: string[] = [];
-
-          if (product.color) {
-            try {
-              parsedColor = JSON.parse(product.color);
-              if (!Array.isArray(parsedColor)) {
-                parsedColor = [product.color]; // Si no es un array, conviértelo en uno
-              }
-            } catch (e) {
-              parsedColor = [product.color]; // Si hay un error en la deserialización, asumimos que es una string y la convertimos en un array
-            }
-          }
-
-          return {
-            ...product,
-            color: parsedColor,
-          };
-        });
+        state.allProducts = action.payload;
         state.error = null;
+      })
+      .addCase(apiUpdateAllPrices.fulfilled, (state) => {
+        // Maneja la respuesta exitosa de la actualización de precios
+        state.message = "Precios actualizados exitosamente";
+      })
+      .addCase(apiRevertLastPercentage.fulfilled, (state) => {
+        // Maneja la respuesta exitosa de revertir al último porcentaje
+        state.message = "Precios revertidos al último porcentaje aplicado";
+      })
+      .addCase(apiAdjustPricesToPreviousPercentage.fulfilled, (state) => {
+        // Maneja la respuesta exitosa de ajustar precios al porcentaje anterior
+        state.message = "Precios ajustados al porcentaje anterior";
+      })
+      .addCase(apiRevertAndApplyNewPercentage.fulfilled, (state) => {
+        // Maneja la respuesta exitosa de revertir al último porcentaje y aplicar uno nuevo
+        state.message =
+          "Precios revertidos al último porcentaje y aplicado el nuevo porcentaje";
       });
   },
 });
-export const {
-  addProduct,
-  setMessage,
-  setError,
-  setLoading,
-  validateForm,
-  updateProductStock,
-} = productManagementSlice.actions;
+export const { addProduct, setMessage, setError, setLoading, validateForm } =
+  productManagementSlice.actions;
 
 export default productManagementSlice.reducer;

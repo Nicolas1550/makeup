@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ChromePicker, ColorResult } from "react-color";
 import tinycolor from "tinycolor2";
 import React, { CSSProperties } from "react";
@@ -56,9 +56,36 @@ const GradientColorPicker: React.FC<GradientColorPickerProps> = ({
   const [colors, setColors] = useState<string[]>(["#ffffff", "#000000"]);
   const [gradientColors, setGradientColors] = useState<string[]>([]);
 
+  const generateGradientBetweenColors = useCallback(
+    (start: string, end: string, steps: number) => {
+      const stepPercentage = 100 / (steps - 1);
+      const gradientColors: string[] = [];
+
+      for (let i = 0; i < steps; i++) {
+        const mixedColor = tinycolor.mix(start, end, i * stepPercentage);
+        gradientColors.push(mixedColor.toHexString());
+      }
+
+      return gradientColors;
+    },
+    []
+  );
+
   useEffect(() => {
+    const generateGradient = () => {
+      let newGradientColors: string[] = [];
+      for (let i = 0; i < colors.length - 1; i++) {
+        newGradientColors = [
+          ...newGradientColors,
+          ...generateGradientBetweenColors(colors[i], colors[i + 1], 5),
+        ];
+      }
+      setGradientColors(newGradientColors);
+      onColorsChange(newGradientColors);
+    };
+
     generateGradient();
-  }, [colors]);
+  }, [colors, onColorsChange, generateGradientBetweenColors]);
 
   const handleColorChange = (color: ColorResult, index: number) => {
     const newColors = [...colors];
@@ -76,34 +103,6 @@ const GradientColorPicker: React.FC<GradientColorPickerProps> = ({
       newColors.splice(index, 1);
       setColors(newColors);
     }
-  };
-
-  const generateGradient = () => {
-    let gradientColors: string[] = [];
-    for (let i = 0; i < colors.length - 1; i++) {
-      gradientColors = [
-        ...gradientColors,
-        ...generateGradientBetweenColors(colors[i], colors[i + 1], 5),
-      ];
-    }
-    setGradientColors(gradientColors);
-    onColorsChange(gradientColors);
-  };
-
-  const generateGradientBetweenColors = (
-    start: string,
-    end: string,
-    steps: number
-  ) => {
-    const stepPercentage = 100 / (steps - 1);
-    let gradientColors: string[] = [];
-
-    for (let i = 0; i < steps; i++) {
-      const mixedColor = tinycolor.mix(start, end, i * stepPercentage);
-      gradientColors.push(mixedColor.toHexString());
-    }
-
-    return gradientColors;
   };
 
   return (

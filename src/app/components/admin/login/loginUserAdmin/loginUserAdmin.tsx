@@ -18,8 +18,33 @@ import {
   setLoading,
 } from "../../../../redux/messagesSlice/messagesSlice";
 import jwt from "jsonwebtoken";
+import ForgotPasswordModal from "./forgotPasswordModal";
+import styled from "styled-components";
+const PasswordInputContainer = styled.div`
+  position: relative;
+  width: 100%;
+
+  input {
+    width: 100%;
+    // Otros estilos para el input
+  }
+
+  button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    width: 25px !important; // Ancho más angosto para el botón
+    height: 25px !important; // Puedes ajustar la altura también si es necesario
+    // Otros estilos para el botón
+  }
+`;
 
 interface AdminLoginProps {
+  onRequestClose?: () => void;
   onSuccess?: () => void;
 }
 
@@ -37,7 +62,10 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
   const loginError = useAppSelector(
     (state: RootState) => state.messages.loginError
   );
-
+  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
+    useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showSignUpPassword, setShowSignUpPassword] = useState(false);
   const [isSignUp, setIsSignUp] = useState<boolean>(true);
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -50,7 +78,13 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
     setEmail("");
     dispatch(clearMessages());
   }, [dispatch]);
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
+  const toggleSignUpPasswordVisibility = () => {
+    setShowSignUpPassword(!showSignUpPassword);
+  };
   const handleModalClose = useCallback(() => {
     dispatch(closeLoginModal());
     setUsername("");
@@ -58,7 +92,18 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
     setEmail("");
     dispatch(clearMessages());
   }, [dispatch]);
+  const handleOpenForgotPasswordModal = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault(); // Evita que el formulario se envíe
+    event.stopPropagation(); // Detiene la propagación del evento
+    setIsForgotPasswordModalOpen(true);
+  };
 
+  // Función para cerrar el modal de restablecimiento de contraseña
+  const handleCloseForgotPasswordModal = () => {
+    setIsForgotPasswordModalOpen(false);
+  };
   const handleSignInClick = () => setIsSignUp(false);
   const handleSignUpClick = () => setIsSignUp(true);
   useEffect(() => {
@@ -137,7 +182,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
     <div className="container">
       <div className={`main ${isSignUp ? "sing-up" : "sing-in"}`}>
         <div className="sing-in-form form-container">
-          <h1>Sign in</h1>
+          <h1>Iniciar Sesion</h1>
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -150,12 +195,23 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
-            <input
-              type="password"
-              placeholder="Contraseña"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+            <PasswordInputContainer>
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Contraseña"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button
+                onClick={(event) => {
+                  event.preventDefault();
+                  togglePasswordVisibility();
+                }}
+              >
+                👁️
+              </button>
+            </PasswordInputContainer>
+
             <button type="submit" className="form-button" disabled={isLoading}>
               {isLoading ? (
                 <BeatLoader size={8} color={"#123abc"} />
@@ -168,12 +224,21 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
             {loginMessage && (
               <div style={{ color: "green" }}>{loginMessage}</div>
             )}
+
+            {/* Enlace para restablecer contraseña */}
+            <div className="forgot-password-link">
+              <button
+                onClick={(event) => handleOpenForgotPasswordModal(event)}
+                className="link-style-button"
+              >
+                ¿Olvidaste tu contraseña?
+              </button>
+            </div>
           </form>
         </div>
 
         <div className="sing-up-form form-container">
           <h1>Regístrate</h1>
-
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -192,12 +257,23 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <input
-              type="password"
-              placeholder="Contraseña"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+            <PasswordInputContainer>
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Contraseña"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button
+                onClick={(event) => {
+                  event.preventDefault();
+                  togglePasswordVisibility();
+                }}
+              >
+                👁️
+              </button>
+            </PasswordInputContainer>
+
             <button type="submit" className="form-button" disabled={isLoading}>
               {isLoading ? (
                 <BeatLoader size={8} color={"#123abc"} />
@@ -244,6 +320,11 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
           </button>
         </div>
       </div>
+
+      {/* Componente ForgotPasswordModal */}
+      {isForgotPasswordModalOpen && (
+        <ForgotPasswordModal onRequestClose={handleCloseForgotPasswordModal} />
+      )}
     </div>
   );
 };

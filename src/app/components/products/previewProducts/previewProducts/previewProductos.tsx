@@ -5,7 +5,9 @@ import Image from "next/image";
 
 import {
   PreviewContainer,
+  ProductFlowWrapper,
   ProductSlide,
+  Title,
   ViewAllButton,
 } from "../preview-flow-productStyles/previewProductsStyle";
 import ProductFlow from "../productFlow/productFlow";
@@ -28,29 +30,32 @@ const ProductPreview: React.FC<ProductPreviewProps> = ({ productList }) => {
     autoplaySpeed: 3000,
   };
   const imageBackgrounds = [
-    "/img/44.webp",
-    "/img/3.webp",
-    "/img/6.webp",
-    "/img/2.webp",
+    "/img/12.webp",
+    "/img/34.webp",
+    "/img/23.webp",
+    "/img/22.webp",
   ];
 
   return (
     <PreviewContainer>
+      <Title>Descubre nuestros productos destacados</Title>{" "}
+      {/* Título añadido para dar contexto */}
       <Slider {...settings}>
         {imageBackgrounds.map((imageUrl, index) => (
           <ProductSlide key={index}>
             <Image
               src={imageUrl}
               alt="Product Image"
-              width={500}
-              height={400}
-            />{" "}
+              width={1500}
+              height={500}
+              quality={100} // Máxima calidad de imagen
+            />
           </ProductSlide>
         ))}
       </Slider>
-
-      <ProductFlow products={productList} />
-
+      <ProductFlowWrapper>
+        <ProductFlow products={productList} />
+      </ProductFlowWrapper>
       <Link href="/products">
         <ViewAllButton variant="contained" size="large">
           Ver todos los productos

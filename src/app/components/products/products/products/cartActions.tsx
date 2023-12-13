@@ -4,13 +4,18 @@ import { toast } from "react-toastify";
 import { ProductType } from "../../../../redux/ProductsFilterSlice/filterSlice";
 import { RootState } from "../../../../redux/store/rootReducer";
 
-export const useHandleAddToCart = (product: ProductType) => {
+export const useHandleAddToCart = () => {
   const dispatch = useDispatch();
-  const existingItem = useSelector((state: RootState) =>
-    state.cart.find((item) => item.id === product.id)
-  );
+  const cartItems = useSelector((state: RootState) => state.cart);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (product: ProductType) => {
+    if (!product) {
+      console.error("No se puede agregar al carrito: Producto no disponible");
+      return;
+    }
+
+    const existingItem = cartItems.find((item) => item.id === product.id);
+
     if (typeof product.stock === "undefined" || product.stock <= 0) {
       toast.error("Producto sin stock!");
       return;

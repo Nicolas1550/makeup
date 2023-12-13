@@ -39,13 +39,11 @@ const SeleccionEnvio: React.FC<SeleccionEnvioProps> = ({
 }) => {
   useEffect(() => {
     const socket = io("http://localhost:3002");
-    socket.on("stock-updated", () => {
-    });
+    socket.on("stock-updated", () => {});
     return () => {
       socket.disconnect();
     };
   }, []);
-
 
   const [metodo_envio, setMetodoEnvio] = useState<string>(
     datosEnvio?.metodo_envio || ""
@@ -65,6 +63,7 @@ const SeleccionEnvio: React.FC<SeleccionEnvioProps> = ({
   ) => {
     setMetodoEnvio((event.target as HTMLInputElement).value);
   };
+  const direccionTienda = "Calle Falsa 123, Ciudad, País";
 
   const [errors, setErrors] = useState({
     metodo_envio: "",
@@ -178,61 +177,75 @@ const SeleccionEnvio: React.FC<SeleccionEnvioProps> = ({
         <FormControlLabel
           value="recoger"
           control={<Radio />}
-          label="Recoger en Tienda"
+          label="Buscar en Tienda"
         />
       </StyledRadioGroup>
       {errors.metodo_envio && (
         <span style={{ color: "red" }}>{errors.metodo_envio}</span>
       )}
+      {metodo_envio === "express" && (
+        <>
+          {/* Todos los campos de dirección, ciudad, estado, etc. */}
+          <StyledTextField
+            label="Dirección"
+            value={direccion}
+            onChange={(e) => setDireccion(e.target.value)}
+            fullWidth
+            margin="normal"
+          />
+          {errors.direccion && (
+            <span style={{ color: "red" }}>{errors.direccion}</span>
+          )}
 
-      <StyledTextField
-        label="Dirección"
-        value={direccion}
-        onChange={(e) => setDireccion(e.target.value)}
-        fullWidth
-        margin="normal"
-      />
-      {errors.direccion && (
-        <span style={{ color: "red" }}>{errors.direccion}</span>
+          <StyledTextField
+            label="Ciudad"
+            value={ciudad}
+            onChange={(e) => setCiudad(e.target.value)}
+            fullWidth
+            margin="normal"
+          />
+          {errors.ciudad && (
+            <span style={{ color: "red" }}>{errors.ciudad}</span>
+          )}
+
+          <StyledTextField
+            label="Estado"
+            value={estado}
+            onChange={(e) => setEstado(e.target.value)}
+            fullWidth
+            margin="normal"
+          />
+          {errors.estado && (
+            <span style={{ color: "red" }}>{errors.estado}</span>
+          )}
+
+          <StyledTextField
+            label="Código Postal"
+            value={codigo_postal}
+            onChange={(e) => setCodigoPostal(e.target.value)}
+            fullWidth
+            margin="normal"
+          />
+          {errors.codigo_postal && (
+            <span style={{ color: "red" }}>{errors.codigo_postal}</span>
+          )}
+
+          <StyledTextField
+            label="País"
+            value={pais}
+            onChange={(e) => setPais(e.target.value)}
+            fullWidth
+            margin="normal"
+          />
+          {errors.pais && <span style={{ color: "red" }}>{errors.pais}</span>}
+        </>
       )}
-
-      <StyledTextField
-        label="Ciudad"
-        value={ciudad}
-        onChange={(e) => setCiudad(e.target.value)}
-        fullWidth
-        margin="normal"
-      />
-      {errors.ciudad && <span style={{ color: "red" }}>{errors.ciudad}</span>}
-
-      <StyledTextField
-        label="Estado"
-        value={estado}
-        onChange={(e) => setEstado(e.target.value)}
-        fullWidth
-        margin="normal"
-      />
-      {errors.estado && <span style={{ color: "red" }}>{errors.estado}</span>}
-
-      <StyledTextField
-        label="Código Postal"
-        value={codigo_postal}
-        onChange={(e) => setCodigoPostal(e.target.value)}
-        fullWidth
-        margin="normal"
-      />
-      {errors.codigo_postal && (
-        <span style={{ color: "red" }}>{errors.codigo_postal}</span>
+      {metodo_envio === "recoger" && (
+        <div>
+          <h6>Dirección de la Tienda:</h6>
+          <p>Dirección de la tienda aquí</p>
+        </div>
       )}
-
-      <StyledTextField
-        label="País"
-        value={pais}
-        onChange={(e) => setPais(e.target.value)}
-        fullWidth
-        margin="normal"
-      />
-      {errors.pais && <span style={{ color: "red" }}>{errors.pais}</span>}
       <ButtonContainer>
         <Button variant="contained" color="secondary" onClick={onBack}>
           Volver

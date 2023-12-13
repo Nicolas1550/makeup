@@ -10,6 +10,23 @@ import Image from "next/image";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "@/app/globals.css";
+const StyledTypography = styled(Typography)`
+  &.MuiTypography-h2 {
+    font-size: 3em;
+    color: #ff69b4; // Cambia según el estilo deseado
+    text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+  }
+
+  &.MuiTypography-h6 {
+    font-size: 1.4em;
+    color: #a48f73; // Cambia según el estilo deseado
+  }
+
+  &.MuiTypography-body1 {
+    color: #808080; // Cambia según el estilo deseado
+    line-height: 1.7;
+  }
+`;
 
 // Constants
 const COLORS = {
@@ -86,7 +103,7 @@ const PinkButton = styled(Button)`
   &:hover {
     background-color: ${COLORS.PURPLE_LIGHT};
     transform: translateY(-4px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12); // Agregar sombra en hover
   }
   &:active {
     transform: translateY(2px);
@@ -135,25 +152,22 @@ const AcercaDe: React.FC = () => (
     <Grid container spacing={6}>
       <Grid item xs={12} md={6}>
         <ContentWrapper>
-          <Typography variant="h2" color="textPrimary" gutterBottom>
+          <StyledTypography variant="h2" gutterBottom>
             Acerca de <HighlightedText>Fabiana Gimenez</HighlightedText>
-          </Typography>
-          <Typography variant="h6" color="textSecondary" gutterBottom>
+          </StyledTypography>
+          <StyledTypography variant="h6" gutterBottom>
             Transformando la belleza, un rostro a la vez.
-          </Typography>
-          <Typography
-            variant="body1"
-            color="textPrimary"
-            paragraph
-            style={{ lineHeight: "1.7" }}
-          >
+          </StyledTypography>
+          <StyledTypography variant="body1" paragraph>
             Makeup Magic ha sido líder en la industria del maquillaje desde
             2020. Nuestro equipo de artistas talentosos trabaja incansablemente
             para proporcionar a nuestros clientes los servicios y productos de
             la más alta calidad.
-          </Typography>
+          </StyledTypography>
           <Link href="/acercaDe" passHref>
-            <PinkButton variant="contained" className="btn-12">Más sobre nosotros</PinkButton>
+            <PinkButton variant="contained" className="btn-12">
+              Más sobre nosotros
+            </PinkButton>
           </Link>
         </ContentWrapper>
       </Grid>

@@ -29,7 +29,6 @@ const getCartFromLocalStorage = (): CartState => {
   return [];
 };
 
-
 const initialState: CartState = getCartFromLocalStorage();
 
 const cartSlice = createSlice({
@@ -39,26 +38,44 @@ const cartSlice = createSlice({
     syncCartWithUpdatedStock: (state, action: PayloadAction<Product>) => {
       const updatedProduct = action.payload;
       const itemInCart = state.find((item) => item.id === updatedProduct.id);
+
       if (itemInCart) {
         itemInCart.nombre = updatedProduct.nombre || itemInCart.nombre;
-        itemInCart.imagen_url = updatedProduct.imagen_url || itemInCart.imagen_url;
+
+        // Manejar imagen_url
+        if (
+          typeof updatedProduct.imagen_url === "string" ||
+          typeof updatedProduct.imagen_url === "undefined"
+        ) {
+          itemInCart.imagen_url =
+            updatedProduct.imagen_url || itemInCart.imagen_url;
+        }
+
         itemInCart.precio = updatedProduct.precio || itemInCart.precio;
-        itemInCart.stock = typeof updatedProduct.stock !== "undefined" ? updatedProduct.stock : itemInCart.stock;
+        itemInCart.stock =
+          typeof updatedProduct.stock !== "undefined"
+            ? updatedProduct.stock
+            : itemInCart.stock;
 
         if (itemInCart.stock === 0 || itemInCart.cantidad > itemInCart.stock) {
-          const index = state.findIndex(item => item.id === updatedProduct.id);
+          const index = state.findIndex(
+            (item) => item.id === updatedProduct.id
+          );
           state.splice(index, 1);
-      } else if (itemInCart.cantidad > itemInCart.stock) {
+        } else if (itemInCart.cantidad > itemInCart.stock) {
           itemInCart.cantidad = itemInCart.stock;
         }
       }
       setCartToLocalStorage(state);
     },
+
     addItem: (state, action: PayloadAction<CartItem>) => {
-      const existingItem = state.find(item => item.id === action.payload.id);
+      const existingItem = state.find((item) => item.id === action.payload.id);
       if (existingItem) {
         if (existingItem.stock && existingItem.cantidad < existingItem.stock) {
-          const index = state.findIndex(item => item.id === action.payload.id);
+          const index = state.findIndex(
+            (item) => item.id === action.payload.id
+          );
           state[index].cantidad += 1;
         }
       } else {
@@ -69,21 +86,21 @@ const cartSlice = createSlice({
       setCartToLocalStorage(state);
     },
     incrementItem: (state, action: PayloadAction<number>) => {
-      const existingItem = state.find(item => item.id === action.payload);
+      const existingItem = state.find((item) => item.id === action.payload);
       if (existingItem && existingItem.cantidad < existingItem.stock) {
         existingItem.cantidad += 1;
       }
       setCartToLocalStorage(state);
     },
     decrementItem: (state, action: PayloadAction<number>) => {
-      const existingItem = state.find(item => item.id === action.payload);
+      const existingItem = state.find((item) => item.id === action.payload);
       if (existingItem && existingItem.cantidad > 1) {
         existingItem.cantidad -= 1;
       }
       setCartToLocalStorage(state);
     },
     removeItem: (state, action: PayloadAction<number>) => {
-      const index = state.findIndex(item => item.id === action.payload);
+      const index = state.findIndex((item) => item.id === action.payload);
       if (index !== -1) {
         state.splice(index, 1);
       }
@@ -96,8 +113,11 @@ const cartSlice = createSlice({
     initCart: (state, action: PayloadAction<CartState>) => {
       return action.payload;
     },
-    updateItemStock: (state, action: PayloadAction<{ id: number; newStock: number }>) => {
-      const existingItem = state.find(item => item.id === action.payload.id);
+    updateItemStock: (
+      state,
+      action: PayloadAction<{ id: number; newStock: number }>
+    ) => {
+      const existingItem = state.find((item) => item.id === action.payload.id);
       if (existingItem) {
         existingItem.stock = action.payload.newStock;
         if (existingItem.cantidad > existingItem.stock) {
@@ -106,8 +126,8 @@ const cartSlice = createSlice({
       }
     },
     updateStockFromOrder: (state, action: PayloadAction<OrderDetail[]>) => {
-      action.payload.forEach(detail => {
-        const itemInCart = state.find(item => item.id === detail.producto_id);
+      action.payload.forEach((detail) => {
+        const itemInCart = state.find((item) => item.id === detail.producto_id);
         if (itemInCart) {
           itemInCart.stock -= detail.cantidad;
           if (itemInCart.cantidad > itemInCart.stock) {

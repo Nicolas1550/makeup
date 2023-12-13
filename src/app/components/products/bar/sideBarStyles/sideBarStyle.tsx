@@ -1,6 +1,6 @@
 import Slider from "@mui/material/Slider";
-import { FaBars } from "react-icons/fa";
 import styled from "styled-components";
+import React from "react";
 
 export const colors = {
   neutralLight: "#FAF3E0",
@@ -16,6 +16,29 @@ export const colors = {
   text: "#333333",
   darkerGray: "#707070", // Un poco más oscuro
 };
+export const FilterButtons = styled.div`
+  display: flex;
+  flex-direction: row; // Asegura que los botones estén en línea horizontal
+  justify-content: flex-start; // Alinea los botones al inicio del contenedor
+  align-items: center; // Centra los botones verticalmente
+  gap: 10px; // Espacio entre los botones
+
+  button {
+    flex: 0; // No permitas que los botones crezcan o se encojan
+    margin: 0; // No margen extra
+  }
+
+  // Ajustes para dispositivos móviles
+  @media (max-width: 768px) {
+    flex-direction: column; // Coloca los botones en columna en dispositivos móviles
+    width: 100%; // Ocupa todo el ancho disponible en dispositivos móviles
+
+    button {
+      width: 100%; // Los botones ocupan todo el ancho disponible
+      margin-bottom: 10px; // Espacio debajo de cada botón
+    }
+  }
+`;
 
 export const SidebarTitle = styled.h2`
   font-size: 1em; // Aumentar el tamaño de fuente para un mejor aspecto
@@ -35,10 +58,15 @@ export const StyledFilterBar = styled.div`
   border-radius: 15px;
   box-shadow: 0px 5px 15px ${colors.cardShadow};
   transition: box-shadow 0.3s ease;
+  background-color: rgba(
+    255,
+    250,
+    240,
+    0.7
+  ); /* Cambiar el color de fondo para que sea semi-transparente */
   &:hover {
     box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.2);
   }
-  
 `;
 
 export const FilterSection = styled.div`
@@ -50,29 +78,39 @@ export const FilterSection = styled.div`
   .price-section,
   .color-section,
   .brand-section {
+    /* Estilos comunes para cada sección */
     border-radius: 25px;
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin: 0 15px; // Aumentar el margen para separación
+    margin: 0 15px;
 
     label {
       margin-bottom: 10px;
       color: ${colors.pinkDark};
       font-weight: 600;
+      text-align: center; // Asegúrate de que el texto del label esté centrado
     }
   }
+
   @media (max-width: 768px) {
-    display: flex;
-    flex-direction: row;
-    flex-direction: column; // En móviles, los elementos se apilan verticalmente
+    /* Estilos para móviles */
+    flex-direction: column;
+
+    .price-section,
+    .color-section,
+    .brand-section {
+      /* Estilos específicos para cada sección en móviles si son necesarios */
+      margin: 10px 0; // Añade un margen vertical
+      align-items: center; // Centra los elementos de cada sección
+    }
   }
 `;
 
 export const FilterSectionItem = styled.div`
-  overflow: visible;
+  overflow: auto;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -80,13 +118,37 @@ export const FilterSectionItem = styled.div`
   justify-content: center; // Centrado vertical
   margin: 0 10px;
   label {
-    margin-bottom: 10px;
+    margin-bottom: 0px;
     color: ${colors.pinkDark};
     font-weight: 600;
-    text-align: center; // Centrar el texto
+    text-align: center; // Asegura que el texto esté centrado
+  }
+
+  label {
+    margin-bottom: 0; /* Eliminar el margen inferior */
+  }
+  .react-select__control {
+    margin-top: 0; /* Eliminar el margen superior */
+    /* Asegúrate de usar la clase correcta aquí, puede variar según tu versión de react-select */
+  }
+  .react-select-container {
+    margin-top: -50px; /* Ajusta este valor según necesites */
   }
   @media (max-width: 768px) {
     width: 100%; // Ocupa todo el ancho disponible
+    margin: 10px 0; // Añade un margen vertical en dispositivos móviles
+
+    // Centrado de los elementos Select
+
+    .Select__control,
+    .Select__menu {
+      width: 100%; // Ocupa todo el ancho disponible
+    }
+
+    // Centrado del texto dentro del Select
+    .Select__single-value {
+      text-align: center;
+    }
   }
 `;
 
@@ -129,42 +191,66 @@ export const FilterSelect = styled.select`
     border-color: ${colors.pinkDark};
   }
 `;
+interface StickyFilterContainerProps extends React.HTMLProps<HTMLDivElement> {
+  isSticky: boolean;
+  isExpanded: boolean;
+}
 
-export const StickyFilterContainer = styled(StyledFilterBar)`
-  position: sticky;
-  top: 20px;
+export const StickyFilterContainer = styled(
+  ({ isSticky, isExpanded, ...rest }: StickyFilterContainerProps) => (
+    <div {...rest} />
+  )
+)`
+  position: ${({ isSticky }) => (isSticky ? "fixed" : "static")};
+  top: ${({ isSticky, isExpanded }) =>
+    isSticky ? (isExpanded ? "110px" : "-30%") : "0"};
+
   z-index: 2;
-  background-color: #f5f5f5; // Fondo más claro
-  padding: 20px; // Aumentar el padding
-  box-shadow: 0px 8px 15px rgba(255, 105, 180, 0.1);
-  margin-top: 0;
+  background-color: #fffaf0;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  margin-top: 30px;
+  margin-bottom: 29px;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  overflow-y: hidden;
-  transition: transform 0.5s, opacity 0.5s; // Añadir transición de opacidad
-  transform: translateY(0);
-  opacity: 0.9; // Hacerlo ligeramente transparente
+  width: auto;
 
-  &:hover,
-  &.expanded {
-    transform: translateY(0);
-    opacity: 1; // Opacidad completa al pasar el mouse
-  }
+  max-height: ${({ isExpanded }) =>
+    isExpanded ? "calc(100vh - 60px)" : "30%"}; /* Altura inicial */
 
+  overflow-y: hidden; /* Ocultar la barra de desplazamiento cuando está contraído */
+  opacity: ${({ isExpanded }) =>
+    isExpanded ? "1" : "0.7"}; /* Opacidad inicial */
+
+  transition: top 0.5s ease-in-out, max-height 0.3s ease-in-out,
+    opacity 0.3s ease-in-out; /* Transiciones suaves para top, max-height y opacidad */
   &.collapsed {
-    transform: translateY(-60%);
+    top: -100px; // Se ajusta para esconder el contenedor cuando se desplaza hacia abajo
   }
 
+  &:hover {
+    top: 50px; /* Posición al pasar el mouse */
+    max-height: 70%; /* Altura al pasar el mouse */
+    opacity: 1; /* Opacidad al pasar el mouse */
+  }
   @media (max-width: 768px) {
-    transform: translateY(-145%); // Ajuste al valor
-    transition: transform 0.3s;
-    &.collapsed {
-      transform: translateY(-100%);
-    }
-    &.open {
-      transform: translateY(2%);
-    }
+    top: ${({ isSticky, isExpanded }) =>
+      isSticky ? (isExpanded ? "110px" : "0") : "0"};
+    overflow-y: auto; // Habilita el desplazamiento vertical
+    max-height: 100vh; // Asegúrate de que el contenedor no sea más alto que la pantalla
+
+    /* Si necesitas que el contenedor tenga una altura fija cuando no está expandido, puedes usar 'height' en lugar de 'max-height'. */
+    height: ${({ isExpanded }) => (isExpanded ? "auto" : "60px")};
+    /* Elimina 'bottom: 0' si quieres que el contenedor crezca con el contenido. */
+    border-radius: 0; // Quitar bordes redondeados en móviles
+    transform: ${({ isExpanded }) =>
+      isExpanded ? "none" : "translateY(-100%)"};
+
+    box-shadow: ${({ isExpanded }) =>
+      isExpanded ? "0 -4px 6px rgba(0, 0, 0, 0.1)" : "none"};
+    overflow-y: ${({ isExpanded }) => (isExpanded ? "auto" : "hidden")};
+    max-height: ${({ isExpanded }) => (isExpanded ? "100vh" : "60px")};
   }
 `;
 
@@ -176,7 +262,7 @@ export const HamburgerButton = styled.button`
   cursor: pointer;
   z-index: 3;
   position: sticky;
-  top: 60px; // Ajusta este valor según la altura de tu navbar
+  top: 90px; // Ajusta este valor según la altura de tu navbar
   width: 100%; // Ocupar todo el ancho
   padding: 10px 0; // Espaciado vertical
   text-align: center; // Centrar el texto
@@ -202,6 +288,8 @@ export const HamburgerButton = styled.button`
 `;
 
 export const StyledInputRange = styled(Slider)`
+  color: ${colors.pinkLight}; // Cambia el color principal del Slider
+
   &.input-range {
     .input-range__track {
       background-color: #000;
@@ -220,10 +308,28 @@ export const StyledInputRange = styled(Slider)`
       color: #000;
     }
   }
-`;
+  & .MuiSlider-thumb {
+    background-color: ${colors.pinkDark}; // Color del pulgar (thumb)
+  }
 
+  & .MuiSlider-track {
+    background-color: ${colors.pinkLight}; // Color de la pista (track) ya recorrida
+  }
+
+  & .MuiSlider-rail {
+    background-color: ${colors.borderGray}; // Color de la pista (rail) restante
+  }
+`;
+const breakpoints = {
+  tablet: "768px",
+  mobile: "770px",
+};
 import { createGlobalStyle } from "styled-components";
 export const GlobalRangeStyles = createGlobalStyle`
+.css-1n6sfyn-MenuList {
+  overflow: hidden !important; /* Oculta la barra de desplazamiento */
+}
+
 .hamburger-icon {
   position: fixed;
   top: 10px;
@@ -261,5 +367,132 @@ export const GlobalRangeStyles = createGlobalStyle`
     position: fixed;
     width: 100%;
     height: 100vh;
+  }
+  .unique-modal-container {
+    z-index: 1000 !important;
+  }
+  div[role="dialog"] {
+    z-index: 1000 !important;
+  }
+  .ReactModal__Overlay {
+    background-color: rgba(0, 0, 0, 0.5) !important; // Negro con opacidad
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+  }
+  /* Estilos para los íconos sociales */
+  .social-icons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .social-icons a {
+    margin: 0 15px; /* Espaciado entre los íconos */
+    font-size: 28px; /* Tamaño de los íconos */
+    color: #FFB6C1; /* Color rosa claro */
+    transition: color 0.3s ease, transform 0.3s ease; /* Transición suave */
+  }
+  
+  .social-icons a:hover {
+    color: #FF69B4; /* Color rosa más oscuro al pasar el mouse */
+    transform: scale(1.1); /* Efecto zoom al pasar el mouse */
+  }
+  
+  /* Estilos para la edición de enlaces sociales */
+  .social-links-edit-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+  }
+  
+  .social-link-field {
+    display: flex;
+    flex-direction: column; /* Cambiado a columna para dispositivos móviles */
+    background-color: #FFF0F5; /* Fondo rosa muy claro */
+    border-radius: 8px; /* Bordes redondeados */
+    padding: 0.5rem;
+  }
+  
+  .social-input {
+    width: 100%; /* Ajuste del ancho para ocupar el contenedor completo */
+    padding: 0.5rem;
+    border: none;
+    background: transparent; /* Transparente para tomar el color de fondo del contenedor */
+    color: #FF69B4; /* Color rosa oscuro */
+    font-size: 1rem;
+    transition: all 0.3s ease; /* Transición suave */
+  }
+  
+  .social-input::placeholder {
+    color: #FFB6C1; /* Color rosa claro para el texto placeholder */
+  }
+  
+  .social-input:focus {
+    outline: none;
+    box-shadow: 0 0 5px #FF69B4; /* Sombra rosa al enfocar */
+  }
+  
+  .social-icon {
+    font-size: 2rem; /* Tamaño más grande para los íconos */
+    color: #FF69B4; /* Color rosa oscuro */
+  }
+  .Toastify__toast-container {
+    /* Centrar el contenedor de tostadas en dispositivos móviles */
+    @media only screen and (max-width: ${breakpoints.mobile}) {
+      width: calc(100% - 20px); /* Ajusta el ancho con un poco de espacio en los lados */
+      max-width: 320px; /* Establece un ancho máximo para las tostadas */
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 1rem; /* Espacio desde el fondo de la pantalla */
+    }
+  }
+
+  .Toastify__toast {
+    /* Estilos comunes para tostadas */
+    border-radius: 8px; /* Bordes redondeados para un look moderno */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave para dar profundidad */
+    margin-bottom: 1rem; /* Espacio entre tostadas */
+    font-size: 0.875rem; /* Tamaño de fuente adecuado */
+    padding: 16px; /* Padding interno más generoso */
+    @media only screen and (max-width: ${breakpoints.mobile}) {
+      margin-bottom: 0; /* En móviles, puede que no necesites espacio extra entre tostadas */
+    }
+  }
+
+  .Toastify__close-button {
+    /* Estilos para el botón de cerrar */
+    color: #999; /* Color menos llamativo para el botón */
+    opacity: 0.9; /* Ligeramente transparente para no distraer */
+    &:hover {
+      color: #666; /* Oscurecer al pasar el ratón por encima para indicar interactividad */
+    }
+  }
+
+  .Toastify__toast--error {
+    /* Estilos específicos para tostadas de error */
+    background-color: #fee; /* Un fondo rojo claro para indicar error */
+    color: #c00; /* Texto en rojo oscuro para contraste */
+  }
+
+  .Toastify__toast--success {
+    /* Estilos específicos para tostadas de éxito */
+    background-color: #eaffea; /* Un fondo verde claro para indicar éxito */
+    color: #080; /* Texto en verde oscuro para contraste */
+  }
+  .react-big-calendar .rbc-toolbar button:contains('Month') {
+    display: none;
+  }
+  
+  /* Ocultar el botón 'Agenda' */
+  .react-big-calendar .rbc-toolbar button:contains('Agenda') {
+    display: none;
   }
 `;

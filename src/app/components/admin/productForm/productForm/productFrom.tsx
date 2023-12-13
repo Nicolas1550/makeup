@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
   StyledForm,
@@ -16,8 +16,14 @@ import {
   apiAddProduct,
   ProductManagementState,
 } from "../../../../redux/productManagementSlice/productManagementSlice";
-import { useAppDispatch } from "../../../../redux/store/appHooks";
-import GradientColorPicker from "../../productTable/productTable/gradientColorPicker";
+import {
+  useAppDispatch,
+  useAppSelector,
+} from "../../../../redux/store/appHooks";
+import {
+  ErrorMessage,
+  SuccessMessage,
+} from "../../productTable/ProductStyled/productStyled";
 const CATEGORIAS = ["Ojos", "Rostro", "Labios", "Uñas"];
 
 interface FormData {
@@ -25,27 +31,11 @@ interface FormData {
   descripcion: string;
   precio: number;
   stock: number;
-  imagen_url: string;
+  imagen_url: string | File; // <-- Modificación aquí
   marca: string;
-  color: string[];
+  color: string;
   categoria: string;
 }
-const ColorPickerOverlay: React.CSSProperties = {
-  position: "fixed", // Cambiado a 'fixed' para asegurarnos de que siempre esté encima
-  zIndex: 1000,
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  background: "white",
-  padding: "20px",
-  boxShadow: "0px 0px 15px rgba(0, 0, 0, 0.2)",
-  borderRadius: "8px",
-  display: "flex",
-  flexDirection: "row",
-  flexWrap: "wrap", // Permite que los elementos se ajusten automáticamente en filas
-  justifyContent: "center",
-  alignItems: "center",
-};
 
 const ProductForm: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
@@ -55,16 +45,30 @@ const ProductForm: React.FC = () => {
     stock: 0,
     imagen_url: "",
     marca: "",
-    color: [],
+    color: "",
     categoria: "",
   });
-  const [showColorPicker, setShowColorPicker] = useState(false);
 
   const dispatch = useAppDispatch();
   const isLoading = useSelector(
     (state: ProductManagementState) => state.isLoading
   );
+  const message = useAppSelector((state) => state.productManagement.message);
+  const error = useAppSelector((state) => state.productManagement.error);
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => dispatch(setMessage(null)), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [message, dispatch]);
 
+  // Efecto para limpiar el mensaje de error después de 3 segundos
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => dispatch(setError(null)), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [error, dispatch]);
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value =
       e.target.name === "precio" || e.target.name === "stock"
@@ -75,134 +79,139 @@ const ProductForm: React.FC = () => {
       [e.target.name]: value,
     });
   };
-
   const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
+    console.log(`Categoría seleccionada: ${value}`); // Agregar esto
     setFormData({
       ...formData,
       [e.target.name]: value,
     });
   };
 
-  const handleColorsChange = (colors: string[]) => {
-    setFormData({
-      ...formData,
-      color: colors,
-    });
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    if (file) {
+      setFormData({
+        ...formData,
+        imagen_url: file,
+      });
+    }
   };
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log("Form data before submitting:", formData); // Agregar este log
     dispatch(setLoading(true));
     dispatch(setMessage(null));
     dispatch(setError(null));
-
-    // Convertir el array color a una cadena JSON
-    const productToSend = {
-      ...formData,
-      color: JSON.stringify(formData.color),
-    };
-
-    // Enviar la copia modificada a la API
-    dispatch(apiAddProduct(productToSend));
+    dispatch(apiAddProduct(formData));
   };
 
   return (
-    <StyledFormContainer>
-      {" "}
-      <StyledForm onSubmit={handleSubmit}>
-        <StyledDiv>
-          <StyledLabel>Nombre:</StyledLabel>
-          <StyledInput
-            type="text"
-            name="nombre"
-            onChange={handleChange}
-            required
-          />
-        </StyledDiv>
-        <StyledDiv>
-          <StyledLabel>Descripción:</StyledLabel>
-          <StyledInput
-            type="text"
-            name="descripcion"
-            onChange={handleChange}
-            required
-          />
-        </StyledDiv>
-        <StyledDiv>
-          <StyledLabel>Precio:</StyledLabel>
-          <StyledInput
-            type="number"
-            name="precio"
-            onChange={handleChange}
-            required
-          />
-        </StyledDiv>
-        <StyledDiv>
-          <StyledLabel>Stock:</StyledLabel>
-          <StyledInput
-            type="number"
-            name="stock"
-            onChange={handleChange}
-            required
-          />
-        </StyledDiv>
-        <StyledDiv>
-          <StyledLabel>URL de la imagen:</StyledLabel>
-          <StyledInput
-            type="url"
-            name="imagen_url"
-            onChange={handleChange}
-            required
-          />
-        </StyledDiv>
-        <StyledDiv>
-          <StyledLabel>Marca:</StyledLabel>
-          <StyledInput
-            type="text"
-            name="marca"
-            onChange={handleChange}
-            required
-          />
-        </StyledDiv>
-        <StyledDiv>
-          <StyledLabel>Color:</StyledLabel>
-          <StyledInput
-            type="text"
-            name="color"
-            value={formData.color.join(", ")}
-            onClick={() => setShowColorPicker(true)}
-            readOnly
-          />
-          {showColorPicker && (
-            <div style={ColorPickerOverlay}>
-              <GradientColorPicker
-                onColorsChange={handleColorsChange}
-                onClose={() => setShowColorPicker(false)}
-              />
-            </div>
-          )}
-        </StyledDiv>
-        <StyledDiv>
-          <StyledLabel>Categoría:</StyledLabel>
-          <StyledSelect
-            name="categoria"
-            value={formData.categoria}
-            onChange={handleSelectChange}
-            required
-          >
-            <option value="">-- Selecciona una categoría --</option>
-            {CATEGORIAS.map((categoria) => (
-              <option key={categoria} value={categoria}>
-                {categoria}
+    <>
+      <StyledFormContainer>
+        <StyledForm onSubmit={handleSubmit}>
+          {message && <SuccessMessage>{message}</SuccessMessage>}
+          {error && <ErrorMessage>{error}</ErrorMessage>}
+          <StyledDiv>
+            <StyledLabel>Nombre:</StyledLabel>
+            <StyledInput
+              type="text"
+              name="nombre"
+              placeholder="Ejemplo: Lápiz labial"
+              onChange={handleChange}
+              required
+            />
+          </StyledDiv>
+          <StyledDiv>
+            <StyledLabel>Imagen:</StyledLabel>{" "}
+            {/* Cambio de "URL de la imagen" a "Imagen" */}
+            <StyledInput
+              type="file" // <-- Cambio aquí
+              name="imagen_url"
+              onChange={handleFileChange} // <-- Cambio aquí
+              required
+            />
+          </StyledDiv>
+          <StyledDiv>
+            <StyledLabel>Descripción:</StyledLabel>
+            <StyledInput
+              type="text"
+              name="descripcion"
+              placeholder="Ejemplo: Lápiz labial de larga duración en tono rojo"
+              onChange={handleChange}
+              required
+            />
+          </StyledDiv>
+
+          <StyledDiv>
+            <StyledLabel>Precio:</StyledLabel>
+            <StyledInput
+              type="number"
+              name="precio"
+              placeholder="Ejemplo: 150"
+              onChange={handleChange}
+              required
+            />
+          </StyledDiv>
+
+          <StyledDiv>
+            <StyledLabel>Stock:</StyledLabel>
+            <StyledInput
+              type="number"
+              name="stock"
+              placeholder="Ejemplo: 50"
+              onChange={handleChange}
+              required
+            />
+          </StyledDiv>
+
+          <StyledDiv>
+            <StyledLabel>Marca:</StyledLabel>
+            <StyledInput
+              type="text"
+              name="marca"
+              placeholder="Ejemplo: MARY KEY"
+              onChange={handleChange}
+              required
+            />
+          </StyledDiv>
+
+          <StyledDiv>
+            <StyledLabel>Color:</StyledLabel>
+            <StyledInput
+              type="text"
+              name="color"
+              placeholder="Ejemplo: Rojo carmesí"
+              onChange={handleChange}
+              required
+            />
+          </StyledDiv>
+
+          <StyledDiv>
+            <StyledLabel>Categoría:</StyledLabel>
+            <StyledSelect
+              name="categoria"
+              value={formData.categoria}
+              onChange={handleSelectChange}
+              required
+            >
+              <option value="" disabled>
+                -- Selecciona una categoría --
               </option>
-            ))}
-          </StyledSelect>
-        </StyledDiv>
-        <StyledButton type="submit">
-          {isLoading ? "Cargando..." : "Agregar Producto"}
-        </StyledButton>
-      </StyledForm>
-    </StyledFormContainer>
+              {CATEGORIAS.map((categoria) => (
+                <option key={categoria} value={categoria}>
+                  {categoria}
+                </option>
+              ))}
+            </StyledSelect>
+          </StyledDiv>
+
+          <StyledButton type="submit">
+            {isLoading ? "Cargando..." : "Agregar Producto"}
+          </StyledButton>
+        </StyledForm>
+      </StyledFormContainer>
+    </>
   );
 };
 

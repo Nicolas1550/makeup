@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./shinyButton.css";
 import Link from "next/link";
 
@@ -17,7 +17,20 @@ interface Style {
   subtitle: React.CSSProperties;
   ctaButton: React.CSSProperties;
 }
-
+const getResponsiveStyles = (width: number) => {
+  if (width < 720) {
+    return {
+      title: { fontSize: "3rem" }, // Menor tamaño de fuente para el título
+      subtitle: { fontSize: "1.5rem" }, // Menor tamaño de fuente para el subtítulo
+      ctaButton: { padding: "0.6rem 1.5rem", fontSize: "1rem" }, // Botón más pequeño
+    };
+  }
+  return {
+    title: styles.title,
+    subtitle: styles.subtitle,
+    ctaButton: styles.ctaButton,
+  };
+};
 const styles: Style = {
   header: {
     height: "80vh",
@@ -25,7 +38,7 @@ const styles: Style = {
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    backgroundImage: 'url("/img/1.webp")',
+    backgroundImage: 'url("/img/122.webp")',
     backgroundSize: "cover",
     backgroundPosition: "center",
     color: colors.neutralLight,
@@ -36,6 +49,7 @@ const styles: Style = {
     fontSize: "4rem",
     fontWeight: "bold",
     marginBottom: "1rem",
+    marginTop: "1rem",
     opacity: 0,
     transform: "translateY(-30px)",
     animation: "fadeInUp 2s forwards",
@@ -66,19 +80,40 @@ const styles: Style = {
 const HeaderPresentation: React.FC = () => {
   const [isButtonHovered, setIsButtonHovered] = useState(false);
 
+  // Inicializa windowWidth con un valor predeterminado
+  const [windowWidth, setWindowWidth] = useState(0);
+
+  useEffect(() => {
+    // Establece el ancho de la ventana una vez que el componente se monta en el cliente
+    setWindowWidth(window.innerWidth);
+
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const responsiveStyles = getResponsiveStyles(windowWidth);
   return (
     <header style={styles.header}>
-      <div style={styles.title}>Bienvenidos a Makeup Magic</div>
-      <div style={styles.subtitle}>
+      <div style={{ ...styles.title, ...responsiveStyles.title }}>
+        Bienvenidos a Fabiana Gimenez
+      </div>
+      <div style={{ ...styles.subtitle, ...responsiveStyles.subtitle }}>
         Descubre la magia del maquillaje con nosotros.
       </div>
-      <Link href="/products"> {/* Paso 2: Envuelve el botón con Link y proporciona la ruta */}
+      <Link href="/products">
+        {" "}
+        {/* Paso 2: Envuelve el botón con Link y proporciona la ruta */}
         <button
           className="btn-shiny"
           onMouseEnter={() => setIsButtonHovered(true)}
           onMouseLeave={() => setIsButtonHovered(false)}
           style={{
             ...styles.ctaButton,
+            ...responsiveStyles.ctaButton,
             transform: isButtonHovered
               ? "scale(1.05) translateY(-30px)"
               : "translateY(-30px)",

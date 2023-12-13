@@ -24,10 +24,23 @@ import SeleccionEnvio from "../../seccionEnvio/seccionEnvio/seleccionEnvio";
 import PasarelaPago from "../../pasarelaPago/pasarelaPago/pasarelaPago";
 import { useDispatch } from "react-redux";
 import Image from "next/image";
+import styled from "styled-components";
+
+const CountdownMessage = styled.div`
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  text-align: center;
+  margin-top: 10px;
+  font-size: 16px;
+  color: #333;
+`;
 interface ModalConfirmacionCompraProps {
   isOpen: boolean;
   onClose: () => void;
   onContinuar: () => void;
+  closeModal: () => void; // Nueva prop
+  loadedComprobante?: File | null;
 }
 
 interface DatosUsuarioType {
@@ -49,15 +62,20 @@ const ModalConfirmacionCompra: React.FC<ModalConfirmacionCompraProps> = ({
   isOpen,
   onClose,
   onContinuar,
+  closeModal, // Recibe la función callback para cerrar el modal
 }) => {
   const productos = useAppSelector((state) => state.cart);
-
+  const [showComprobanteMessage, setShowComprobanteMessage] = useState(false);
+  const [comprobanteMessage, setComprobanteMessage] = useState<string | null>(
+    null
+  );
   const [currentStep, setCurrentStep] = useState(1);
   const [ordenId, setOrdenId] = useState<string | null>(null);
   const [datosUsuario, setDatosUsuario] = useState<DatosUsuarioType | null>(
     null
   );
   const [datosEnvio, setDatosEnvio] = useState<DatosEnvioType | null>(null);
+  const dispatch = useDispatch();
 
   const total = productos.reduce(
     (acc, item) => acc + item.precio * item.cantidad,
@@ -70,11 +88,20 @@ const ModalConfirmacionCompra: React.FC<ModalConfirmacionCompraProps> = ({
       setDatosUsuario(null);
     }
   }, [isOpen]);
-  const dispatch = useDispatch();
+  useEffect(() => {
+    if (!isOpen) {
+      setLoadedComprobante(null);
+      setComprobanteMessage(null);
+      setCountdown(5);
+    }
+  }, [isOpen]);
 
+  // Handlers para incrementar, decrementar y eliminar productos del carrito
   const incrementar = (id: number) => dispatch(incrementItem(id));
   const decrementar = (id: number) => dispatch(decrementItem(id));
   const eliminar = (id: number) => dispatch(removeItem(id));
+  const [loadedComprobante, setLoadedComprobante] = useState<File | null>(null);
+  const [countdown, setCountdown] = useState(5);
 
   const handleContinuar = () => {
     if (currentStep < 4) {
@@ -83,6 +110,29 @@ const ModalConfirmacionCompra: React.FC<ModalConfirmacionCompraProps> = ({
       onContinuar();
     }
   };
+
+  useEffect(() => {
+    if (loadedComprobante && isOpen) {
+      setComprobanteMessage(
+        "Comprobante cargado exitosamente. Cerrando en 5 segundos..."
+      );
+
+      const countdownTimer = setInterval(() => {
+        setCountdown((prevCountdown) =>
+          prevCountdown > 0 ? prevCountdown - 1 : 0
+        );
+      }, 1000);
+
+      const closeTimer = setTimeout(() => {
+        closeModal();
+      }, 5000);
+
+      return () => {
+        clearTimeout(closeTimer);
+        clearInterval(countdownTimer);
+      };
+    }
+  }, [loadedComprobante, closeModal, isOpen]);
 
   const renderStepContent = () => {
     switch (currentStep) {
@@ -93,11 +143,18 @@ const ModalConfirmacionCompra: React.FC<ModalConfirmacionCompraProps> = ({
               <ProductRow key={producto.id}>
                 <ProductName>
                   <Image
-                    src={producto?.imagen_url || "/path/to/default/image.jpg"}
+                    src={
+                      producto?.imagen_url
+                        ? producto.imagen_url.startsWith("http")
+                          ? producto.imagen_url
+                          : `http://localhost:3002${producto.imagen_url}`
+                        : "/path_to_default_image.jpg"
+                    }
                     alt={producto.nombre}
                     width={100}
                     height={100}
                   />
+
                   <span>{producto.nombre}</span>
                 </ProductName>
                 <ProductPrice>
@@ -195,6 +252,10 @@ const ModalConfirmacionCompra: React.FC<ModalConfirmacionCompraProps> = ({
               datosUsuario={datosUsuario}
               datosEnvio={datosEnvio}
               ordenId={ordenId}
+              loadedComprobante={loadedComprobante}
+              setLoadedComprobante={setLoadedComprobante}
+              countdown={countdown}
+              comprobanteMessage={comprobanteMessage}
             />
           );
         } else {
@@ -208,7 +269,9 @@ const ModalConfirmacionCompra: React.FC<ModalConfirmacionCompraProps> = ({
       <ModalContent>
         <Stepper currentStep={currentStep} />
         {renderStepContent()}
-        {currentStep === 4 && (
+     
+
+        {currentStep === 4 && !comprobanteMessage && (
           <Button variant="contained" color="primary" onClick={handleContinuar}>
             Finalizar
           </Button>

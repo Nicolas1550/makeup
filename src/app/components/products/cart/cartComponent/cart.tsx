@@ -134,7 +134,13 @@ export const Cart: React.FC<CartProps> = ({ onClose, onCheckout }) => {
                     }}
                   >
                     <Image
-                      src={item.imagen_url || "/path/to/default/image.png"}
+                      src={
+                        item.imagen_url
+                          ? item.imagen_url.startsWith("http")
+                            ? item.imagen_url
+                            : `http://localhost:3002${item.imagen_url}`
+                          : "/path_to_default_image.jpg"
+                      }
                       alt={item.nombre}
                       width={50}
                       height={50}

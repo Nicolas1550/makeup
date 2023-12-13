@@ -42,12 +42,14 @@ body {
 }
 /* carusel */
 .slick-next {
-  right: -0px; 
+  right: -0px;
 }
 
 .slick-prev {
-  left: -10px; 
+  left: -10px;
 }
 body .react-input-range__label--value {
   display: none !important;
 }
+
+

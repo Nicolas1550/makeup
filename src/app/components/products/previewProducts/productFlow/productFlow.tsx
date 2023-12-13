@@ -1,41 +1,53 @@
-import React, { useState } from "react";
+import React from "react";
+import styled from "@emotion/styled";
 import {
   ProductDetailsContainer,
   ProductFlowContainer,
 } from "../preview-flow-productStyles/previewProductsStyle";
 import { Product } from "@/app/components/admin/productAction-reducer-types/types/types";
-import Image from 'next/image';
+import Image from "next/image";
 
 type ProductFlowProps = {
   products: Product[];
 };
 
+const AnimatedProductDetailsContainer = styled(ProductDetailsContainer)`
+  animation: slide-left 30s linear infinite;
+  @keyframes slide-left {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+`;
+
 const ProductFlow: React.FC<ProductFlowProps> = ({ products }) => {
-  const [focusedCard, setFocusedCard] = useState<number | null>(null);
+  const loopedProducts = [...products];
 
   return (
     <ProductFlowContainer>
-      {products.map((product, index) => (
-        <ProductDetailsContainer
-          key={`product-a-${index}`}
-          onMouseEnter={() => setFocusedCard(index)}
-          onMouseLeave={() => setFocusedCard(null)}
-          style={{
-            transform: focusedCard === index ? "scale(0.9)" : "scale(0.8)",
-          }}
-        >
+      {loopedProducts.map((product, index) => (
+        <AnimatedProductDetailsContainer key={`product-${index}`}>
           <Image
-            src={product.imagen_url || "/path/to/default/image.png"}
+            src={
+              product.imagen_url
+                ? product.imagen_url.startsWith("http")
+                  ? product.imagen_url
+                  : `http://localhost:3002${product.imagen_url}`
+                : "/path/to/default/image.png"
+            }
             alt={product.nombre}
             width={140}
             height={100}
-          />{" "}
+          />
           <h4>{product.nombre}</h4>
-          <p>{product.marca}</p>
-        </ProductDetailsContainer>
+          <p>{product.descripcion}</p>
+        </AnimatedProductDetailsContainer>
       ))}
     </ProductFlowContainer>
   );
 };
 
-export default ProductFlow;
+export default React.memo(ProductFlow);

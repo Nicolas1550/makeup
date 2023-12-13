@@ -1,7 +1,4 @@
-import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import axios from "axios";
-import io from "socket.io-client";
 import { useSelector } from "react-redux";
 import Slider from "react-slick";
 import {
@@ -13,7 +10,6 @@ import {
   AddToCartButton,
   ProductBrand,
   ProductCardContainer,
-  ProductColor,
   ProductDescription,
   ProductImage,
   ProductName,
@@ -31,6 +27,10 @@ import {
 import { RootState } from "../../../../redux/store/rootReducer";
 import CombinedFilterComponent from "../../bar/sideBar/sideBar";
 import { useHandleAddToCart } from "./cartActions";
+import useProductSocket from "../products/useProductSocket";
+import { useAppDispatch, useAppSelector } from "@/app/redux/store/appHooks";
+import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 const getProductLink = (productId: number) => `/products/${productId}`;
 
@@ -39,20 +39,14 @@ const ProductCard: React.FC<ProductType & { highlighted?: boolean }> = ({
   imagen_url,
   nombre,
   precio,
-  color,
   marca,
   stock,
   descripcion,
   highlighted = false,
 }) => {
-  const handleAddToCart = useHandleAddToCart({
-    id,
-    nombre,
-    precio,
-    imagen_url,
-    stock,
-    color: "",
-  });
+  const handleAddToCart = useHandleAddToCart(); // Se llama al Hook en el nivel superior
+  const product = { id, nombre, precio, imagen_url, stock, color: "" }; // Crear un objeto producto
+
   const CardContainer = (
     highlighted ? HighlightedProductCardContainer : ProductCardContainer
   ) as React.ElementType;
@@ -62,21 +56,27 @@ const ProductCard: React.FC<ProductType & { highlighted?: boolean }> = ({
       <CardContainer style={{ textDecoration: "none" }}>
         <div style={{ cursor: "pointer" }}>
           <ProductImage
-            src={imagen_url || "path_to_default_image.jpg"}
+            src={
+              imagen_url
+                ? `http://localhost:3002${imagen_url}`
+                : "/path_to_default_image.jpg"
+            }
             alt={nombre}
           />
+
           <ProductName>{nombre}</ProductName>
         </div>
         <ProductPrice>${precio ? precio.toFixed(2) : "0.00"}</ProductPrice>
-        <ProductBrand>{marca}</ProductBrand>
+        {/* <ProductBrand>{marca}</ProductBrand>d */}
         <ProductDescription>{descripcion}</ProductDescription>
-{/*         <ProductColor>{color}</ProductColor>
- */}        <ProductOptions className="productOptions">
+        {/*         <ProductColor>{color}</ProductColor>
+         */}{" "}
+        <ProductOptions className="productOptions">
           <AddToCartButton
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
-              handleAddToCart();
+              handleAddToCart(product); // Pasar el producto al llamar a la función
             }}
           >
             Agregar al Carrito
@@ -146,105 +146,118 @@ const Products: React.FC<{
   const selectedCategory = useSelector(
     (state: RootState) => state.filter.selectedCategory
   );
-
-  const [productList, setProductList] = useState<ProductType[]>([]);
-  const [highlightedProductList, setHighlightedProductList] = useState<
-    ProductType[]
-  >([]);
-
+  const [windowWidth, setWindowWidth] = useState<number>(0);
   useEffect(() => {
-    const socket = io("http://localhost:3002");
-    socket.on("stock-updated", fetchProducts);
-    socket.on("product-updated", fetchProducts);
-    socket.on("product-added", fetchProducts);
-    socket.on("product-edited", fetchProducts);
-    socket.on("product-deleted", fetchProducts);
-    return () => {
-      socket.disconnect();
+    // Actualizar el ancho de la ventana al montar y en cada cambio de tamaño de la ventana
+    const updateWindowWidth = () => {
+      setWindowWidth(window.innerWidth);
     };
+
+    window.addEventListener("resize", updateWindowWidth);
+    updateWindowWidth(); // Llamar inmediatamente para obtener el ancho inicial
+
+    return () => window.removeEventListener("resize", updateWindowWidth);
   }, []);
-
-  const fetchProducts = () => {
-    console.log("Fetching products...");
-    axios
-      .get("http://localhost:3002/api/products")
-      .then((response) => {
-        console.log("Fetched products:", response.data);
-        setProductList(response.data);
-        setHighlightedProductList(response.data.slice(0, 6));
-      })
-      .catch((error) => {
-        console.error("Error fetching products:", error);
-      });
+  const isSidebarOpenedByButton = useSelector(
+    (state: RootState) => state.ui.sidebarOpenedByButton
+  );
+  useEffect(() => {
+    if (isSidebarOpenedByButton) {
+      document.body.style.overflow = "hidden"; // Desactiva el scroll
+    } else {
+      document.body.style.overflow = "auto"; // Activa el scroll
+    }
+  }, [isSidebarOpenedByButton]);
+  const { productList } = useProductSocket();
+  const titleVariants = {
+    expanded: { 
+      marginBottom: windowWidth > 768 ? "2.5rem" : "1rem" // Ajustar según sea necesario
+    },
+    collapsed: { 
+      marginTop: windowWidth > 768 ? "20rem" : "5rem" // Ajustar según sea necesario
+    },
   };
-
-  useEffect(fetchProducts, []);
-
   const filterProducts = (products: ProductType[]): ProductType[] => {
-    return (
-      products
-        // Filtrar por rango de precio si se ha establecido un rango
-        .filter(
-          (product) =>
-            !priceRange ||
-            (product.precio >= priceRange[0] && product.precio <= priceRange[1])
-        )
-        // Filtrar por color seleccionado solo si se ha seleccionado un color
-        .filter((product) => {
-          if (selectedColor) {
-            if (Array.isArray(product.color)) {
-              return product.color.includes(selectedColor);
-            } else {
-              return product.color === selectedColor;
-            }
+    return products
+      .filter(
+        (product) =>
+          !priceRange ||
+          (product.precio >= priceRange[0] && product.precio <= priceRange[1])
+      )
+      .filter((product) => {
+        if (selectedColor) {
+          if (Array.isArray(product.color)) {
+            return product.color.includes(selectedColor);
           } else {
-            return true; // No hay color seleccionado, así que no filtrar por color.
+            return product.color === selectedColor;
           }
-        })
-        // Filtrar por marca seleccionada solo si se ha seleccionado una marca
-        .filter((product) =>
-          selectedMarca ? product.marca === selectedMarca : true
-        )
-        // Filtrar por término de búsqueda solo si se ha ingresado un término
-        .filter((product) =>
-          searchTerm
-            ? product.nombre.toLowerCase().includes(searchTerm.toLowerCase())
-            : true
-        )
-        // Filtrar por categoría seleccionada solo si se ha seleccionado una categoría
-        .filter((product) =>
-          selectedCategory && selectedCategory !== "Todos"
-            ? product.categoria === selectedCategory
-            : true
-        )
-    );
+        } else {
+          return true;
+        }
+      })
+      .filter((product) =>
+        selectedMarca ? product.marca === selectedMarca : true
+      )
+      .filter((product) =>
+        searchTerm
+          ? product.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+          : true
+      )
+      .filter((product) =>
+        selectedCategory && selectedCategory !== "Todos"
+          ? product.categoria === selectedCategory
+          : true
+      );
   };
 
   const displayedProducts = filterProducts(productList);
-  const displayedHighlightedProducts = highlightedProductList.slice(0, 6);
+  const displayedHighlightedProducts = productList.slice(0, 6);
+  const isSidebarExpanded = useAppSelector(
+    (state: RootState) => state.ui.isSidebarExpanded
+  );
+
+  // Variantes para la animación de margen superior
+  const contentVariants = {
+    expanded: {
+      marginTop: "80px", // Ajusta este valor según la altura de tu sidebar expandido
+    },
+    collapsed: {
+      marginTop: "0px",
+    },
+  };
 
   return (
-    <ProductContainer
-      displayType={displayMode === "both" ? "fullList" : displayMode}
+    <motion.div
+      animate={isSidebarExpanded ? "expanded" : "collapsed"}
+      variants={contentVariants}
+      transition={{ duration: 0.5, ease: "linear" }}
     >
-      <CombinedFilterComponent />
-      {(displayMode === "highlighted" || displayMode === "both") && (
-        <>
+      <ProductContainer
+        displayType={displayMode === "both" ? "fullList" : displayMode}
+      >
+        <CombinedFilterComponent />
+
+        <motion.div
+          variants={titleVariants}
+          transition={{ duration: 0.5, ease: "linear" }}
+        >
           <SectionTitle>Productos Destacados</SectionTitle>
           <SectionDescription>
             Descubre los productos que están marcando tendencia esta temporada.
           </SectionDescription>
-          <HighlightedCarousel products={displayedHighlightedProducts} />
-        </>
-      )}
-      {(displayMode === "fullList" || displayMode === "both") && (
-        <ProductListContainer>
-          {displayedProducts.map((product) => (
-            <ProductCard key={product.id} {...product} />
-          ))}
-        </ProductListContainer>
-      )}
-    </ProductContainer>
+        </motion.div>
+
+        <HighlightedCarousel products={displayedHighlightedProducts} />
+
+        {(displayMode === "fullList" || displayMode === "both") && (
+          <ProductListContainer>
+            {displayedProducts.map((product) => (
+              <ProductCard key={product.id} {...product} />
+            ))}
+          </ProductListContainer>
+        )}
+      </ProductContainer>
+    </motion.div>
   );
 };
 
