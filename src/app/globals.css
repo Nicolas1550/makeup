@@ -51,5 +51,10 @@ body {
 body .react-input-range__label--value {
   display: none !important;
 }
+body, html {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Esto puede ayudar a prevenir el desbordamiento horizontal */
+}
 
 
