@@ -11,9 +11,15 @@ export interface ReservaConHorarios {
   usuario_id: number;
   estado: "pendiente" | "completada";
   fecha_reserva?: string;
-  curso_nombre?: string; // Nombre del curso
+  curso_nombre?: string;
   horarios: HorarioDisponibilidad[];
-  usuario_nombre?: string; // Nuevo campo para el nombre del usuario
+  nombre_usuario?: string; // Nombre del usuario
+  correo_usuario?: string; // Correo del usuario
+  telefono_usuario?: string; // Teléfono del usuario
+  url_comprobante?: string; // URL del comprobante de pago
+  usuario_nombre?: string; // Nombre del usuario (agregado)
+  fecha_inicio?: string;
+  fecha_fin?: string;
 }
 
 interface Disponibilidad {
@@ -75,6 +81,41 @@ interface CursoState {
   error: string | null;
   reservas: ReservaConHorarios[]; // Asegúrate de que este tipo sea compatible con tu nueva estructura
 }
+export const subirComprobantePago = createAsyncThunk(
+  "cursos/subirComprobantePago",
+  async (
+    {
+      reservaId,
+      comprobanteData,
+    }: { reservaId: number; comprobanteData: FormData },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3002/api/reservas/${reservaId}/comprobante`,
+        {
+          method: "POST",
+          body: comprobanteData,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error al subir comprobante de pago");
+      }
+
+      const data = await response.json();
+      return { reservaId, urlComprobante: data.comprobanteURL } as {
+        reservaId: number;
+        urlComprobante: string;
+      };
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Error desconocido"
+      );
+    }
+  }
+);
+
 export const actualizarEstadoReservaCurso = createAsyncThunk(
   "cursos/actualizarEstadoReservaCurso",
   async (
@@ -134,6 +175,8 @@ export const fetchTodasLasReservas = createAsyncThunk(
         throw new Error("Error al obtener todas las reservas");
       }
       const reservas = await response.json();
+      console.log("Reservas recibidas con fechas de inicio y fiin:", reservas);
+
       return reservas as ReservaConHorarios[];
     } catch (error) {
       return rejectWithValue(
@@ -184,8 +227,6 @@ export const fetchReservasAdminPorCurso = createAsyncThunk<
   "cursos/fetchReservasAdminPorCurso",
   async ({ cursoId }, { rejectWithValue }) => {
     try {
-      console.log(`Fetching admin reservations for course: ${cursoId}`);
-
       const response = await fetch(
         `http://localhost:3002/api/cursos/${cursoId}/reservas/admin`
       );
@@ -195,6 +236,7 @@ export const fetchReservasAdminPorCurso = createAsyncThunk<
       }
 
       const reservas = await response.json();
+      console.log("Reservas recibidas en el thunk:", reservas); // Añade esta línea para el registro
       return reservas as ReservaConHorarios[];
     } catch (error) {
       return rejectWithValue(
@@ -203,6 +245,7 @@ export const fetchReservasAdminPorCurso = createAsyncThunk<
     }
   }
 );
+
 
 export const fetchReservasPorCursoYUsuario = createAsyncThunk<
   ReservaConHorarios[],
@@ -369,7 +412,31 @@ export const agregarDisponibilidad = createAsyncThunk<
     }
   }
 );
+export const agregarReservaConDatos = createAsyncThunk(
+  "cursos/agregarReservaConDatos",
+  async (datosReserva: ReservaConHorarios, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`http://localhost:3002/api/reservas`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(datosReserva),
+      });
 
+      if (!response.ok) {
+        throw new Error("Error al agregar reserva con datos");
+      }
+
+      const nuevaReserva = await response.json();
+      return nuevaReserva as ReservaConHorarios;
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Error desconocido"
+      );
+    }
+  }
+);
 // Agregar reserva a una disponibilidad
 // Agregar reserva a una disponibilidad
 export const agregarReserva = createAsyncThunk<
@@ -377,6 +444,8 @@ export const agregarReserva = createAsyncThunk<
   ReservaConHorarios, // Tipo de argumento para la acción
   { rejectValue: string }
 >("cursos/agregarReserva", async (datosReserva, { rejectWithValue }) => {
+  console.log("Enviando datos de reserva:", datosReserva); // Log para depurar
+
   try {
     const response = await fetch(`http://localhost:3002/api/reservas`, {
       method: "POST",
@@ -474,6 +543,20 @@ const cursosSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(agregarReservaConDatos.fulfilled, (state, action) => {
+        // Agregar la nueva reserva al estado
+        state.reservas.push(action.payload);
+      })
+      .addCase(subirComprobantePago.fulfilled, (state, action) => {
+        // Actualizar la reserva con la URL del comprobante
+        const { reservaId, urlComprobante } = action.payload;
+        const reservaIndex = state.reservas.findIndex(
+          (r) => r.id === reservaId
+        );
+        if (reservaIndex !== -1) {
+          state.reservas[reservaIndex].url_comprobante = urlComprobante;
+        }
+      })
       .addCase(actualizarEstadoReservaCurso.fulfilled, (state, action) => {
         const { reservaId, estado } = action.payload;
         const reservaIndex = state.reservas.findIndex(

@@ -318,7 +318,19 @@ function UserReservations() {
                               : "No disponible"}
                           </CardValue>
                         </CardDetails>
+                        <CardDetails>
+                          <CardLabel>Fecha de Inicio:</CardLabel>
+                          <CardValue>
+                            {courseReservation.fecha_inicio || "No disponible"}
+                          </CardValue>
+                        </CardDetails>
 
+                        <CardDetails>
+                          <CardLabel>Fecha de Fin:</CardLabel>
+                          <CardValue>
+                            {courseReservation.fecha_fin || "No disponible"}
+                          </CardValue>
+                        </CardDetails>
                         <CardDetails>
                           <CardLabel>
                             <IconWrapper>
@@ -331,7 +343,41 @@ function UserReservations() {
                             {formatHorarios(courseReservation.horarios)}
                           </CardValue>
                         </CardDetails>
+                        <CardDetails>
+                          <CardLabel>Nombre del Usuario:</CardLabel>
+                          <CardValue>
+                            {courseReservation.nombre_usuario ||
+                              "No disponible"}
+                          </CardValue>
+                        </CardDetails>
 
+                        <CardDetails>
+                          <CardLabel>Correo del Usuario:</CardLabel>
+                          <CardValue>
+                            {courseReservation.correo_usuario ||
+                              "No disponible"}
+                          </CardValue>
+                        </CardDetails>
+
+                        <CardDetails>
+                          <CardLabel>Teléfono del Usuario:</CardLabel>
+                          <CardValue>
+                            {courseReservation.telefono_usuario ||
+                              "No disponible"}
+                          </CardValue>
+                        </CardDetails>
+                        {courseReservation.url_comprobante && (
+                          <CardDetails>
+                            <CardLabel>Comprobante de Pago:</CardLabel>
+                            <a
+                              href={courseReservation.url_comprobante}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              Ver Comprobante
+                            </a>
+                          </CardDetails>
+                        )}
                         {/* Aquí puedes agregar más detalles si es necesario */}
                       </motion.div>
                     )}

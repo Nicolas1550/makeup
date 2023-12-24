@@ -34,12 +34,7 @@ import {
   IconWrapper,
 } from "./reservationCard.styles";
 import Select, { SingleValue, StylesConfig, GroupBase } from "react-select";
-import {
-  School,
-  Person,
-  CalendarToday,
-  AccessTime,
-} from "@mui/icons-material";
+import { School, Person, CalendarToday, AccessTime } from "@mui/icons-material";
 
 interface OptionType {
   value: string;
@@ -183,7 +178,10 @@ function ReservationsForAssistant() {
       );
     }
   }, [dispatch, selectedOption]);
-
+  useEffect(() => {
+    console.log("Reservas filtradas con fechas", filteredCourseReservations);
+  }, [filteredCourseReservations]);
+  
   return (
     <Container>
       <Heading>Reservas para el ayudante {ayudanteName || ayudanteId}</Heading>
@@ -278,7 +276,19 @@ function ReservationsForAssistant() {
                         : "No disponible"}
                     </CardValue>
                   </CardDetails>
+                  <CardDetails>
+                    <CardLabel>Fecha de Inicio:</CardLabel>
+                    <CardValue>
+                      {courseReservation.fecha_inicio || "No disponible"}
+                    </CardValue>
+                  </CardDetails>
 
+                  <CardDetails>
+                    <CardLabel>Fecha de Fin:</CardLabel>
+                    <CardValue>
+                      {courseReservation.fecha_fin || "No disponible"}
+                    </CardValue>
+                  </CardDetails>
                   <CardDetails>
                     <CardLabel>
                       <IconWrapper>
@@ -291,6 +301,39 @@ function ReservationsForAssistant() {
                       {formatHorarios(courseReservation.horarios)}
                     </CardValue>
                   </CardDetails>
+                  <CardDetails>
+                    <CardLabel>Nombre del Usuario:</CardLabel>
+                    <CardValue>
+                      {courseReservation.nombre_usuario || "No disponible"}
+                    </CardValue>
+                  </CardDetails>
+
+                  <CardDetails>
+                    <CardLabel>Correo del Usuario:</CardLabel>
+                    <CardValue>
+                      {courseReservation.correo_usuario || "No disponible"}
+                    </CardValue>
+                  </CardDetails>
+
+                  <CardDetails>
+                    <CardLabel>Teléfono del Usuario:</CardLabel>
+                    <CardValue>
+                      {courseReservation.telefono_usuario || "No disponible"}
+                    </CardValue>
+                  </CardDetails>
+
+                  {courseReservation.url_comprobante && (
+                    <CardDetails>
+                      <CardLabel>Comprobante de Pago:</CardLabel>
+                      <a
+                        href={courseReservation.url_comprobante}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Ver Comprobante
+                      </a>
+                    </CardDetails>
+                  )}
                   <div className="reservation-actions">
                     {selectedStatus === "pendiente" && (
                       <CardButton
