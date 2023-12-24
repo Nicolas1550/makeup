@@ -6,6 +6,7 @@ import {
 } from "../preview-flow-productStyles/previewProductsStyle";
 import { Product } from "@/app/components/admin/productAction-reducer-types/types/types";
 import Image from "next/image";
+import { ProductImage } from "../../products/styles/styleProducts";
 
 type ProductFlowProps = {
   products: Product[];
@@ -30,7 +31,7 @@ const ProductFlow: React.FC<ProductFlowProps> = ({ products }) => {
     <ProductFlowContainer>
       {loopedProducts.map((product, index) => (
         <AnimatedProductDetailsContainer key={`product-${index}`}>
-          <Image
+          <ProductImage
             src={
               product.imagen_url
                 ? product.imagen_url.startsWith("http")
