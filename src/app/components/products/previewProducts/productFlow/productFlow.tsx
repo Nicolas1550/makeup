@@ -34,7 +34,7 @@ const ProductFlow: React.FC<ProductFlowProps> = ({ products }) => {
           <ProductImage
             src={
               product.imagen_url
-                ? product.imagen_url.startsWith("http")
+                ? product.imagen_url.startsWith("https")
                   ? product.imagen_url
                   : `http://localhost:3002${product.imagen_url}`
                 : "/path/to/default/image.png"
