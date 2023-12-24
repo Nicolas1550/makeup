@@ -8,7 +8,6 @@ import {
 import {
   agregarDisponibilidad,
   agregarHorariosDisponibilidad,
-  agregarReserva,
   fetchDisponibilidades,
   updateCursoPrecio,
 } from "@/app/redux/coursesSlice/coursesSlice";
@@ -32,8 +31,8 @@ import Select, { SingleValue } from "react-select";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AnimatePresence, motion } from "framer-motion";
-import { openLoginModal } from "@/app/redux/loginModalSlice/loginModalSlice";
 import { format } from "date-fns";
+import ReservaModal from "./reservaModel"; // Asegúrate de importar correctamente ReservaModal
 
 interface OptionType {
   value: string;
@@ -74,7 +73,9 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
   const disponibilidades = useAppSelector(
     (state) => state.cursos.disponibilidades
   );
-  const usuarioId = useAppSelector((state) => state.auth.userId) as number;
+  const [isReservaModalOpen, setIsReservaModalOpen] = useState(false);
+  const [disponibilidadSeleccionada, setDisponibilidadSeleccionada] =
+    useState<Disponibilidad | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [showForm, setShowForm] = useState(false);
   const [nuevaDisponibilidad, setNuevaDisponibilidad] = useState({
@@ -90,9 +91,9 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
     maxInicialDisponibilidades
   );
   const [nuevoPrecio, setNuevoPrecio] = useState(curso?.precio || 0);
-  const [horariosSeleccionados, setHorariosSeleccionados] = useState({});
 
   const [mostrarTodas, setMostrarTodas] = useState(false);
+
   const formatHorarios = (horarios: HorarioDisponibilidad[]) => {
     if (horarios.length > 1) {
       return horarios
@@ -142,7 +143,16 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
   const [horarios, setHorarios] = useState([
     { dia_semana: "", hora_inicio: "", hora_fin: "" },
   ]);
+  const handleOpenReservaModal = (disponibilidad: Disponibilidad) => {
+    setDisponibilidadSeleccionada(disponibilidad);
+    setIsReservaModalOpen(true);
+  };
 
+  // Función para cerrar el modal de reserva
+  const handleCloseReservaModal = () => {
+    setIsReservaModalOpen(false);
+    setDisponibilidadSeleccionada(null); // Limpiar la disponibilidad seleccionada al cerrar el modal
+  };
   const dayOptions = [
     { value: "Lunes", label: "Lunes" },
     { value: "Martes", label: "Martes" },
@@ -181,25 +191,6 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
   const eliminarHorario = (index: number) => {
     const nuevosHorarios = horarios.filter((_, i) => i !== index);
     setHorarios(nuevosHorarios);
-  };
-
-  const handleReserva = (disponibilidad: Disponibilidad) => {
-    if (!isAuthenticated) {
-      dispatch(openLoginModal()); // Abre el modal de inicio de sesión
-      return; // No continuar con la reserva si no está autenticado
-    }
-
-    // Si el usuario está autenticado, continúa con el proceso de reserva
-    if (disponibilidad.horarios && disponibilidad.horarios.length > 0) {
-      dispatch(
-        agregarReserva({
-          disponibilidad_id: disponibilidad.id,
-          usuario_id: usuarioId,
-          estado: "pendiente",
-          horarios: disponibilidad.horarios,
-        })
-      );
-    }
   };
 
   const formatFecha = (fecha: string) => {
@@ -435,7 +426,7 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
                 <HorarioInfo>{formatHorarios(disp.horarios || [])}</HorarioInfo>
 
                 {/* Botón de reserva para la disponibilidad completa (sin seleccionar horario individual) */}
-                <ReservarButton onClick={() => handleReserva(disp)}>
+                <ReservarButton onClick={() => handleOpenReservaModal(disp)}>
                   Reservar
                 </ReservarButton>
               </DisponibilidadContainer>
@@ -447,6 +438,13 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
           )}
         </ScrollableContainer>
       </CardContent>
+      {disponibilidadSeleccionada && (
+        <ReservaModal
+          open={isReservaModalOpen}
+          onClose={handleCloseReservaModal}
+          disponibilidadSeleccionada={disponibilidadSeleccionada}
+        />
+      )}
     </CursoInfoContainer>
   );
 };

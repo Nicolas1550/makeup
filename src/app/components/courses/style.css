@@ -153,3 +153,6 @@
 .block.border-bb::before {
   border-bottom: transparent;
 }
+.no-transition * {
+  transition: none !important;
+}

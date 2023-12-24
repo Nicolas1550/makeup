@@ -10,8 +10,8 @@ export const Container = styled.div`
 
   // Media query para pantallas más pequeñas
   @media (max-width: 768px) {
-    padding: 15px; // Reducir el padding
-    margin: 20px auto; // Reducir el margen superior e inferior
+    padding: 10px; // Más reducido para pantallas pequeñas
+    margin: 10px auto; // Menor margen
     max-width: 100%; // Aumentar el ancho máximo para llenar más espacio
   }
 `;
@@ -20,7 +20,7 @@ export const Heading = styled.h2`
   font-size: 24px;
   margin-bottom: 20px;
   color: #9b4664;
-  font-family: "Playfair Display", serif;
+  font-family: 'Roboto', sans-serif;
 
   // Media query para pantallas más pequeñas
   @media (max-width: 768px) {
@@ -30,7 +30,7 @@ export const Heading = styled.h2`
     display: -webkit-box;
     -webkit-line-clamp: 2; // Limita el texto a 2 líneas
     -webkit-box-orient: vertical;
-    font-size: 20px; // Reducir el tamaño de fuente si es necesario
+    font-size: 18px; // Reducir el tamaño de fuente si es necesario
   }
 `;
 
@@ -46,6 +46,10 @@ export const RefreshButton = styled.button`
 
   &:hover {
     background-color: #bf6c95; // Tono rosado más oscuro
+  }
+  @media (max-width: 768px) {
+    padding: 12px 25px; // Botón más grande para facilitar la interacción táctil
+    font-size: 14px; // Tamaño de fuente ligeramente más grande
   }
 `;
 
@@ -87,11 +91,15 @@ export const ReservationItem = styled.li`
   border-radius: 5px;
   transition: transform 0.2s, box-shadow 0.2s;
 
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+ &:hover {
+    cursor: pointer;
+    transform: scale(1.03); // Eleva ligeramente la tarjeta
+    background-color: #fcebef; // Cambia el color de fondo al pasar el cursor
+    box-shadow: 0px 4px 10px rgba(216, 174, 191, 0.6); // Sombra suave
   }
   @media (max-width: 768px) {
+    padding: 8px; // Reducir el padding para ahorrar espacio
+
     margin-top: 5px; // Reducir el margen superior
   }
 `;
@@ -116,5 +124,9 @@ export const StyledSelect = styled.select`
     padding: 6px 10px;
     background-color: #fef3f8; // Fondo rosado muy suave
     color: #9b4664; // Tono rosado oscuro
+  }
+  @media (max-width: 768px) {
+    padding: 10px; // Aumentar un poco para una mejor interacción táctil
+    font-size: 14px; // Ajustar el tamaño de la fuente
   }
 `;

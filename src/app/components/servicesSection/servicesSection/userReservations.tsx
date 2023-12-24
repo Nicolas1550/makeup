@@ -21,7 +21,13 @@ import {
   CardValue,
   IconWrapper,
 } from "./reservationForAssistant/reservationCard.styles";
-import { Description, Money } from "@mui/icons-material";
+import {
+  Description,
+  Money,
+  CalendarToday, // ícono para la fecha
+  AccessTime, // ícono para el tiempo
+  School,
+} from "@mui/icons-material";
 import { Event as EventIcon } from "@mui/icons-material";
 import { motion, AnimatePresence } from "framer-motion";
 import Select, { SingleValue, StylesConfig, GroupBase } from "react-select";
@@ -40,7 +46,6 @@ function UserReservations() {
     (state) => state.services.reservationsForUser
   );
   const courseReservations = useAppSelector((state) => state.cursos.reservas);
-  const [courseId, setCourseId] = useState<number | null>(null);
   function formatFechaReserva(fecha: string) {
     return format(new Date(fecha), "dd/MM/yyyy HH:mm");
   }
@@ -275,7 +280,7 @@ function UserReservations() {
                   >
                     <CardLabel>
                       <IconWrapper>
-                        <Description fontSize="small" />
+                        <School fontSize="small" /> {/* Icono para el curso */}
                       </IconWrapper>
                       Curso:
                     </CardLabel>
@@ -297,18 +302,37 @@ function UserReservations() {
                         transition={{ duration: 0.8 }}
                       >
                         {/* Detalles de la reserva del curso */}
-                        <div>
-                          <p>
-                            Fecha de Reserva:{" "}
+                        <CardDetails>
+                          <CardLabel>
+                            <IconWrapper>
+                              <CalendarToday fontSize="small" />{" "}
+                              {/* Icono para la fecha */}
+                            </IconWrapper>
+                            Fecha de Reserva:
+                          </CardLabel>
+                          <CardValue>
                             {courseReservation.fecha_reserva
                               ? formatFechaReserva(
                                   courseReservation.fecha_reserva
                                 )
                               : "No disponible"}
-                          </p>
+                          </CardValue>
+                        </CardDetails>
 
-                          <p>{formatHorarios(courseReservation.horarios)}</p>
-                        </div>
+                        <CardDetails>
+                          <CardLabel>
+                            <IconWrapper>
+                              <AccessTime fontSize="small" />{" "}
+                              {/* Icono para los horarios */}
+                            </IconWrapper>
+                            Horarios:
+                          </CardLabel>
+                          <CardValue>
+                            {formatHorarios(courseReservation.horarios)}
+                          </CardValue>
+                        </CardDetails>
+
+                        {/* Aquí puedes agregar más detalles si es necesario */}
                       </motion.div>
                     )}
                   </AnimatePresence>

@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, ReactNode } from "react";
 import "./shinyButton.css";
-import Link from "next/link";
+import Link, { LinkProps } from "next/link";
+import ButtonLink from "./buttomLink";
 
 const colors = {
   neutralLight: "#FAF3E0",
@@ -17,20 +18,34 @@ interface Style {
   subtitle: React.CSSProperties;
   ctaButton: React.CSSProperties;
 }
-const getResponsiveStyles = (width: number) => {
-  if (width < 720) {
-    return {
-      title: { fontSize: "3rem" }, // Menor tamaño de fuente para el título
-      subtitle: { fontSize: "1.5rem" }, // Menor tamaño de fuente para el subtítulo
-      ctaButton: { padding: "0.6rem 1.5rem", fontSize: "1rem" }, // Botón más pequeño
-    };
+const getResponsiveStyles = (width: number, height: number) => {
+  let titleTransform = "translateY(-30px)";
+  let subtitleTransform = "translateY(-30px)";
+  let buttonTransform = "translateY(-30px)";
+
+  if (height <= 606) {
+    titleTransform = "translateY(0)";
+    subtitleTransform = "translateY(0)";
+    buttonTransform = "translateY(0)";
   }
+
   return {
-    title: styles.title,
-    subtitle: styles.subtitle,
-    ctaButton: styles.ctaButton,
+    title: {
+      fontSize: width < 720 ? "3rem" : "4rem",
+      transform: titleTransform,
+    },
+    subtitle: {
+      fontSize: width < 720 ? "1.5rem" : "1.8rem",
+      transform: subtitleTransform,
+    },
+    ctaButton: {
+      padding: width < 720 ? "0.6rem 1.5rem" : "0.8rem 2rem",
+      fontSize: width < 720 ? "1rem" : "1.2rem",
+      transform: buttonTransform,
+    },
   };
 };
+
 const styles: Style = {
   header: {
     height: "80vh",
@@ -49,10 +64,14 @@ const styles: Style = {
     fontSize: "4rem",
     fontWeight: "bold",
     marginBottom: "1rem",
-    marginTop: "1rem",
+    marginTop: "4rem", // Este es tu margen actual
     opacity: 0,
     transform: "translateY(-30px)",
     animation: "fadeInUp 2s forwards",
+    minHeight: "100px", // Altura mínima para garantizar el espacio
+    display: "flex",
+    alignItems: "center", // Alinea el contenido en el centro verticalmente
+    justifyContent: "center", // Alinea el contenido en el centro horizontalmente
   },
   subtitle: {
     fontSize: "1.8rem",
@@ -79,23 +98,23 @@ const styles: Style = {
 
 const HeaderPresentation: React.FC = () => {
   const [isButtonHovered, setIsButtonHovered] = useState(false);
+  const [windowHeight, setWindowHeight] = useState(0);
 
   // Inicializa windowWidth con un valor predeterminado
   const [windowWidth, setWindowWidth] = useState(0);
 
   useEffect(() => {
-    // Establece el ancho de la ventana una vez que el componente se monta en el cliente
-    setWindowWidth(window.innerWidth);
-
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
+      setWindowHeight(window.innerHeight);
     };
 
     window.addEventListener("resize", handleResize);
+    handleResize(); // Llamar a handleResize inicialmente para establecer los valores
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const responsiveStyles = getResponsiveStyles(windowWidth);
+  const responsiveStyles = getResponsiveStyles(windowWidth, windowHeight);
   return (
     <header style={styles.header}>
       <div style={{ ...styles.title, ...responsiveStyles.title }}>
@@ -104,9 +123,7 @@ const HeaderPresentation: React.FC = () => {
       <div style={{ ...styles.subtitle, ...responsiveStyles.subtitle }}>
         Descubre la magia del maquillaje con nosotros.
       </div>
-      <Link href="/products">
-        {" "}
-        {/* Paso 2: Envuelve el botón con Link y proporciona la ruta */}
+      <Link href="/products" passHref>
         <button
           className="btn-shiny"
           onMouseEnter={() => setIsButtonHovered(true)}

@@ -24,21 +24,53 @@ import {
 import { FilterInput, PriceRangeInput } from "../sideBarStyles/inputStyles";
 import { FilterButtons } from "../sideBarStyles/buttonStyles";
 import Slider from "@mui/material/Slider";
-import Select, { StylesConfig } from "react-select";
+
 import { makeStyles } from "@mui/styles";
 import {
   setSidebarExpanded,
   setSidebarOpenedByButton,
 } from "@/app/redux/uiSlice/uiSlice";
-import styled from "styled-components";
-import { motion, AnimatePresence } from "framer-motion";
+import Select, {
+  components,
+  GroupBase,
+  MenuListProps,
+  OptionProps,
+  StylesConfig,
+} from "react-select";
+import { motion } from "framer-motion";
+const menuAnimation = {
+  initial: { opacity: 0, y: -20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: 20 },
+};
 
-const StyledStickyFilterContainer = styled.div`
-  /* Tus estilos aquí */
-  max-height: 400px;
-  overflow-y: auto;
-  /* otros estilos... */
-`;
+const CustomMenuList = <
+  Option,
+  IsMulti extends boolean,
+  Group extends GroupBase<Option>
+>(
+  props: MenuListProps<Option, IsMulti, Group>
+) => {
+  return (
+    <motion.div
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      variants={menuAnimation}
+      transition={{ duration: 0.3 }}
+    >
+      <components.MenuList {...props} />
+    </motion.div>
+  );
+};
+
+const CustomOption = <
+  Option,
+  IsMulti extends boolean,
+  Group extends GroupBase<Option>
+>(
+  props: OptionProps<Option, IsMulti, Group>
+) => <components.Option {...props} />;
 
 const useStyles = makeStyles({
   sliderHorizontal: {
@@ -71,9 +103,9 @@ const useStyles = makeStyles({
 
 const CombinedFilterComponent: React.FC = () => {
   const classes = useStyles();
-  const sidebarRef = useRef<HTMLDivElement>(null);
-  const [isMenuOpen, setMenuOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isSelectMenuOpen, setIsSelectMenuOpen] = useState(false);
+  const [forceShowScrollbar, setForceShowScrollbar] = useState(false);
 
   const [isFilterOpen, setIsFilterOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
@@ -82,6 +114,9 @@ const CombinedFilterComponent: React.FC = () => {
     setIsSubMenuOpen(!isSubMenuOpen);
   };
   const dispatch = useDispatch();
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const [scrollY, setScrollY] = useState(0); // Nuevo estado para rastrear la posición del scroll
+
   const searchTerm = useSelector((state: RootState) => state.filter.searchTerm);
   const priceRange = useSelector((state: RootState) => state.filter.priceRange);
   const [isSticky, setIsSticky] = useState(false);
@@ -143,11 +178,6 @@ const CombinedFilterComponent: React.FC = () => {
         color: "white",
       },
     }),
-  };
-  const menuAnimation = {
-    initial: { opacity: 0, y: -20 },
-    animate: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: 20 },
   };
 
   useEffect(() => {
@@ -226,7 +256,6 @@ const CombinedFilterComponent: React.FC = () => {
     return () => {
       document.body.style.overflow = "auto";
     };
-    
   }, [isFilterOpen]);
   useEffect(() => {
     const checkIfMobile = () => setIsMobile(window.innerWidth <= 768);
@@ -235,12 +264,15 @@ const CombinedFilterComponent: React.FC = () => {
     window.addEventListener("resize", checkIfMobile);
     return () => window.removeEventListener("resize", checkIfMobile);
   }, []);
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      setIsSticky(currentScrollY > 0); // El sidebar se vuelve "sticky" si no estamos en la parte superior
-    };
+  const handleScroll = () => {
+    const currentScrollY = window.scrollY;
+    setScrollY(currentScrollY); // Actualizar la posición del scroll
+    const isPastThreshold = currentScrollY > 0;
+    setIsSticky(isPastThreshold);
+    setIsExpanded(!isPastThreshold);
+  };
 
+  useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -261,7 +293,15 @@ const CombinedFilterComponent: React.FC = () => {
     window.addEventListener("scroll", updateSidebarState);
     return () => window.removeEventListener("scroll", updateSidebarState);
   }, [isMobile]);
-
+  useEffect(() => {
+    if (isMobile && isExpanded) {
+      setForceShowScrollbar(true);
+  
+      // Resetear después de un breve período
+      setTimeout(() => setForceShowScrollbar(false), 0);
+    }
+  }, [isMobile, isExpanded]);
+  
   // Asegúrate de que isMobile esté definido y actualizado correctamente en tus dependencias de useEffect.
   const handleMouseEnter = () => {
     if (!isMobile && !isColorMenuOpen && !isMarcaMenuOpen) {
@@ -383,7 +423,6 @@ const CombinedFilterComponent: React.FC = () => {
                   menuIsOpen={isColorMenuOpen}
                   onMenuOpen={() => setIsColorMenuOpen(true)}
                   onMenuClose={() => setIsColorMenuOpen(false)}
-                  
                   value={colorOptions.find(
                     (option) => option.value === selectedColor
                   )}
@@ -394,18 +433,8 @@ const CombinedFilterComponent: React.FC = () => {
                   menuPortalTarget={menuPortalTarget}
                   placeholder="Selecciona un color"
                   components={{
-                    MenuList: ({ children, ...props }) => (
-                      <motion.div
-                        initial="initial"
-                        animate="animate"
-                        exit="exit"
-                        variants={menuAnimation}
-                        transition={{ duration: 0.3 }}
-                        {...props}
-                      >
-                        {children}
-                      </motion.div>
-                    ),
+                    MenuList: CustomMenuList, // Usar el componente personalizado
+                    Option: CustomOption, // Opcional, si tienes un componente de opción personalizado
                   }}
                 />
               )}
@@ -430,18 +459,8 @@ const CombinedFilterComponent: React.FC = () => {
                   menuPortalTarget={menuPortalTarget}
                   placeholder="Selecciona una marca"
                   components={{
-                    MenuList: ({ children, ...props }) => (
-                      <motion.div
-                        initial="initial"
-                        animate="animate"
-                        exit="exit"
-                        variants={menuAnimation}
-                        transition={{ duration: 0.3 }}
-                        {...props}
-                      >
-                        {children}
-                      </motion.div>
-                    ),
+                    MenuList: CustomMenuList, // Usar el componente personalizado
+                    Option: CustomOption, // Opcional, si tienes un componente de opción personalizado
                   }}
                 />
               )}

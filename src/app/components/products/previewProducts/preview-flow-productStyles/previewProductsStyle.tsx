@@ -80,13 +80,10 @@ export const ProductSlide = styled.div`
 export const ViewAllButton = styled(Button)`
   position: absolute;
   bottom: 2rem;
-  left: 43%;
-  transform: translateY(-50%);
+  left: 50%; // Centra el botón horizontalmente
+  transform: translateX(-50%); // Ajusta la posición horizontalmente para centrar el botón
   color: white;
-  transition: transform 0.3s, background-color 0.3s, box-shadow 0.3s;
-
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6);
   border: none;
   border-radius: 25px;
   padding: 0.7rem 2rem;
@@ -95,17 +92,14 @@ export const ViewAllButton = styled(Button)`
   text-transform: uppercase;
   background-color: ${colors.pinkDark};
   transition: all 0.3s;
+
   &:hover {
     background-color: ${colors.pinkDark};
-    transform: translateY(-55%) scale(1.05);
+    transform: translateX(-50%) translateY(-30%) scale(1.05); // Mantén el botón centrado incluso en hover
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   }
+
   @media (max-width: 768px) {
-    left: 50%; // Centra el botón horizontalmente
-    transform: translate(
-      -50%,
-      -50%
-    ); // Ajusta la transformación para mantener el botón centrado
     padding: 0.5rem 1.5rem; // Reduce el tamaño del relleno para un botón más pequeño
     font-size: 0.9rem; // Reduce el tamaño de la fuente si es necesario
   }
@@ -240,11 +234,12 @@ export const Title = styled.h2`
   font-weight: 800; /* Mantenemos un peso fuerte para destacar */
   font-size: 32px; /* Incrementamos ligeramente el tamaño para mejorar la visibilidad */
   text-align: center;
+  
   margin-bottom: 24px; /* Un espacio adecuado debajo del título */
   background: linear-gradient(
     to right,
-    #baa378,
-    #d5b895
+    #d5b895,
+    #baaaa8
   ); /* Gradiente de izquierda a derecha */
   -webkit-background-clip: text; /* Recortamos el fondo al texto para el efecto de gradiente */
   -webkit-text-fill-color: transparent; /* Hacemos el texto transparente para mostrar el gradiente */

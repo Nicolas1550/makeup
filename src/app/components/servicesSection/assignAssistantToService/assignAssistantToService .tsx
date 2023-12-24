@@ -144,8 +144,8 @@ const AssignAssistantToService: React.FC<Props> = ({ onClose }) => {
         <div>
           <SubTitle>Ayudantes Asignados:</SubTitle>
           <AssistantList>
-            {assignedHelpers.map((assistant) => (
-              <AssistantItem key={assistant.id}>
+            {assignedHelpers.map((assistant, index) => (
+              <AssistantItem key={`${assistant.id}-${index}`}>
                 {assistant.username}
                 <RemoveButton onClick={() => handleRemove(assistant.id)}>
                   Desasignar

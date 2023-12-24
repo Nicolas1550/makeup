@@ -5,7 +5,7 @@ export interface HorarioDisponibilidad {
   hora_inicio: string;
   hora_fin: string;
 }
-interface ReservaConHorarios {
+export interface ReservaConHorarios {
   id?: number;
   disponibilidad_id: number;
   usuario_id: number;
@@ -13,6 +13,7 @@ interface ReservaConHorarios {
   fecha_reserva?: string;
   curso_nombre?: string; // Nombre del curso
   horarios: HorarioDisponibilidad[];
+  usuario_nombre?: string; // Nuevo campo para el nombre del usuario
 }
 
 interface Disponibilidad {
@@ -22,14 +23,6 @@ interface Disponibilidad {
   fecha_fin: string;
   max_reservas: number;
   horarios?: HorarioDisponibilidad[];
-}
-
-interface Reserva {
-  id: number;
-  disponibilidad_id: number;
-  usuario_id: number;
-  estado: "pendiente" | "completada";
-  fecha_reserva: string;
 }
 
 interface CursoConDisponibilidades extends Curso {
@@ -69,6 +62,10 @@ interface ImagenUploadResponse {
   message: string;
   path: string;
 }
+interface ActualizarEstadoReservaPayload {
+  reservaId: number;
+  estado: "pendiente" | "completada";
+}
 
 interface CursoState {
   cursoActual: CursoConDisponibilidades | null;
@@ -78,6 +75,74 @@ interface CursoState {
   error: string | null;
   reservas: ReservaConHorarios[]; // Asegúrate de que este tipo sea compatible con tu nueva estructura
 }
+export const actualizarEstadoReservaCurso = createAsyncThunk(
+  "cursos/actualizarEstadoReservaCurso",
+  async (
+    { reservaId, estado }: ActualizarEstadoReservaPayload,
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3002/api/reservas/cursos/${reservaId}/estado`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ estado: estado }),
+        }
+      );
+      if (!response.ok)
+        throw new Error("Error al actualizar estado de la reserva");
+      console.log("Reserva actualizada:", { reservaId, estado });
+
+      return { reservaId, estado: estado };
+    } catch (error) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      }
+      return rejectWithValue("Ocurrió un error desconocido");
+    }
+  }
+);
+
+export const eliminarReservaCurso = createAsyncThunk(
+  "cursos/eliminarReservaCurso",
+  async (reservaId: number, { rejectWithValue }) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3002/api/reservas/cursos/${reservaId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (!response.ok) throw new Error("Error al eliminar reserva");
+      return reservaId;
+    } catch (error) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      }
+      return rejectWithValue("Ocurrió un error desconocido");
+    }
+  }
+);
+
+export const fetchTodasLasReservas = createAsyncThunk(
+  "cursos/fetchTodasLasReservas",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`http://localhost:3002/api/reservas/todas`);
+      if (!response.ok) {
+        throw new Error("Error al obtener todas las reservas");
+      }
+      const reservas = await response.json();
+      return reservas as ReservaConHorarios[];
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Error desconocido"
+      );
+    }
+  }
+);
+
 export const updateCursoPrecio = createAsyncThunk<
   { message: string; cursoId: number; nuevoPrecio: number },
   { cursoId: number; nuevoPrecio: number },
@@ -409,6 +474,37 @@ const cursosSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(actualizarEstadoReservaCurso.fulfilled, (state, action) => {
+        const { reservaId, estado } = action.payload;
+        const reservaIndex = state.reservas.findIndex(
+          (reserva) => reserva.id === reservaId
+        );
+        if (reservaIndex !== -1) {
+          state.reservas[reservaIndex].estado = estado;
+          console.log(
+            "Estado de reserva actualizado en el reducer",
+            state.reservas[reservaIndex]
+          );
+        }
+      })
+      .addCase(actualizarEstadoReservaCurso.rejected, (state, action) => {
+        state.error = action.error.message || "Error desconocido";
+      })
+      .addCase(eliminarReservaCurso.fulfilled, (state, action) => {
+        state.reservas = state.reservas.filter(
+          (reserva) => reserva.id !== action.payload
+        );
+      })
+      .addCase(eliminarReservaCurso.rejected, (state, action) => {
+        state.error = action.error.message || "Error desconocido";
+      })
+      .addCase(fetchTodasLasReservas.fulfilled, (state, action) => {
+        // Aquí puedes decidir cómo quieres almacenar estas reservas en el estado
+        state.reservas = action.payload;
+      })
+      .addCase(fetchTodasLasReservas.rejected, (state, action) => {
+        state.error = action.error.message || "Error desconocido";
+      })
       .addCase(updateCursoPrecio.fulfilled, (state, action) => {
         const { cursoId, nuevoPrecio } = action.payload;
         if (state.cursoActual && state.cursoActual.id === cursoId) {

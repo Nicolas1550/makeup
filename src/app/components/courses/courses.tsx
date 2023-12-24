@@ -12,9 +12,7 @@ interface StyledCardProps {
   borderStyle?: "lb" | "rb" | "bb";
   courseId: string;
 }
-const isTouchDevice = () => {
-  return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-};
+
 const StyledCard: React.FC<StyledCardProps> = ({
   price,
   $imageUrl,
@@ -32,9 +30,9 @@ const StyledCard: React.FC<StyledCardProps> = ({
 
   useEffect(() => {
     const currentCardRef = cardRef.current;
-    if (!currentCardRef || isTouchDevice()) return; // Desactiva el efecto en dispositivos táctiles
+    const isMobile = window.innerWidth <= 768;
 
-    if (!currentCardRef) return;
+    if (!currentCardRef || isMobile) return;
 
     const handleMouseMove = (event: MouseEvent) => {
       const rect = currentCardRef.getBoundingClientRect();

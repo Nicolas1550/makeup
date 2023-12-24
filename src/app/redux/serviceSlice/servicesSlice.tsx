@@ -65,6 +65,7 @@ interface ServicesState {
   reservationsForAssistant: Reservation[];
   reservationsForUser: Reservation[];
   reservationsSummary?: ReservationSummary; // Puede ser opcional si inicialmente no hay datos
+  newReservationsCount: number; // Añadir este estado para el contador
 }
 interface ErrorResponse {
   errorMessage: string;
@@ -108,6 +109,7 @@ const initialState: ServicesState = {
   serviceOptions: {},
   reservationsForAssistant: [],
   reservationsForUser: [],
+  newReservationsCount: 0,
   reservationsSummary: {
     totalIngresos: 0,
     totalReservasCompletadas: 0,
@@ -745,6 +747,12 @@ const servicesSlice = createSlice({
   name: "services",
   initialState,
   reducers: {
+    incrementNewReservationsCount: (state) => {
+      state.newReservationsCount += 1;
+    },
+    resetNewReservationsCount: (state) => {
+      state.newReservationsCount = 0;
+    },
     updateAvailabilityStatus: (
       state,
       action: PayloadAction<{ availabilityId: number; newStatus: string }>
@@ -1089,17 +1097,21 @@ const servicesSlice = createSlice({
         state.loading = true;
       })
       .addCase(reserveAvailability.fulfilled, (state, action) => {
+        // Detener la carga y actualizar la reserva específica
         state.loading = false;
         const availabilityToReserve = state.availabilities.find(
           (availability) => availability.id === action.payload.availabilityId
         );
+
         if (availabilityToReserve) {
           availabilityToReserve.estado = "reservado";
-          // Suponiendo que el backend retorna las fechas de reserva
           availabilityToReserve.fecha_inicio_reserva =
             action.payload.fecha_inicio;
           availabilityToReserve.fecha_fin_reserva = action.payload.fecha_fin;
         }
+
+        // Incrementar el contador de nuevas reservas
+        state.newReservationsCount += 1;
       })
       .addCase(reserveAvailability.rejected, (state, action) => {
         state.loading = false;
@@ -1197,7 +1209,11 @@ const servicesSlice = createSlice({
       });
   },
 });
-export const { updateAvailabilityStatus, setServiceDescription } =
-  servicesSlice.actions;
+export const {
+  updateAvailabilityStatus,
+  setServiceDescription,
+  incrementNewReservationsCount,
+  resetNewReservationsCount,
+} = servicesSlice.actions;
 
 export default servicesSlice.reducer;

@@ -1,6 +1,6 @@
 import Slider from "@mui/material/Slider";
 import styled from "styled-components";
-import React from "react";
+import React, { forwardRef } from "react";
 
 export const colors = {
   neutralLight: "#FAF3E0",
@@ -191,62 +191,93 @@ export const FilterSelect = styled.select`
     border-color: ${colors.pinkDark};
   }
 `;
-interface StickyFilterContainerProps extends React.HTMLProps<HTMLDivElement> {
+interface StickyFilterContainerProps {
   isSticky: boolean;
   isExpanded: boolean;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
+  children?: React.ReactNode;
+  className?: string; // Añadir className aquí
 }
 
-export const StickyFilterContainer = styled(
-  ({ isSticky, isExpanded, ...rest }: StickyFilterContainerProps) => (
-    <div {...rest} />
+// Definición del componente base con forwardRef
+const StickyFilterContainerBase = forwardRef<
+  HTMLDivElement,
+  StickyFilterContainerProps
+>(
+  (
+    {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      isSticky,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      isExpanded,
+      onMouseEnter,
+      onMouseLeave,
+      children,
+      className,
+      ...rest
+    },
+    ref
+  ) => (
+    <div
+      ref={ref}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      className={className}
+      {...rest}
+    >
+      {children}
+    </div>
   )
-)`
+);
+StickyFilterContainerBase.displayName = "StickyFilterContainerBase";
+
+// Aplicación de estilos con styled-components
+export const StickyFilterContainer = styled(StickyFilterContainerBase)`
   position: ${({ isSticky }) => (isSticky ? "fixed" : "static")};
   top: ${({ isSticky, isExpanded }) =>
-    isSticky ? (isExpanded ? "110px" : "-30%") : "0"};
-
+    isSticky ? (isExpanded ? "70px" : "-30%") : "0"};
   z-index: 2;
   background-color: #fffaf0;
   padding: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  margin-top: 30px;
-  margin-bottom: 29px;
+
+  // Cambio clave: el margen solo se aplica cuando no es sticky
+  margin-top: ${({ isSticky }) => (isSticky ? "0" : "30px")};
+  margin-bottom: ${({ isSticky }) => (isSticky ? "0" : "29px")};
+
   display: flex;
   flex-direction: column;
   width: auto;
 
   max-height: ${({ isExpanded }) =>
-    isExpanded ? "calc(100vh - 60px)" : "30%"}; /* Altura inicial */
-
-  overflow-y: hidden; /* Ocultar la barra de desplazamiento cuando está contraído */
-  opacity: ${({ isExpanded }) =>
-    isExpanded ? "1" : "0.7"}; /* Opacidad inicial */
+    isExpanded ? "calc(100vh - 60px)" : "30%"};
+  overflow-y: hidden;
+  opacity: ${({ isExpanded }) => (isExpanded ? "1" : "0.7")};
 
   transition: top 0.5s ease-in-out, max-height 0.3s ease-in-out,
-    opacity 0.3s ease-in-out; /* Transiciones suaves para top, max-height y opacidad */
+    opacity 0.3s ease-in-out;
   &.collapsed {
-    top: -100px; // Se ajusta para esconder el contenedor cuando se desplaza hacia abajo
+    top: -110px;
+    opacity: 0.5;
+    transition: top 0.5s ease-in-out, opacity 0.5s ease-in-out;
   }
 
   &:hover {
-    top: 50px; /* Posición al pasar el mouse */
-    max-height: 70%; /* Altura al pasar el mouse */
-    opacity: 1; /* Opacidad al pasar el mouse */
+    max-height: 70%;
+    opacity: 1;
   }
+
   @media (max-width: 768px) {
     top: ${({ isSticky, isExpanded }) =>
       isSticky ? (isExpanded ? "110px" : "0") : "0"};
-    overflow-y: auto; // Habilita el desplazamiento vertical
-    max-height: 100vh; // Asegúrate de que el contenedor no sea más alto que la pantalla
-
-    /* Si necesitas que el contenedor tenga una altura fija cuando no está expandido, puedes usar 'height' en lugar de 'max-height'. */
+    overflow-y: auto;
+    max-height: 100vh;
     height: ${({ isExpanded }) => (isExpanded ? "auto" : "60px")};
-    /* Elimina 'bottom: 0' si quieres que el contenedor crezca con el contenido. */
-    border-radius: 0; // Quitar bordes redondeados en móviles
+    border-radius: 0;
     transform: ${({ isExpanded }) =>
       isExpanded ? "none" : "translateY(-100%)"};
-
     box-shadow: ${({ isExpanded }) =>
       isExpanded ? "0 -4px 6px rgba(0, 0, 0, 0.1)" : "none"};
     overflow-y: ${({ isExpanded }) => (isExpanded ? "auto" : "hidden")};
@@ -326,6 +357,20 @@ const breakpoints = {
 };
 import { createGlobalStyle } from "styled-components";
 export const GlobalRangeStyles = createGlobalStyle`
+.title{
+  position: absolute;
+  color: #black !important; // Color del texto para contraste con la imagen
+  font-size: 2.5rem !important; // Tamaño del título
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6); // Sombra para mejorar legibilidad
+  text-align: center; // Alineación del texto
+  padding: 0 20px !important; // Espaciado para evitar que el texto toque los bordes en pantallas pequeñas
+  @media (max-width: 768px) {
+    font-size: 2rem; // Tamaño más pequeño para pantallas más estrechas
+  }
+  @media (max-width: 480px) {
+    font-size: 1.5rem; // Tamaño aún más pequeño para móviles
+  }
+  }
 .css-1n6sfyn-MenuList {
   overflow: hidden !important; /* Oculta la barra de desplazamiento */
 }
@@ -454,6 +499,14 @@ export const GlobalRangeStyles = createGlobalStyle`
       bottom: 1rem; /* Espacio desde el fondo de la pantalla */
     }
   }
+  body {
+    background: linear-gradient(to right, #f5f7fa, #ffe3e3);
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    min-height: 100vh;
+  }
+
 
   .Toastify__toast {
     /* Estilos comunes para tostadas */
@@ -466,7 +519,9 @@ export const GlobalRangeStyles = createGlobalStyle`
       margin-bottom: 0; /* En móviles, puede que no necesites espacio extra entre tostadas */
     }
   }
-
+  p{
+    color: #6e6e6e;
+  }
   .Toastify__close-button {
     /* Estilos para el botón de cerrar */
     color: #999; /* Color menos llamativo para el botón */

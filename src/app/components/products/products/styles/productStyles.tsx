@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Button, Button as MuiButton } from "@mui/material";
+import { Button} from "@mui/material";
 
 const secondaryColor = "#4ECDC4";
 const softPink = "#f8c6d1";

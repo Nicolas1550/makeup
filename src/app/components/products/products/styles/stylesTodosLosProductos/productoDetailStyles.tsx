@@ -12,7 +12,7 @@ export const CenteredContainer = styled.div`
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: linear-gradient(to bottom, #fff7e6, #ffdab3);
+  background: linear-gradient(to bottom, #fff7e6, #ffdab3, #FFF7E6);
 `;
 
 export const ProductDetailContainer = styled.div`

@@ -18,6 +18,7 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import Footer from "@/app/components/footer/footer";
 
 const theme = createTheme();
 
@@ -31,7 +32,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         <ToastContainer />
         <div id="menu-portal"></div>
         <Navbar />
+
         <Component {...pageProps} />
+        <Footer />
       </ThemeProvider>
     </Provider>
   );

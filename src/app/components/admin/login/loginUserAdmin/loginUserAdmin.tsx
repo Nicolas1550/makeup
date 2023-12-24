@@ -65,7 +65,6 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
   const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
     useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [showSignUpPassword, setShowSignUpPassword] = useState(false);
   const [isSignUp, setIsSignUp] = useState<boolean>(true);
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -82,9 +81,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
     setShowPassword(!showPassword);
   };
 
-  const toggleSignUpPasswordVisibility = () => {
-    setShowSignUpPassword(!showSignUpPassword);
-  };
+
   const handleModalClose = useCallback(() => {
     dispatch(closeLoginModal());
     setUsername("");
@@ -293,7 +290,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
           <div className="wide-board">
             <div className={`board sing-in ${isSignUp ? "" : "sliding"}`}>
               <h1>¡Bienvenide de nuevo!</h1>
-              <p>
+              <p className="p">
                 Para seguir conectade con nosotros, por favor inicia sesión con
                 tus datos.
               </p>

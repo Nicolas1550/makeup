@@ -4,6 +4,7 @@ export const ModalBackground = styled.div`
   display: flex;
   justify-content: center;
   align-items: center; // Centrar verticalmente en la pantalla
+  
   top: 0;
   left: 0;
   right: 0;
@@ -63,6 +64,7 @@ export const ModalContent = styled.div`
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   width: 90%;
   max-width: 600px;
+  
 `;
 
 export const AssignButton = styled.button`

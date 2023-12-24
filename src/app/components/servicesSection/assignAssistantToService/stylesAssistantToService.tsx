@@ -63,6 +63,8 @@ export const ModalContent = styled.div`
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   width: 90%;
   max-width: 600px;
+  margin-top:100px;
+  margin-bottom: 100px;
 `;
 
 export const AssignButton = styled.button`

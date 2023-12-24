@@ -12,6 +12,7 @@ export const CardContainer = styled.div`
   gap: 20px;
   background: linear-gradient(to bottom, #fefefe 0%, #fdf6f8 100%);
   transition: all 0.3s;
+  max-width: 400px; // Limitar el ancho máximo
 
   &:hover {
     box-shadow: 0px 5px 15px rgba(216, 174, 191, 0.7);

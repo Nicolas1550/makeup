@@ -162,7 +162,7 @@ export const ClaseTitulo = styled.h3`
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 
   @media (max-width: 768px) {
-    font-size: 1.0em;
+    font-size: 1em;
   }
 `;
 
@@ -177,43 +177,44 @@ export const ClaseDescripcion = styled.p`
 `;
 
 export const CursoInfoContainer = styled.div`
-  padding: 2rem; // Uso de unidades relativas para una mejor respuesta
-  background-color: #333333;
-  color: #f5eae0;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25); // Sombra más suave para coherencia
-  border-radius: 15px; // Radio un poco más pequeño para una apariencia más moderna
-  width: calc(50% - 4rem); // Calcula el ancho basado en el padding para evitar el desbordamiento
-  margin: 2rem; // Margen consistente para separar los contenedores
+  padding: 2rem; // Unidades relativas para mejor responsividad
+  background-color: #333333; // Fondo oscuro para contraste
+  color: #f5eae0; // Color claro para el texto, mejora la legibilidad
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); // Sombra sutil para un diseño elegante
+  border-radius: 12px; // Bordes redondeados suaves
+  width: calc(100% - 4rem); // Ancho ajustado al padding
+  margin: 2rem auto; // Centra el contenedor
   transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
 
   &:hover {
-    transform: scale(1.03); // Un ligero aumento para una interacción más notable
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05); // Escala sutil al pasar el ratón
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); // Sombra más pronunciada al pasar el ratón
   }
 
   @media (max-width: 768px) {
-    width: 100%; // Ocupa todo el ancho en dispositivos móviles
-    margin: 1rem 0; // Ajusta el margen superior e inferior en móviles
-  }
-
-  // Estilos para encabezados y párrafos
-  h2, p, strong {
-    margin-bottom: 1rem; // Espaciado consistente
-    line-height: 1.5; // Aumento de la legibilidad
+    width: calc(100% - 2rem); // Ajuste del ancho en dispositivos móviles
+    margin: 1rem; // Margen reducido en móviles
+    padding: 1.5rem; // Padding reducido en móviles
   }
 
   h2 {
-    color: #d4b895;
-    font-size: 1.75rem; // Tamaño de fuente consistente
+    color: #d4b895; // Color suave y atractivo para los encabezados
+    font-size: 1.75rem; // Tamaño de fuente para encabezados
+    margin-bottom: 1rem; // Espacio debajo del encabezado
   }
 
-  // Media queries para tamaños de texto en dispositivos móviles
+  p, strong {
+    margin-bottom: 1rem; // Espaciado uniforme para el texto
+    line-height: 1.5; // Espaciado de línea para mejorar la legibilidad
+    color: #e5d4c0; // Un tono más claro para mejorar el contraste
+  }
+
   @media (max-width: 768px) {
     h2 {
-      font-size: 1.5rem; // Tamaño de fuente ajustado para móviles
+      font-size: 1.5rem; // Tamaño de fuente más pequeño en móviles
     }
     p, strong {
-      font-size: 0.9rem; // Tamaño de fuente reducido para mantener la legibilidad
+      font-size: 0.95rem; // Tamaño de fuente ligeramente más pequeño en móviles
     }
   }
 }`;

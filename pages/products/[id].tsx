@@ -7,7 +7,6 @@ import {
   ColorPreview,
   DescriptionContainer,
   DescriptionHeader,
-  DescriptionLabel,
   DescriptionText,
   DetailContainer,
   IconText,
@@ -19,7 +18,6 @@ import {
   FaBox,
   FaTrademark,
   FaPalette,
-  FaInfoCircle,
 } from "react-icons/fa";
 import { useHandleAddToCart } from "@/app/components/products/products/products/cartActions";
 import Image from "next/image";
@@ -28,7 +26,7 @@ import useProductSocket, {
   ProductType,
 } from "@/app/components/products/products/products/useProductSocket";
 import axios from "axios";
-import { StyledButton } from "@/app/components/productStyles";
+import { StyledButton } from "@/app/components/products/products/styles/productStyles";
 interface ProductProps {
   product: ProductType;
 }

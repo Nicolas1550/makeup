@@ -1,5 +1,5 @@
 // DropdownMenu.js
-import React, { forwardRef, useRef, useState, useEffect, memo } from "react";
+import React, { forwardRef, useState, useEffect, memo } from "react";
 import { useAppSelector, useAppDispatch } from "../../../redux/store/appHooks";
 import { resetNewOrdersCount } from "../../../redux/orderSlice/orderSlice";
 import {
@@ -13,11 +13,9 @@ import UserReservations from "../../servicesSection/servicesSection/userReservat
 import {
   fetchReservationsForAssistant,
   fetchReservationsForUser,
+  resetNewReservationsCount,
 } from "@/app/redux/serviceSlice/servicesSlice";
-import {
-  closeModal,
-  openModal,
-} from "@/app/redux/productSlice/features/reservationsModalSlice";
+import { openModal } from "@/app/redux/productSlice/features/reservationsModalSlice";
 import styled from "styled-components";
 
 // Estilos para el botón dentro del menú desplegable
@@ -60,19 +58,14 @@ interface DropdownMenuProps {
 
 const DropdownMenuComponent = forwardRef<HTMLDivElement, DropdownMenuProps>(
   (
-    {
-      onLogout,
-      onViewHistory,
-      toggleDropdown,
-      closeDropdown,
-      buttonRef, // Mantén esto si lo estás utilizando dentro de DropdownMenuComponent
-    },
+    { onLogout, onViewHistory, toggleDropdown },
     ref // Esta es la referencia pasada a través de forwardRef
   ) => {
     const userRoles = useAppSelector((state) => state.auth.userRoles);
     const userId = useAppSelector((state) => state.auth.userId);
-    const modalRef = useRef<HTMLDivElement>(null);
-
+    const newReservationsCount = useAppSelector(
+      (state) => state.services.newReservationsCount
+    );
     const dispatch = useAppDispatch();
     const isReservationsModalOpen = useAppSelector(
       (state) => state.reservationsModal.isReservationsModalOpen
@@ -80,15 +73,12 @@ const DropdownMenuComponent = forwardRef<HTMLDivElement, DropdownMenuProps>(
     const newOrdersCount = useAppSelector(
       (state) => state.order.newOrdersCount
     );
-    const [isModalOpen, setModalOpen] = useState(false);
+    const [isModalOpen] = useState(false);
 
     const handleReservationsClick = (event: React.MouseEvent) => {
       event.stopPropagation();
       dispatch(openModal());
-    };
-
-    const handleCloseModal = () => {
-      dispatch(closeModal());
+      dispatch(resetNewReservationsCount()); // Resetear el contador aquí
     };
 
     const handleViewHistoryClick = (event: React.MouseEvent) => {
@@ -119,6 +109,9 @@ const DropdownMenuComponent = forwardRef<HTMLDivElement, DropdownMenuProps>(
       <StyledDropdownMenu ref={ref}>
         <DropdownButton onClick={handleReservationsClick}>
           Reservas
+          {newReservationsCount > 0 && (
+            <Badge badgeContent={newReservationsCount} color="error" />
+          )}
         </DropdownButton>
         <DropdownButton onClick={handleViewHistoryClick}>
           Ver Órdenes{" "}
@@ -147,6 +140,7 @@ const DropdownMenuComponent = forwardRef<HTMLDivElement, DropdownMenuProps>(
     );
   }
 );
+DropdownMenuComponent.displayName = "DropdownMenuComponent";
 
 const DropdownMenu = memo(DropdownMenuComponent);
 

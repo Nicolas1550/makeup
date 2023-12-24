@@ -8,8 +8,7 @@ const colors = {
   darkerGray: "#5C5C5C",
   gradientPink: "linear-gradient(45deg, #FFB6C1, #FF69B4)",
   gold: "#FFD700",
-  backgroundImage:
-    "linear-gradient(to right, #000000, #332525, #664b4b, #997070, #ccb5b5, #997070, #664b4b, #332525, #000000)",
+  backgroundImage: "url('/img/aaa.webp')", // Asegúrate de que la ruta es accesible desde la ubicación donde se utiliza
 
   backgroundColor:
     "linear-gradient(to right, #f4e4d7, #f8e2cf, #fde0c8, #fff1e1)",
@@ -32,11 +31,14 @@ const CoursesSection: React.FC<CoursesSectionProps> = ({ style, children }) => {
   return <div style={{ ...containerStyles, ...style }}>{children}</div>;
 };
 const CoursesIntroContainer = styled.div`
-  background-image: ${colors.backgroundImage};
   padding: 4rem 2rem;
   position: relative;
   z-index: 0;
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  background-image: ${colors.backgroundImage}; // Usando la propiedad del objeto
+  background-size: cover; // Asegúrate de que la imagen cubra todo el elemento
+  background-position: center; // Centra la imagen en el elemento
+  background-repeat: no-repeat; // Evita que la imagen se repita
 `;
 
 const AnimatedIntroDescription = styled(motion.p)`

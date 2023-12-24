@@ -50,7 +50,7 @@ export const MenuWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 0;
+  z-index: 1000 !important;
   overflow: hidden;
   background-color: rgba(0, 0, 0, 0.7);
 `;
@@ -121,6 +121,7 @@ export const InnerMenuContainer = styled.div<{
     justify-content: center;
     gap: 20px; // Puedes ajustar este valor si es necesario
     width: 100%; // Asegura que el contenedor ocupe todo el espacio disponible
+    z-index: 9999 !important;
   }
   & > * {
     flex: 1; // Hace que todos los elementos hijos ocupen el mismo espacio
@@ -128,6 +129,7 @@ export const InnerMenuContainer = styled.div<{
     padding: 25px;
     text-align: center;
     max-width: 100%;
+
     box-sizing: border-box; // Asegura que el padding y el borde no aumenten el tamaño del elemento
   }
 
@@ -146,16 +148,19 @@ export const InnerMenuContainer = styled.div<{
     background-color: ${colors.neutralLight};
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    width: 0%;
-    max-width: 100px;
+    width: 10%;
+    max-width: 30px;
     padding: 20px;
     gap: 15px;
     align-items: center;
     justify-content: center;
-    margin: 0;
+    margin: 10;
     z-index: 0;
     height: auto; // Ajusta automáticamente la altura según el contenido
     max-height: 90vh; // Limita la altura máxima para evitar que se salga de la pantalla
+    min-width: 300px;
+    box-shadow: 0px 4px 12px rgba(255, 105, 180, 0.9);
+
     overflow-y: auto; // Permite desplazamiento si el contenido es muy largo
   }
 `;

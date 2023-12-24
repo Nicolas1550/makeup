@@ -3,18 +3,13 @@ import { useAppDispatch, useAppSelector } from "@/app/redux/store/appHooks";
 import {
   fetchReservasPorCursoYUsuario,
   fetchReservasAdminPorCurso,
+  ReservaConHorarios,
 } from "@/app/redux/coursesSlice/coursesSlice";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-interface Reserva {
-  id: number;
-  disponibilidad_id: number;
-  usuario_id: number;
-  estado: "pendiente" | "completada";
-  fecha_reserva: string;
-}
+
 interface ReservasModalProps {
   cursoId: number;
   isOpen: boolean;
@@ -37,9 +32,7 @@ const ReservasModal: React.FC<ReservasModalProps> = ({
     if (userRoles.includes("admin")) {
       dispatch(fetchReservasAdminPorCurso({ cursoId }));
     } else {
-      dispatch(
-        fetchReservasPorCursoYUsuario({ cursoId, usuarioId: userIdNumber })
-      );
+      dispatch(fetchReservasPorCursoYUsuario({ usuarioId: userIdNumber }));
     }
   }, [dispatch, cursoId, userIdNumber, userRoles]);
 
@@ -48,7 +41,7 @@ const ReservasModal: React.FC<ReservasModalProps> = ({
       <Box>
         <Typography variant="h6">Reservas del Curso</Typography>
         <ul>
-          {reservas.map((reserva: Reserva) => (
+        {reservas.map((reserva: ReservaConHorarios) => (
             <li key={reserva.id}>
               Reserva ID: {reserva.id}, Estado: {reserva.estado}
               {/* Aquí puedes agregar más información de la reserva si lo necesitas */}

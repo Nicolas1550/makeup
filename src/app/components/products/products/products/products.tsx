@@ -1,14 +1,13 @@
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import Slider from "react-slick";
+import { ProductType } from "../../../../redux/ProductsFilterSlice/filterSlice";
 import {
   SectionTitle,
   SectionDescription,
 } from "../styles/highlightedProductsStyles";
-import { ProductType } from "../../../../redux/ProductsFilterSlice/filterSlice";
 import {
   AddToCartButton,
-  ProductBrand,
   ProductCardContainer,
   ProductDescription,
   ProductImage,
@@ -28,9 +27,10 @@ import { RootState } from "../../../../redux/store/rootReducer";
 import CombinedFilterComponent from "../../bar/sideBar/sideBar";
 import { useHandleAddToCart } from "./cartActions";
 import useProductSocket from "../products/useProductSocket";
-import { useAppDispatch, useAppSelector } from "@/app/redux/store/appHooks";
+import { useAppSelector } from "@/app/redux/store/appHooks";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import BackgroundImageWithTitle from "./backgroundImageWithTitle";
 
 const getProductLink = (productId: number) => `/products/${productId}`;
 
@@ -39,7 +39,6 @@ const ProductCard: React.FC<ProductType & { highlighted?: boolean }> = ({
   imagen_url,
   nombre,
   precio,
-  marca,
   stock,
   descripcion,
   highlighted = false,
@@ -93,13 +92,13 @@ const HighlightedCarousel: React.FC<{ products: ProductType[] }> = ({
   const settings = {
     dots: true,
     infinite: true,
-    speed: 500,
+    speed: 600,
     slidesToShow: 3,
     centerMode: true,
-    centerPadding: "60px",
+    centerPadding: "80px",
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 3000,
+    autoplaySpeed: 3500,
     focusOnSelect: true,
     adaptiveHeight: true,
     responsive: [
@@ -107,7 +106,7 @@ const HighlightedCarousel: React.FC<{ products: ProductType[] }> = ({
         breakpoint: 768, // tablet
         settings: {
           slidesToShow: 2,
-          centerPadding: "40px",
+          centerPadding: "50px",
         },
       },
       {
@@ -132,6 +131,7 @@ const HighlightedCarousel: React.FC<{ products: ProductType[] }> = ({
     </CarouselContainer>
   );
 };
+
 const Products: React.FC<{
   displayMode: "highlighted" | "fullList" | "both";
 }> = ({ displayMode = "highlighted" }) => {
@@ -146,6 +146,7 @@ const Products: React.FC<{
   const selectedCategory = useSelector(
     (state: RootState) => state.filter.selectedCategory
   );
+
   const [windowWidth, setWindowWidth] = useState<number>(0);
   useEffect(() => {
     // Actualizar el ancho de la ventana al montar y en cada cambio de tamaño de la ventana
@@ -170,11 +171,11 @@ const Products: React.FC<{
   }, [isSidebarOpenedByButton]);
   const { productList } = useProductSocket();
   const titleVariants = {
-    expanded: { 
-      marginBottom: windowWidth > 768 ? "2.5rem" : "1rem" // Ajustar según sea necesario
+    expanded: {
+      marginBottom: windowWidth > 768 ? "2.5rem" : "1rem", // Ajustar según sea necesario
     },
-    collapsed: { 
-      marginTop: windowWidth > 768 ? "20rem" : "5rem" // Ajustar según sea necesario
+    collapsed: {
+      marginTop: windowWidth > 768 ? "5rem" : "5rem", // Ajustar según sea necesario
     },
   };
   const filterProducts = (products: ProductType[]): ProductType[] => {
@@ -232,6 +233,7 @@ const Products: React.FC<{
       variants={contentVariants}
       transition={{ duration: 0.5, ease: "linear" }}
     >
+      <BackgroundImageWithTitle></BackgroundImageWithTitle>
       <ProductContainer
         displayType={displayMode === "both" ? "fullList" : displayMode}
       >

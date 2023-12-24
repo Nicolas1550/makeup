@@ -1,5 +1,5 @@
 // ImageCarousel.tsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/redux/store/appHooks";
 import {
   addImageToCurso,
@@ -12,7 +12,6 @@ import {
   ImageContainer,
   InnerTextBox,
   MainContainer,
-  NavButton,
   TextContainer,
 } from "./stylesImageCarousel";
 import { Button } from "@mui/material";
@@ -34,7 +33,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
   description,
   cursoId,
 }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(1);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
@@ -43,18 +42,6 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
 
   const toggleEditMode = () => {
     setIsEditing(!isEditing);
-  };
-
-  const goToPrevious = () => {
-    const isFirstImage = currentIndex === 0;
-    const newIndex = isFirstImage ? images.length - 1 : currentIndex - 1;
-    setCurrentIndex(newIndex);
-  };
-
-  const goToNext = () => {
-    const isLastImage = currentIndex === images.length - 1;
-    const newIndex = isLastImage ? 0 : currentIndex + 1;
-    setCurrentIndex(newIndex);
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,7 +73,15 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
       dispatch(addImageToCurso({ cursoId: cursoId, imageData: formData }));
     }
   };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) =>
+        prevIndex === images.length - 1 ? 0 : prevIndex + 1
+      );
+    }, 5000);
 
+    return () => clearInterval(interval);
+  }, [images.length]);
   return (
     <>
       <MainContainer>
@@ -102,13 +97,27 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
               />
             ))}
           </ImageContainer>
-          <NavButton className="prev" onClick={goToPrevious}>
-            ❮
-          </NavButton>
-          <NavButton className="next" onClick={goToNext}>
-            ❯
-          </NavButton>
+
+          {/* Puntos de navegación */}
+          <div style={{ textAlign: "center", marginTop: "10px" }}>
+            {images.map((_, index) => (
+              <span
+                key={index}
+                style={{
+                  cursor: "pointer",
+                  height: "10px",
+                  width: "10px",
+                  margin: "0 5px",
+                  backgroundColor: currentIndex === index ? "black" : "gray",
+                  borderRadius: "50%",
+                  display: "inline-block",
+                }}
+                onClick={() => setCurrentIndex(index)}
+              />
+            ))}
+          </div>
         </CarouselContainer>
+
         <TextContainer>
           <InnerTextBox>
             <h2>{title}</h2>
@@ -116,7 +125,6 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
           </InnerTextBox>
         </TextContainer>
       </MainContainer>
-
       {isAuthenticated && userRoles?.includes("admin") && (
         <Button onClick={toggleEditMode}>
           {isEditing ? <DoneIcon /> : <EditIcon />}

@@ -1,12 +1,5 @@
 "use client";
-import React, {
-  useState,
-  useEffect,
-  Fragment,
-  useRef,
-  useCallback,
-  useLayoutEffect,
-} from "react";
+import React, { useState, useEffect, Fragment, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../../redux/store/appHooks";
 import { logout } from "../../../redux/authSlice/authSlice";
 import { openLoginModal } from "../../../redux/loginModalSlice/loginModalSlice";
@@ -44,7 +37,6 @@ import {
   MobileMenuButton,
 } from "../navbarStyles/navBarResponsiveStyles";
 import MenuIcon from "@mui/icons-material/Menu";
-import { UploadSuccessResponse } from "../../ModalConfirmacionCompra/uploadComprobant/uploadComprobant";
 
 const linkVariants = {
   open: {
@@ -112,7 +104,11 @@ const dropdownVariants = {
     },
   },
 };
-const NavLink: React.FC<NavLinkProps> = React.memo(({ href, label }) => {
+const NavLink: React.FC<NavLinkProps> = React.memo(function NavLink({
+  href,
+  label,
+}) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isHovered, setIsHovered] = useState(false);
   return (
     <StyledNavLink
@@ -145,6 +141,7 @@ const Navbar: React.FC = () => {
   const isLoginModalOpen = useAppSelector(
     (state) => state.loginModal.isLoginModalOpen
   );
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [comprobanteCargado, setComprobanteCargado] = useState<{
     comprobante: File;
   } | null>(null);
@@ -158,9 +155,9 @@ const Navbar: React.FC = () => {
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [userClicked, setUserClicked] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [windowWidth, windowHeight] = useWindowSize();
   // Dentro de Navbar
-  const dropdownMenuRef = useRef<HTMLDivElement>(null);
   const dropdownContainerRef = useRef<HTMLDivElement>(null);
 
   const isMobile = windowWidth < 768; // Define un umbral para la versión móvil
@@ -168,9 +165,7 @@ const Navbar: React.FC = () => {
   const toggleDropdown = () => {
     setIsDropdownOpen((prevState) => !prevState);
   };
-  const handleComprobanteLoaded = (comprobante: File) => {
-    setComprobanteCargado({ comprobante });
-  };
+
   const menuButtonVariants = {
     opened: {
       rotate: 45,
@@ -225,9 +220,7 @@ const Navbar: React.FC = () => {
     }
   };
   const handleLogout = () => dispatch(logout());
-  const closeDropdown = useCallback(() => {
-    setIsDropdownOpen(false);
-  }, []);
+
   // Manejar clic en el botón de usuario
   const handleUserButtonClick = (
     event: React.MouseEvent<HTMLButtonElement>
@@ -267,9 +260,7 @@ const Navbar: React.FC = () => {
   }, [isReservationsModalOpen, isHistoryModalOpen]); // Incluye ambos estados en las dependencias
 
   ``;
-  const handleUploadSuccess = (data: UploadSuccessResponse) => {
-    setComprobanteCargado(data);
-  };
+
   useEffect(() => {
     const handleScroll = () => {
       if (isDropdownOpen && !isMobile) {
@@ -341,7 +332,7 @@ const Navbar: React.FC = () => {
       }
     };
     verifyUserToken();
-  }, [dispatch]);
+  }, [dispatch, isDropdownOpen]);
   const handleCloseConfirmationModal = () => {
     setIsConfirmationOpen(false);
   };
@@ -410,20 +401,7 @@ const Navbar: React.FC = () => {
                           >
                             <NavLink href="/products" label="Productos" />
                           </motion.div>
-                          {isAuthenticated && userRoles.includes("admin") && (
-                            <motion.div
-                              variants={linkVariants}
-                              initial="closed"
-                              animate="open"
-                              exit="closed"
-                            >
-                              <AdminButton
-                                onClick={() => setShowAdminModal(true)}
-                              >
-                                Panel de Administración
-                              </AdminButton>
-                            </motion.div>
-                          )}
+
                           <motion.div
                             variants={linkVariants}
                             initial="closed"

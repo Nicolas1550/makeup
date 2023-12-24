@@ -63,7 +63,6 @@ const SeleccionEnvio: React.FC<SeleccionEnvioProps> = ({
   ) => {
     setMetodoEnvio((event.target as HTMLInputElement).value);
   };
-  const direccionTienda = "Calle Falsa 123, Ciudad, País";
 
   const [errors, setErrors] = useState({
     metodo_envio: "",

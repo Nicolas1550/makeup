@@ -6,15 +6,12 @@ import React, {
   useMemo,
   useCallback,
 } from "react";
-import {
-  useAppDispatch,
-  useAppSelector,
-} from "../../../../redux/store/appHooks";
+import { useAppDispatch, useAppSelector } from "../../../redux/store/appHooks";
 import {
   clearError,
   fetchReservationsSummary,
   resetReservationsSummary,
-} from "../../../../redux/serviceSlice/servicesSlice";
+} from "../../../redux/serviceSlice/servicesSlice";
 import {
   SummaryContainer,
   Heading,
@@ -43,7 +40,7 @@ import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import PrintIcon from "@mui/icons-material/Print";
 import GetAppIcon from "@mui/icons-material/GetApp";
-import LineChart from "./grafico";
+import LineChart from "../productTable/productTable/grafico";
 interface ReservationsSummaryProps {
   onClose: () => void;
 }
@@ -235,7 +232,7 @@ const ReservationsSummary: React.FC<ReservationsSummaryProps> = ({
       console.log("Incomes By Date:", Object.values(incomesByDate));
       return Object.values(incomesByDate);
     },
-    [selectedService] 
+    [selectedService]
   );
 
   useEffect(() => {

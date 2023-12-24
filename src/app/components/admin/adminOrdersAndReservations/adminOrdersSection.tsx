@@ -1,13 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
-import {
-  useAppDispatch,
-  useAppSelector,
-} from "../../../../redux/store/appHooks";
+import { useAppDispatch, useAppSelector } from "../../../redux/store/appHooks";
 import {
   fetchOrdersByStatus,
   resetOrders,
   // Otros actions que necesites
-} from "../../../../redux/orderSlice/orderSlice";
+} from "../../../redux/orderSlice/orderSlice";
 import {
   SummaryContainer,
   Heading,
@@ -24,13 +21,18 @@ import {
   DateInputContainer,
   ButtonContainer,
 } from "./stylesAdminReservation"; // Asegúrate de adaptar los estilos
+import PrintIcon from "@mui/icons-material/Print";
 
 import { format, isSameYear, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
+import GetAppIcon from "@mui/icons-material/GetApp";
 
 import OrdersLineChart from "./ordersLineChart";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { useReactToPrint } from "react-to-print";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 interface AdminOrdersSectionProps {
   onClose: () => void;
 }
@@ -104,7 +106,52 @@ const AdminOrdersSection: React.FC<AdminOrdersSectionProps> = ({}) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedStatus, setSelectedStatus] = useState("");
   const [isDataFetched, setIsDataFetched] = useState(false);
+  const summaryRef = useRef<HTMLDivElement>(null); // Referencia para el resumen de órdenes
+  const chartRef = useRef<HTMLDivElement>(null); // Referencia para el gráfico
+  const ordersTableRef = useRef<HTMLDivElement>(null);
 
+  const handlePrintSummary = useReactToPrint({
+    content: () => summaryRef.current,
+  });
+  const handlePrintOrdersTable = useReactToPrint({
+    content: () => ordersTableRef.current,
+  });
+  const handlePrintFullReport = useReactToPrint({
+    content: () => componentRef.current,
+  });
+  const exportPDF = async (ref: React.RefObject<HTMLDivElement>) => {
+    if (ref.current) {
+      const canvas = await html2canvas(ref.current, {
+        scale: 2, // Aumenta la resolución de la imagen
+        useCORS: true, // Intenta cargar imágenes externas si las hay
+        scrollY: -window.scrollY, // Asegúrate de capturar desde el principio del contenido
+      });
+      const data = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "mm",
+        format: "a4",
+      });
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const canvasAspectRatio = canvas.width / canvas.height;
+      const pdfAspectRatio = pdfWidth / pdfHeight;
+      let canvasWidth = pdfWidth;
+      let canvasHeight = pdfHeight;
+      // Si la relación de aspecto del canvas es mayor que la del PDF, ajusta la altura del canvas
+      if (canvasAspectRatio > pdfAspectRatio) {
+        canvasHeight = pdfWidth / canvasAspectRatio;
+      } else {
+        // Si la relación de aspecto del PDF es mayor, ajusta la anchura del canvas
+        canvasWidth = canvasHeight * canvasAspectRatio;
+      }
+      // Coloca la imagen centrada en el PDF
+      const x = (pdfWidth - canvasWidth) / 2;
+      const y = (pdfHeight - canvasHeight) / 2;
+      pdf.addImage(data, "PNG", x, y, canvasWidth, canvasHeight);
+      pdf.save("reservations-summary.pdf");
+    }
+  };
   const handleFetchOrders = () => {
     if (fechaInicio && fechaFin) {
       dispatch(
@@ -187,27 +234,42 @@ const AdminOrdersSection: React.FC<AdminOrdersSectionProps> = ({}) => {
   return (
     <SummaryContainer ref={componentRef}>
       <Heading>Gestión de Órdenes</Heading>
-      <OrdersLineChart data={chartData} />
-      <SummaryDetails>
-        <SummaryHeading>
-          <AttachMoneyIcon />
-          Resumen de Órdenes Completadas
-          {isDataFetched && fechaInicio && fechaFin && (
-            <>
-              : del {formatDate(fechaInicio, fechaFin).formattedStartDate} hasta
-              el {formatDate(fechaInicio, fechaFin).formattedEndDate}
-            </>
-          )}
-        </SummaryHeading>
+      <Button onClick={handlePrintFullReport}>
+        <PrintIcon /> Imprimir Todo el Informe
+      </Button>
+      <Button onClick={() => exportPDF(componentRef)}>
+        <GetAppIcon /> Exportar Informe Completo como PDF
+      </Button>
+      <div ref={chartRef}>
+        <OrdersLineChart data={chartData} />
+      </div>
+      <div ref={summaryRef}>
+        <SummaryDetails>
+          <SummaryHeading>
+            <AttachMoneyIcon />
+            Resumen de Órdenes Completadas
+            {isDataFetched && fechaInicio && fechaFin && (
+              <>
+                : del {formatDate(fechaInicio, fechaFin).formattedStartDate}{" "}
+                hasta el {formatDate(fechaInicio, fechaFin).formattedEndDate}
+              </>
+            )}
+          </SummaryHeading>
 
-        <SummaryParagraph>
-          <CheckCircleIcon /> Ingresos Totales: ${totalIngresos}
-        </SummaryParagraph>
-        <SummaryParagraph>
-          <CheckCircleIcon /> Total Órdenes Completadas:{" "}
-          {totalOrdenesCompletadas}
-        </SummaryParagraph>
-      </SummaryDetails>
+          <SummaryParagraph>
+            <CheckCircleIcon /> Ingresos Totales: ${totalIngresos}
+          </SummaryParagraph>
+          <SummaryParagraph>
+            <CheckCircleIcon /> Total Órdenes Completadas:{" "}
+            {totalOrdenesCompletadas}
+          </SummaryParagraph>
+        </SummaryDetails>
+        <Button onClick={handlePrintSummary}>Imprimir Resumen</Button>
+        <Button onClick={() => exportPDF(summaryRef)}>
+          <GetAppIcon /> Exportar Resumen como PDF
+        </Button>
+      </div>
+
       <InputContainer>
         <DateInputContainer>
           <InputLabel>
@@ -234,46 +296,53 @@ const AdminOrdersSection: React.FC<AdminOrdersSectionProps> = ({}) => {
       {customError && <ErrorText>{customError}</ErrorText>}
 
       {error && <ErrorText>{error}</ErrorText>}
-
-      <Table>
-        <TableHead>
-          <tr>
-            <th>ID</th>
-            <th>Cliente</th>
-            <th>Fecha</th>
-            <th>Total</th>
-            <th>Comprobante</th>
-          </tr>
-        </TableHead>
-        <TableBody>
-          {orders.map((order) => (
-            <tr key={order.id}>
-              <td>{order.id}</td>
-              <td>{order.nombre}</td>
-              <td>
-                {format(parseISO(order.fecha), "d 'de' MMMM 'de' yyyy", {
-                  locale: es,
-                })}
-              </td>
-              <td>{order.total}</td>
-              <td>
-                {order.comprobante_pago ? (
-                  <a
-                    href={order.comprobante_pago}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Ver Comprobante
-                  </a>
-                ) : (
-                  "Pagado con Mercado Pago"
-                )}
-              </td>
-              {/* Agrega cualquier otro detalle de la orden que desees mostrar */}
+      <div ref={ordersTableRef}>
+        <Table>
+          <TableHead>
+            <tr>
+              <th>ID</th>
+              <th>Cliente</th>
+              <th>Fecha</th>
+              <th>Total</th>
+              <th>Comprobante</th>
             </tr>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {orders.map((order) => (
+              <tr key={order.id}>
+                <td>{order.id}</td>
+                <td>{order.nombre}</td>
+                <td>
+                  {format(parseISO(order.fecha), "d 'de' MMMM 'de' yyyy", {
+                    locale: es,
+                  })}
+                </td>
+                <td>{order.total}</td>
+                <td>
+                  {order.comprobante_pago ? (
+                    <a
+                      href={order.comprobante_pago}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Ver Comprobante
+                    </a>
+                  ) : (
+                    "Pagado con Mercado Pago"
+                  )}
+                </td>
+                {/* Agrega cualquier otro detalle de la orden que desees mostrar */}
+              </tr>
+            ))}
+          </TableBody>
+        </Table>
+        <Button onClick={handlePrintOrdersTable}>
+          Imprimir Tabla de Órdenes
+        </Button>
+        <Button onClick={() => exportPDF(ordersTableRef)}>
+          <GetAppIcon /> Exportar Tabla como PDF
+        </Button>
+      </div>
     </SummaryContainer>
   );
 };

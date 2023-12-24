@@ -5,34 +5,23 @@ const breakpoints = {
 };
 
 export const CarouselContainer = styled.div`
-  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 20px;
+  overflow: hidden;
   width: 100%;
-  padding: 50px 0;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.9) 0%,
-    rgba(245, 245, 245, 1) 50%,
-    rgba(255, 255, 255, 0.9) 100%
-  );
+  padding: 40px 0;
+  background: linear-gradient(to right, #fdfbfb, #ebedee);
   position: relative;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
 
-  &:before,
-  &:after {
-    content: "";
-    position: absolute;
-    top: 0;
-    width: 10%;
-    height: 100%;
-    background: linear-gradient(to right, white, transparent);
-  }
-
-  &:after {
-    right: 0;
-    background: linear-gradient(to left, white, transparent);
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.15);
   }
 
   @media only screen and (max-width: ${breakpoints.tablet}) {
-    padding: 10px 0;
+    padding: 30px 0;
   }
 
   @media only screen and (max-width: ${breakpoints.mobile}) {

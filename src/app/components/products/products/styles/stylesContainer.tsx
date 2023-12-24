@@ -26,7 +26,7 @@ const ProductContainerBase = styled.div`
   border-radius: 10px;
   width: 100%;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);  /* Sombra sutil */
-  border: 1px solid rgba(0, 0, 0, 0.1);        /*
+  border: 1px solid rgba(0, 0, 0, 0.1);       
 `;
 
 interface ProductContainerProps {

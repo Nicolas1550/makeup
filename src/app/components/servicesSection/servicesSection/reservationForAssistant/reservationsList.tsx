@@ -6,7 +6,7 @@ import ReservationCard from "./reservationCard";
 
 interface ReservationsListProps {
   reservations: Reservation[];
-  status: "pendiente" | "completado";
+  status: "pendiente" | "completada";
   onMarkComplete: (id: number) => void;
   onDelete: (id: number) => void;
   onMarkPending: (id: number) => void;

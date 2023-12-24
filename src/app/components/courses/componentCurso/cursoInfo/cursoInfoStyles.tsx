@@ -85,15 +85,15 @@ export const DisponibilidadContainer = styled.div`
 `;
 
 export const DisponibilidadInfo = styled.p`
-  margin: 0;
-  color: #e0e0e0; // Color claro
-  font-family: "Roboto", sans-serif; // Fuente más sofisticada
+  color: #e0e0e0; // Mejora el contraste con un tono más claro
+  font-size: 1rem; // Tamaño estándar para mejorar la legibilidad
+  line-height: 1.5; // Espaciado entre líneas para mejorar la legibilidad
 `;
 
 export const HorarioInfo = styled.p`
-  margin: 10px 0;
-  color: #cccccc; // Color claro pero más suave
-  font-family: "Roboto", sans-serif;
+  color: #cccccc;
+  font-size: 0.9rem; // Un poco más pequeño para diferenciar de la info principal
+  line-height: 1.4;
 `;
 
 export const ReservarButton = styled.button`

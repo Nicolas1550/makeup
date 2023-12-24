@@ -42,7 +42,6 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
   datosEnvio,
   ordenId,
   setLoadedComprobante,
-  loadedComprobante,
   countdown,
   comprobanteMessage,
 }) => {
@@ -55,7 +54,6 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
   const [uploadSuccessMessage, setUploadSuccessMessage] = useState<
     string | null
   >(null);
-  const shouldShowShippingDetails = datosEnvio.metodo_envio !== "recoger";
 
   const closePaymentMethod = () => {
     setShowUploadOption(false);

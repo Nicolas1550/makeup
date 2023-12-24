@@ -7,6 +7,11 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
+          {/* Incluir Google Fonts */}
+          <link
+            href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap"
+            rel="stylesheet"
+          />
           {/* Puedes agregar otros elementos en el Head si lo necesitas */}
         </Head>
         <body>

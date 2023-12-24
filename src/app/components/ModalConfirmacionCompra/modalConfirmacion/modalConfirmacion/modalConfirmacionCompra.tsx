@@ -24,17 +24,7 @@ import SeleccionEnvio from "../../seccionEnvio/seccionEnvio/seleccionEnvio";
 import PasarelaPago from "../../pasarelaPago/pasarelaPago/pasarelaPago";
 import { useDispatch } from "react-redux";
 import Image from "next/image";
-import styled from "styled-components";
 
-const CountdownMessage = styled.div`
-  padding: 10px;
-  background-color: #f0f0f0;
-  border-radius: 5px;
-  text-align: center;
-  margin-top: 10px;
-  font-size: 16px;
-  color: #333;
-`;
 interface ModalConfirmacionCompraProps {
   isOpen: boolean;
   onClose: () => void;
@@ -65,7 +55,6 @@ const ModalConfirmacionCompra: React.FC<ModalConfirmacionCompraProps> = ({
   closeModal, // Recibe la función callback para cerrar el modal
 }) => {
   const productos = useAppSelector((state) => state.cart);
-  const [showComprobanteMessage, setShowComprobanteMessage] = useState(false);
   const [comprobanteMessage, setComprobanteMessage] = useState<string | null>(
     null
   );

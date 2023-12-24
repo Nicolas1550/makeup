@@ -12,9 +12,9 @@ import axios from "axios";
 import { Product } from "../../../../redux/productManagementSlice/productManagementSlice";
 import AssignAssistantToService from "@/app/components/servicesSection/assignAssistantToService/assignAssistantToService ";
 import AssignRoleToUser from "@/app/components/servicesSection/assignRoleToUser/assignRoleToUser";
-import ReservationsSummary from "../../productTable/productTable/adminReservationsSection";
+import ReservationsSummary from "../../adminOrdersAndReservations/adminReservationsSection";
 import { AnimatePresence, motion } from "framer-motion";
-import AdminOrdersSection from "../../productTable/productTable/adminOrdersSection";
+import AdminOrdersSection from "../../adminOrdersAndReservations/adminOrdersSection";
 
 interface Props {
   products: Product[];
@@ -100,6 +100,7 @@ const AdminPanel: React.FC<Props> = ({ products }) => {
         <AnimatePresence>
           {isAssignModalOpen && (
             <motion.div
+              key="assignAssistantModal" // Clave única
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
@@ -113,6 +114,7 @@ const AdminPanel: React.FC<Props> = ({ products }) => {
           )}
           {isAssignRoleModalOpen && (
             <motion.div
+              key="assignRoleModal" // Clave única
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}

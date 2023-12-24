@@ -7,7 +7,7 @@ import Button from "@mui/material/Button";
 
 export const StyledDialog = styled(Dialog)`
 .MuiDialog-paper {
-  max-width: 80%;
+  max-width: 550px;
   width: auto; // Cambia a 'auto' para permitir un ancho flexible
   padding: 1rem;
   background-color: #f5f5f5;

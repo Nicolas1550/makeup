@@ -13,6 +13,9 @@ export const SummaryContainer = styled.div`
   gap: 1.5rem;
   max-width: 800px;
   margin: auto;
+  margin-top: 100px;
+  margin-bottom: 100px;
+
   overflow: hidden;
 `;
 
