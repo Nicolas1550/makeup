@@ -6,7 +6,7 @@ import {
 } from "../preview-flow-productStyles/previewProductsStyle";
 import { Product } from "@/app/components/admin/productAction-reducer-types/types/types";
 import Image from "next/image";
-import { ProductImage } from "../../products/styles/styleProducts";
+import { ProductImage as StyledProductImage } from "../../products/styles/styleProducts"; // Importa el componente estilizado
 
 type ProductFlowProps = {
   products: Product[];
@@ -25,18 +25,16 @@ const AnimatedProductDetailsContainer = styled(ProductDetailsContainer)`
 `;
 
 const ProductFlow: React.FC<ProductFlowProps> = ({ products }) => {
-  const loopedProducts = [...products];
+  const loopedProducts = [...products, ...products]; // Duplica los productos para el bucle
 
   return (
     <ProductFlowContainer>
       {loopedProducts.map((product, index) => (
         <AnimatedProductDetailsContainer key={`product-${index}`}>
-          <ProductImage
+          <StyledProductImage // Usa el componente estilizado
             src={
               product.imagen_url
-                ? product.imagen_url.startsWith("https")
-                  ? product.imagen_url
-                  : `http://localhost:3002${product.imagen_url}`
+                ? `http://localhost:3002${product.imagen_url}`
                 : "/path/to/default/image.png"
             }
             alt={product.nombre}
