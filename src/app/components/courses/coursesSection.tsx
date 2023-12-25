@@ -35,10 +35,15 @@ const CoursesIntroContainer = styled.div`
   position: relative;
   z-index: 0;
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
-  background-image: ${colors.backgroundImage}; // Usando la propiedad del objeto
-  background-size: cover; // Asegúrate de que la imagen cubra todo el elemento
-  background-position: center; // Centra la imagen en el elemento
-  background-repeat: no-repeat; // Evita que la imagen se repita
+  background-image: ${colors.backgroundImage};
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  @media (max-width: 1300px) {
+    background-image: url("/img/aa.webp"); // Imagen diferente para móviles
+   
+  }
 `;
 
 const AnimatedIntroDescription = styled(motion.p)`

@@ -86,6 +86,9 @@
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   color: #ffd1dc;
   margin-bottom: 1rem;
+  @media (max-width: 480px) {
+    max-width: rem;
+  }
 }
 
 .block h2:hover {

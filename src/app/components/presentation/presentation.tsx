@@ -12,9 +12,13 @@ import "slick-carousel/slick/slick-theme.css";
 import "@/app/globals.css";
 const StyledTypography = styled(Typography)`
   &.MuiTypography-h2 {
-    font-size: 3em;
-    color: #ff69b4; // Cambia según el estilo deseado
+    font-size: 2.5em; // Tamaño más adaptable
+    color: #ff69b4;
     text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+
+    @media (max-width: 768px) {
+      font-size: 2em;
+    }
   }
 
   &.MuiTypography-h6 {
@@ -76,14 +80,21 @@ const ITEM_DATA = [
 // Styled Components
 const Section = styled.section`
   background-color: ${COLORS.NEUTRAL_LIGHT};
-  padding: 8rem 0;
-`;
+  padding: 4rem 0;
 
+  @media (max-width: 768px) {
+    padding: 2rem 0;
+  }
+`;
 const ContentWrapper = styled.div`
   background-color: rgba(255, 255, 255, 0.95);
-  padding: 3rem;
-  border-radius: 20px;
+  padding: 2rem;
+  border-radius: 15px;
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.08);
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
 `;
 
 const HighlightedText = styled.span`
@@ -107,6 +118,9 @@ const PinkButton = styled(Button)`
   }
   &:active {
     transform: translateY(2px);
+  }
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
   }
 `;
 

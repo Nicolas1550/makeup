@@ -98,7 +98,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
             ))}
           </ImageContainer>
 
-          {/* Puntos de navegación */}
+          {/* Puntos de navegación con colores actualizados */}
           <div style={{ textAlign: "center", marginTop: "10px" }}>
             {images.map((_, index) => (
               <span
@@ -108,7 +108,8 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
                   height: "10px",
                   width: "10px",
                   margin: "0 5px",
-                  backgroundColor: currentIndex === index ? "black" : "gray",
+                  backgroundColor:
+                    currentIndex === index ? "#FF69B4" : "#FFD1DC", // Rosa fuerte para activo, rosa pálido para inactivo
                   borderRadius: "50%",
                   display: "inline-block",
                 }}

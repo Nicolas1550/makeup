@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const CursoDetalleContainer = styled.div`
   min-height: 100vh;
   padding: 40px;
-  background-image: linear-gradient(to bottom, #e6e9f0 0%, #eef1f5 100%);
+  background: linear-gradient(145deg, #FADADD, #FAF3E0);
 
   @media (max-width: 768px) {
     padding: 20px;

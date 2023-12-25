@@ -8,7 +8,6 @@ export const ContenedorPrincipal = styled.div`
   align-items: center;
   gap: 30px;
   padding: 40px;
-  background-image: linear-gradient(135deg, #6b7280 0%, #1f2937 100%);
   border-radius: 20px;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
   margin: auto;
@@ -22,6 +21,14 @@ export const ContenedorPrincipal = styled.div`
     padding: 1px;
     margin-top: 0px;
   }
+  width: 100%;     // Asegura que el componente cubra todo el ancho de la página
+
+  background-image: url('/img/12.webp'); // Ruta a tu imagen
+  background-size: cover;  // Asegura que la imagen cubra completamente el área sin deformarse
+  background-position: center; // Centra la imagen en el contenedor
+  background-repeat: no-repeat; // Evita que la imagen se repita
+  background-color: #FAF3E0;
+
 `;
 
 export const InfoYClasesContainer = styled.div`
@@ -32,7 +39,7 @@ export const InfoYClasesContainer = styled.div`
   gap: 30px;
   margin-top: 50px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 1350px) {
     flex-direction: column;
     gap: 20px;
   }
@@ -62,42 +69,43 @@ export const CarruselYCursoInfoContainer = styled.div`
   }
 `;
 export const ClasesContainer = styled.div`
-  max-height: 800px; // Altura fija para mantener la uniformidad
+  max-height: 784px;
   overflow-y: auto;
-  width: calc(50% - 4rem); // Mismo cálculo de ancho que CursoInfoContainer
-  padding: 2rem; // Padding uniforme
-  color: #f5eae0;
-  border-radius: 15px; // Radio consistente con CursoInfoContainer
-  margin: 2rem; // Margen uniforme para alinear con CursoInfoContainer
-  transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+  width: calc(50% - 4rem);
+  padding: 2rem;
+  color: #5C5C5C;
+  margin: 2rem;
+  transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, background-color 0.3s ease-out;
+  background-color: rgba(255, 255, 255, 0.3); // Fondo blanco con transparencia
+  border-radius: 10px;
 
   &:hover {
-    transform: scale(1.03); // Asegúrate de que el efecto hover es el mismo que en CursoInfoContainer
+    transform: scale(1.03);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    background-color: rgba(255, 255, 255, 0.4); // Fondo más opaco al pasar el cursor
   }
 
-  // Personalización de la barra de desplazamiento para que sea visible siempre
+  // Estilos de la barra de desplazamiento
   &::-webkit-scrollbar {
-    width: 8px; // Ancho más delgado para un look más elegante
+    width: 8px;
   }
-
   &::-webkit-scrollbar-track {
-    background: #2d2d2d; // Fondo oscuro para coherencia
+    background: #2d2d2d;
   }
-
   &::-webkit-scrollbar-thumb {
-    background-color: #a0aec0; // Color del thumb para contrastar con el track
-    border-radius: 10px; // Bordes redondeados
-    border: 3px solid #2d2d2d; // Borde entre el thumb y el track
+    background-color: #a0aec0;
+    border-radius: 10px;
+    border: 3px solid #2d2d2d;
   }
 
-  @media (max-width: 768px) {
-    width: auto; // Toma todo el ancho en dispositivos móviles
-    max-height: 400px; // Ajuste de la altura para dispositivos móviles
-    padding: 1rem; // Padding reducido en móviles
-    margin-top: 1rem; // Margen superior para mantener la estructura
+  @media (max-width: 1350px) {
+    width: auto;
+    max-height: 400px;
+    padding: 1rem;
+    margin-top: 1rem;
   }
-}`;
+`;
+
 export const StyledButton = styled(Button)`
   background-color: #d4b895;
   color: white;

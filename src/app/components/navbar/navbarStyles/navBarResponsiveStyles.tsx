@@ -35,9 +35,8 @@ export const MobileMenuButton = styled.button`
 
 export const NavLinksContainerDesktop = styled.div`
   display: flex;
-
   @media (max-width: 768px) {
-    display: none;
+    display: none; // Ocultar en pantallas pequeñas
   }
 `;
 
@@ -59,8 +58,8 @@ export const MobileMenuContainer = styled.div<{ isOpen: boolean }>`
   display: ${(props) => (props.isOpen ? "flex" : "none")};
   width: 100%;
   height: 100%;
-  align-items: flex-start; // Cambio aquí
-  padding-top: 4rem; // Añade un padding-top aquí
+  align-items: flex-start;
+  padding-top: 4rem;
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.5);
   overflow: hidden;
@@ -76,7 +75,7 @@ export const MobileMenuContainer = styled.div<{ isOpen: boolean }>`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding-top: 60px; // Espacio adicional para evitar la superposición con la barra de navegación
+    padding-top: 60px;
     z-index: 1001;
     overflow-y: auto;
   }
@@ -85,58 +84,50 @@ export const MobileMenuContainer = styled.div<{ isOpen: boolean }>`
 export const InnerMenuContainer = styled.div<{
   onClick?: (e: React.MouseEvent) => void;
 }>`
-  position: absolute; // Cambiar de relative a absolute
-  top: 50%; // Centrar verticalmente
-  left: 50%; // Centrar horizontalmente
+  position: absolute;
+  top: 50%;
+  left: 50%;
   transform: translate(-50%, -50%);
   background-color: #faf3e0;
   border-radius: 8px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-
   max-width: 800px;
   min-height: 300px;
-
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 30px; // Incrementa el espaciado entre elementos si es necesario
-  padding: 40px; // Aumenta el padding para dar más espacio
-  text-align: center; // Centra el contenido de texto
+  gap: 30px;
+  padding: 40px;
+  text-align: center;
   width: 90%;
   min-width: 350px;
   max-width: 1000px;
-  a {
+  a,
+  button {
     margin-left: 0rem !important;
   }
-  button {
-    margin-left: 0 !important;
-  }
-
   .innerMenuContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 20px; // Puedes ajustar este valor si es necesario
-    width: 100%; // Asegura que el contenedor ocupe todo el espacio disponible
+    gap: 20px;
+    width: 100%;
     z-index: 9999 !important;
   }
   & > * {
-    flex: 1; // Hace que todos los elementos hijos ocupen el mismo espacio
+    flex: 1;
     margin: 0;
     padding: 25px;
     text-align: center;
     max-width: 100%;
-
-    box-sizing: border-box; // Asegura que el padding y el borde no aumenten el tamaño del elemento
+    box-sizing: border-box;
   }
-
   @media (min-width: 481px) {
     width: 0%;
   }
-
   @media (min-width: 769px) {
     width: 80%;
   }
@@ -156,11 +147,26 @@ export const InnerMenuContainer = styled.div<{
     justify-content: center;
     margin: 10;
     z-index: 0;
-    height: auto; // Ajusta automáticamente la altura según el contenido
-    max-height: 90vh; // Limita la altura máxima para evitar que se salga de la pantalla
+    height: auto;
+    max-height: 90vh;
     min-width: 300px;
     box-shadow: 0px 4px 12px rgba(255, 105, 180, 0.9);
+    overflow-y: auto;
+  }
+  &::-webkit-scrollbar {
+    width: 8px; // Ancho de la barra de desplazamiento
+  }
 
-    overflow-y: auto; // Permite desplazamiento si el contenido es muy largo
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1; // Color del fondo de la barra de desplazamiento
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888; // Color del control deslizante de la barra de desplazamiento
+    border-radius: 4px; // Bordes redondeados para el control deslizante
+
+    &:hover {
+      background: #555; // Color al pasar el ratón por encima del control deslizante
+    }
   }
 `;

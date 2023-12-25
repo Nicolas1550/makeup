@@ -22,8 +22,11 @@ export const NavbarContainer = styled.nav`
   transition: box-shadow 0.3s;
   padding: 10px 20px;
   z-index: 1000 !important;
+  @media (max-width: 1000px) {
+    padding: 5px 10px; // Reducción del padding
+  }
   @media (max-width: 768px) {
-    padding: 5px 15px; // Reducir el padding en pantallas pequeñas
+    padding: 5px 15px; // Reducción del padding en pantallas aún más pequeñas
   }
 `;
 
@@ -45,7 +48,9 @@ export const LogoSection = styled.div`
   align-items: center;
   gap: 10px;
   z-index: 2; /* z-index definido aquí */
-
+  @media (max-width: 1000px) {
+    gap: 5px; // Reducción del espacio entre el logo y el texto
+  }
   @media (max-width: 768px) {
     flex-direction: row; // Asegurar que el logo y el texto estén en línea
     gap: 26px;
@@ -54,7 +59,10 @@ export const LogoSection = styled.div`
 export const LogoImage = styled.img`
   width: 70px;
   height: 80px;
-
+  @media (max-width: 1000px) {
+    width: 40px; // Reducción del tamaño del logo
+    height: 50px;
+  }
   @media (max-width: 768px) {
     width: 50px; // Reducir el tamaño del logo en pantallas pequeñas
     height: 60px;
@@ -70,6 +78,10 @@ export const LogoText = styled.div`
   &:hover {
     color: ${colors.purpleLight};
   }
+  @media (max-width: 1000px) {
+    font-size: 1rem; // Reducción del tamaño del texto
+    margin-right: 5px; // Reducción del margen
+  }
   @media (max-width: 1368px) {
     font-size: 1.2rem; // Reducir el tamaño del texto en pantallas pequeñas
     margin-right: 70px;
@@ -77,7 +89,6 @@ export const LogoText = styled.div`
   @media (max-width: 1130px) {
     font-size: 1.2rem; // Reducir el tamaño del texto en pantallas pequeñas
     margin-right: 0px;
-
   }
 `;
 
@@ -150,7 +161,11 @@ export const NavLink = styled.a`
     transform: translateY(1px);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); // Sombra más suave al hacer clic
   }
-
+  @media (max-width: 1000px) {
+    font-size: 0.8rem; // Reducción del tamaño de la fuente
+    padding: 0.3rem 0.6rem; // Ajuste del padding
+    margin-left: 0.5rem; // Reducción del margen
+  }
   @media (max-width: 768px) {
     margin-left: 0.5rem; // Menos margen para pantallas pequeñas
     padding: 0.4rem 0.8rem; // Ajusta el padding para pantallas pequeñas

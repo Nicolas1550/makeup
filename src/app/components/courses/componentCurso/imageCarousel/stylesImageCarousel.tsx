@@ -4,19 +4,18 @@ export const MainContainer = styled.div`
   width: 100%;
   margin-top: 100px;
   padding: 20px;
-  background-color: #f2f2f2;
+  background-color: #FAF3E0; // Un color beige claro para coherencia con la temática
   border-radius: 15px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); // Sombra más suave
   display: flex;
   justify-content: space-between;
 
-  @media (max-width: 768px) {
+  @media (max-width: 1350px) {
     flex-direction: column;
     align-items: center;
     margin-top: 60px;
   }
 `;
-
 const slideInFromRight = keyframes`
   from {
     transform: translateX(-100%);
@@ -34,7 +33,6 @@ const slideInFromLeft = keyframes`
     transform: translateX(0);
   }
 `;
-
 export const CarouselContainer = styled.div`
   position: relative;
   width: 50%;
@@ -42,7 +40,7 @@ export const CarouselContainer = styled.div`
   border-radius: 10px;
   animation: ${slideInFromLeft} 1s ease-out forwards;
 
-  @media (max-width: 768px) {
+  @media (max-width: 1350px) {
     width: 100%;
     order: 2;
   }
@@ -63,7 +61,7 @@ export const NavButton = styled.button`
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(255, 182, 193, 0.6); // Rosa pálido semitransparente
   color: white;
   border: none;
   cursor: pointer;
@@ -71,7 +69,12 @@ export const NavButton = styled.button`
   z-index: 2;
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(
+      255,
+      182,
+      193,
+      0.8
+    ); // Rosa pálido más intenso al pasar el ratón
   }
 
   &.prev {
@@ -82,15 +85,15 @@ export const NavButton = styled.button`
     right: 10px;
   }
 
-  @media (max-width: 768px) {
-    display: none; // Oculta los botones en pantallas pequeñas
+  @media (max-width: 1350px) {
+    display: none;
   }
 `;
 
 export const TextContainer = styled.div`
   width: 45%;
   padding: 20px;
-  background-color: #ffffffdd;
+  background-color: #ffffffdd; // Blanco con ligera transparencia
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;
@@ -98,15 +101,14 @@ export const TextContainer = styled.div`
   justify-content: center;
   animation: ${slideInFromRight} 1s ease-out forwards;
 
-  @media (max-width: 768px) {
+  @media (max-width: 1350px) {
     width: 100%;
     order: 1;
   }
 `;
-
 export const InnerTextBox = styled.div`
   text-align: left;
-  color: #d4b895;
+  color: #d4b895; // Color beige/dorado
 
   h2 {
     font-size: 34px;
@@ -115,7 +117,7 @@ export const InnerTextBox = styled.div`
     margin-bottom: 20px;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
     @media (max-width: 768px) {
-      font-size: 28px; // Tamaño más pequeño en pantallas pequeñas
+      font-size: 28px;
     }
   }
 
@@ -126,7 +128,7 @@ export const InnerTextBox = styled.div`
     margin-bottom: 10px;
     text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.1);
     @media (max-width: 768px) {
-      font-size: 16px; // Texto más pequeño en pantallas pequeñas
+      font-size: 16px;
     }
   }
 `;
