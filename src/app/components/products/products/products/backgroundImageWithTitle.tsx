@@ -8,9 +8,15 @@ const BackgroundContainer = styled.div`
   height: 300px; // Altura ajustable según necesidad
   position: relative;
   overflow: hidden;
+  margin-top: 85px;
   display: flex;
   justify-content: center; // Centra horizontalmente el contenido
   align-items: center; // Centra verticalmente el contenido
+  @media (max-width: 768px) {
+    height: 200px; // Altura ajustable según necesidad
+    margin-top: 74px;
+
+  }
 `;
 
 const BackgroundImage = styled(motion.img)`
@@ -35,7 +41,9 @@ const Title = styled(motion.h1)`
     font-size: 2rem; // Tamaño más pequeño para pantallas más estrechas
   }
   @media (max-width: 480px) {
-    font-size: 1.5rem; // Tamaño aún más pequeño para móviles
+    font-size: 1.7rem; // Tamaño aún más pequeño para móviles
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9); // Sombra para mejorar legibilidad
+
   }
 `;
 

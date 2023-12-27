@@ -4,11 +4,12 @@ export const MainContainer = styled.div`
   width: 100%;
   margin-top: 100px;
   padding: 20px;
-  background-color: #FAF3E0; // Un color beige claro para coherencia con la temática
+  background-color: #faf3e0; // Un color beige claro para coherencia con la temática
   border-radius: 15px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); // Sombra más suave
   display: flex;
   justify-content: space-between;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 
   @media (max-width: 1350px) {
     flex-direction: column;
@@ -49,12 +50,41 @@ export const CarouselContainer = styled.div`
 export const ImageContainer = styled.div`
   display: flex;
   transition: transform 0.5s ease;
+  transition: transform 0.3s ease-out, box-shadow 0.3s ease-out,
+    background-color 0.3s ease-out;
+  border-radius: 10px;
+
+  &:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    background-color: rgba(
+      255,
+      255,
+      255,
+      0.4
+    ); // Fondo más opaco al pasar el cursor
+  }
 `;
 
 export const CarouselImage = styled.img`
   width: 100%;
   height: auto;
   flex-shrink: 0;
+  transition: transform 0.3s ease-out, box-shadow 0.3s ease-out,
+    background-color 0.3s ease-out;
+  background-color: rgba(255, 255, 255, 0.3); // Fondo blanco con transparencia
+  border-radius: 10px;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    background-color: rgba(
+      255,
+      255,
+      255,
+      0.4
+    ); // Fondo más opaco al pasar el cursor
+  }
 `;
 
 export const NavButton = styled.button`
@@ -67,14 +97,11 @@ export const NavButton = styled.button`
   cursor: pointer;
   padding: 10px;
   z-index: 2;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 
   &:hover {
-    background-color: rgba(
-      255,
-      182,
-      193,
-      0.8
-    ); // Rosa pálido más intenso al pasar el ratón
+    background-color: rgba(255, 182, 193, 0.8);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   }
 
   &.prev {
@@ -119,6 +146,9 @@ export const InnerTextBox = styled.div`
     @media (max-width: 768px) {
       font-size: 28px;
     }
+    &:hover {
+      color: #e0c3a6; // Un tono más claro
+    }
   }
 
   p {
@@ -129,6 +159,9 @@ export const InnerTextBox = styled.div`
     text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.1);
     @media (max-width: 768px) {
       font-size: 16px;
+    }
+    &:hover {
+      color: #5a5a5a; // Un tono más oscuro
     }
   }
 `;

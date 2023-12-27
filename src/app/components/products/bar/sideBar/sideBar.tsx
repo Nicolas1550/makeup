@@ -116,6 +116,7 @@ const CombinedFilterComponent: React.FC = () => {
   const dispatch = useDispatch();
   const sidebarRef = useRef<HTMLDivElement>(null);
   const [scrollY, setScrollY] = useState(0); // Nuevo estado para rastrear la posición del scroll
+  const [isButtonVisible, setIsButtonVisible] = useState(false); // Nuevo estado para la visibilidad del botón
 
   const searchTerm = useSelector((state: RootState) => state.filter.searchTerm);
   const priceRange = useSelector((state: RootState) => state.filter.priceRange);
@@ -236,10 +237,14 @@ const CombinedFilterComponent: React.FC = () => {
   };
 
   useEffect(() => {
-    setLastScrollY(window.scrollY); // Establecer la posición inicial del scroll en el montaje
-
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
+      const isMobileView = window.innerWidth <= 768;
+      setIsMobile(isMobileView);
+      if (isMobileView) {
+        // Mantener cerrado el sidebar al cambiar a vista móvil
+        setIsExpanded(false);
+        setIsFilterOpen(false);
+      }
     };
 
     window.addEventListener("resize", handleResize);
@@ -266,42 +271,47 @@ const CombinedFilterComponent: React.FC = () => {
   }, []);
   const handleScroll = () => {
     const currentScrollY = window.scrollY;
-    setScrollY(currentScrollY); // Actualizar la posición del scroll
-    const isPastThreshold = currentScrollY > 0;
-    setIsSticky(isPastThreshold);
-    setIsExpanded(!isPastThreshold);
+    setIsButtonVisible(currentScrollY > 200);
+    setScrollY(currentScrollY);
+    setIsSticky(currentScrollY > 150);
+
+    // Solo modificar isExpanded en escritorio
+    if (!isMobile) {
+      setIsExpanded(currentScrollY === 0);
+    }
   };
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-  useEffect(() => {
-    const updateSidebarState = () => {
-      const atTop = window.scrollY === 0;
+  }, [isMobile]); // Asegúrate de que isMobile esté en la lista de dependencias
+
+  const updateSidebarState = () => {
+    const atTop = window.scrollY === 0;
+
+    if (isMobile) {
+      // En móviles, el estado de apertura se maneja exclusivamente a través del botón.
+      setIsFilterOpen(atTop);
+    } else {
+      // En escritorio, se puede manejar de forma diferente si es necesario
       setIsExpanded(atTop);
+    }
+  };
 
-      // Si estamos en la parte superior, queremos asegurarnos de que el sidebar esté abierto.
-      if (atTop) {
-        setIsFilterOpen(true);
-      } else if (!atTop && isMobile) {
-        // En dispositivos móviles, si no estamos en la parte superior, cerramos el sidebar.
-        setIsFilterOpen(false);
-      }
-    };
-
+  useEffect(() => {
     window.addEventListener("scroll", updateSidebarState);
     return () => window.removeEventListener("scroll", updateSidebarState);
   }, [isMobile]);
+
   useEffect(() => {
     if (isMobile && isExpanded) {
       setForceShowScrollbar(true);
-  
+
       // Resetear después de un breve período
       setTimeout(() => setForceShowScrollbar(false), 0);
     }
   }, [isMobile, isExpanded]);
-  
+
   // Asegúrate de que isMobile esté definido y actualizado correctamente en tus dependencias de useEffect.
   const handleMouseEnter = () => {
     if (!isMobile && !isColorMenuOpen && !isMarcaMenuOpen) {
@@ -327,18 +337,19 @@ const CombinedFilterComponent: React.FC = () => {
     }
   }, [isFilterOpen]);
   useEffect(() => {
-    // Esta función se asegura de que el estado se actualice después de que la página haya cargado completamente
     const updateScrollPosition = () => {
       requestAnimationFrame(() => {
-        setIsExpanded(window.scrollY === 0);
+        // Eliminar la actualización de isExpanded basada en la posición del scroll para móviles
+        if (!isMobile) {
+          setIsExpanded(window.scrollY === 0);
+        }
       });
     };
 
-    updateScrollPosition();
-
     window.addEventListener("scroll", updateScrollPosition);
     return () => window.removeEventListener("scroll", updateScrollPosition);
-  }, []);
+  }, [isMobile]); // Asegurarse de que isMobile esté en la lista de dependencias
+
   useEffect(() => {
     if (!isExpanded) {
       setIsSelectMenuOpen(false);
@@ -346,7 +357,14 @@ const CombinedFilterComponent: React.FC = () => {
       setIsMarcaMenuOpen(false); // Añadir esto
     }
   }, [isExpanded]);
-
+  useEffect(() => {
+    const isMobileView = window.innerWidth <= 768;
+    setIsMobile(isMobileView);
+    if (isMobileView) {
+      setIsExpanded(false);
+      setIsFilterOpen(false);
+    }
+  }, []);
   const scrollToSubMenu = () => {
     if (sidebarRef.current) {
       const submenuElement = sidebarRef.current.querySelector(
@@ -365,12 +383,13 @@ const CombinedFilterComponent: React.FC = () => {
 
   return (
     <>
-      {isMobile && (
+      {isMobile && isButtonVisible && (
         <HamburgerButton
           onClick={() => {
-            setIsFilterOpen(!isFilterOpen);
-            setIsExpanded(!isExpanded);
-            dispatch(setSidebarOpenedByButton(!isFilterOpen)); // Actualiza el nuevo estado
+            const newState = !isFilterOpen;
+            setIsFilterOpen(newState);
+            setIsExpanded(newState); // El botón controla la expansión
+            dispatch(setSidebarOpenedByButton(newState));
           }}
         >
           {isFilterOpen ? "Ocultar Filtros" : "Mostrar Filtros"}

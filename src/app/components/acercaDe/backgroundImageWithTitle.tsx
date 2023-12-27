@@ -18,6 +18,7 @@ const BackgroundImage = styled(motion.img)`
     transform: scale(1.05); // Efecto de zoom al pasar el cursor
     transition: transform 0.5s ease;
   }
+  
 `;
 
 const Title = styled(motion.h1)`

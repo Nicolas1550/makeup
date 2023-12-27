@@ -62,6 +62,8 @@ const ReservaModal: React.FC<ReservaModalProps> = ({
   };
 
   const confirmarReserva = async () => {
+    console.log("La reserva ya está en proceso.");
+
     if (reservaEnProceso) return; // Evitar múltiples clics
     setReservaEnProceso(true);
 
@@ -116,6 +118,7 @@ const ReservaModal: React.FC<ReservaModalProps> = ({
       toast.error("Por favor, complete todos los pasos.");
       setReservaEnProceso(false); // Re-habilitar el botón si faltan pasos
     }
+
   };
   // Cuando el modal se cierre, resetea los campos
   useEffect(() => {
@@ -193,9 +196,12 @@ const ReservaModal: React.FC<ReservaModalProps> = ({
               {activeStep < 3 ? (
                 <StyledButton onClick={handleNext}>Siguiente</StyledButton>
               ) : (
-                <StyledButton onClick={confirmarReserva}>
-                  Confirmar Reserva
-                </StyledButton>
+                <StyledButton 
+                onClick={confirmarReserva} 
+                disabled={reservaEnProceso} // Desactivar el botón durante el proceso
+              >
+                Confirmar Reserva
+              </StyledButton>
               )}
             </div>
           </div>

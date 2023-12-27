@@ -1,6 +1,7 @@
 import Slider from "@mui/material/Slider";
 import styled from "styled-components";
 import React, { forwardRef } from "react";
+import { motion } from "framer-motion";
 
 export const colors = {
   neutralLight: "#FAF3E0",
@@ -197,19 +198,16 @@ interface StickyFilterContainerProps {
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
   children?: React.ReactNode;
-  className?: string; // Añadir className aquí
+  className?: string;
 }
 
-// Definición del componente base con forwardRef
 const StickyFilterContainerBase = forwardRef<
   HTMLDivElement,
   StickyFilterContainerProps
 >(
   (
     {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       isSticky,
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       isExpanded,
       onMouseEnter,
       onMouseLeave,
@@ -218,21 +216,30 @@ const StickyFilterContainerBase = forwardRef<
       ...rest
     },
     ref
-  ) => (
-    <div
-      ref={ref}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      className={className}
-      {...rest}
-    >
-      {children}
-    </div>
-  )
+  ) => {
+    return (
+      <motion.div
+        ref={ref}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        className={className}
+        {...rest}
+        initial={{ y: -100, opacity: 0, scale: 0.95 }}
+        animate={{
+          y: isExpanded ? 0 : 20,
+          opacity: isExpanded ? 1 : 0.7,
+          scale: isExpanded ? 1 : 0.95,
+        }}
+        transition={{ duration: 0.7, ease: "easeOut" }}
+      >
+        {children}
+      </motion.div>
+    );
+  }
 );
+
 StickyFilterContainerBase.displayName = "StickyFilterContainerBase";
 
-// Aplicación de estilos con styled-components
 export const StickyFilterContainer = styled(StickyFilterContainerBase)`
   position: ${({ isSticky }) => (isSticky ? "fixed" : "static")};
   top: ${({ isSticky, isExpanded }) =>
@@ -242,25 +249,21 @@ export const StickyFilterContainer = styled(StickyFilterContainerBase)`
   padding: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-
-  // Cambio clave: el margen solo se aplica cuando no es sticky
   margin-top: ${({ isSticky }) => (isSticky ? "0" : "30px")};
   margin-bottom: ${({ isSticky }) => (isSticky ? "0" : "29px")};
-
   display: flex;
   flex-direction: column;
   width: auto;
-
   max-height: ${({ isExpanded }) =>
     isExpanded ? "calc(100vh - 60px)" : "30%"};
   overflow-y: hidden;
   opacity: ${({ isExpanded }) => (isExpanded ? "1" : "0.7")};
-
   transition: top 0.5s ease-in-out, max-height 0.3s ease-in-out,
     opacity 0.3s ease-in-out;
+
   &.collapsed {
     top: -110px;
-    opacity: 0.5;
+    opacity: 0.6;
     transition: top 0.5s ease-in-out, opacity 0.5s ease-in-out;
   }
 
@@ -270,18 +273,27 @@ export const StickyFilterContainer = styled(StickyFilterContainerBase)`
   }
 
   @media (max-width: 768px) {
-    top: ${({ isSticky, isExpanded }) =>
-      isSticky ? (isExpanded ? "110px" : "0") : "0"};
-    overflow-y: auto;
-    max-height: 100vh;
-    height: ${({ isExpanded }) => (isExpanded ? "auto" : "60px")};
+    position: fixed;
+
+    top: ${({ isSticky, isExpanded }) => (isExpanded ? "20" : "-90%")};
+    left: 0;
+    right: 0;
+    margin: 0;
+    width: 100%;
+    height: ${({ isExpanded }) => (isExpanded ? "auto" : "0")};
     border-radius: 0;
+    padding: ${({ isExpanded }) => (isExpanded ? "20px" : "0")};
     transform: ${({ isExpanded }) =>
-      isExpanded ? "none" : "translateY(-100%)"};
+      isExpanded ? "translateY(0)" : "translateY(-100%)"};
     box-shadow: ${({ isExpanded }) =>
-      isExpanded ? "0 -4px 6px rgba(0, 0, 0, 0.1)" : "none"};
+      isExpanded ? "0 2px 4px rgba(0, 0, 0, 0.1)" : "none"};
     overflow-y: ${({ isExpanded }) => (isExpanded ? "auto" : "hidden")};
-    max-height: ${({ isExpanded }) => (isExpanded ? "100vh" : "60px")};
+
+    &.collapsed {
+      top: -110px;
+      opacity: 0 !important;
+      transition: top 0.5s ease-in-out, opacity 0.5s ease-in-out;
+    }
   }
 `;
 

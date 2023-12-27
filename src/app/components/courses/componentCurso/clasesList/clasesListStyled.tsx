@@ -69,7 +69,7 @@ export const CarruselYCursoInfoContainer = styled.div`
   }
 `;
 export const ClasesContainer = styled.div`
-  max-height: 784px;
+  max-height: 860px;
   overflow-y: auto;
   width: calc(50% - 4rem);
   padding: 2rem;

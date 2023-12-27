@@ -107,7 +107,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
                   cursor: "pointer",
                   height: "10px",
                   width: "10px",
-                  margin: "0 5px",
+                  margin: "0 15px 0px 0px",
                   backgroundColor:
                     currentIndex === index ? "#FF69B4" : "#FFD1DC", // Rosa fuerte para activo, rosa pálido para inactivo
                   borderRadius: "50%",

@@ -175,7 +175,7 @@ const Products: React.FC<{
       marginBottom: windowWidth > 768 ? "2.5rem" : "1rem", // Ajustar según sea necesario
     },
     collapsed: {
-      marginTop: windowWidth > 768 ? "5rem" : "5rem", // Ajustar según sea necesario
+      marginTop: windowWidth > 768 ? "2rem" : "2rem", // Ajustar según sea necesario
     },
   };
   const filterProducts = (products: ProductType[]): ProductType[] => {
@@ -238,7 +238,6 @@ const Products: React.FC<{
         displayType={displayMode === "both" ? "fullList" : displayMode}
       >
         <CombinedFilterComponent />
-
         <motion.div
           variants={titleVariants}
           transition={{ duration: 0.5, ease: "linear" }}

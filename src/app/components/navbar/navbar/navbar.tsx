@@ -263,19 +263,21 @@ const Navbar: React.FC = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (isDropdownOpen && !isMobile) {
+      // Comprueba si el menú está abierto y si no se muestra ninguno de los modales
+      if (isDropdownOpen && !isReservationsModalOpen && !isHistoryModalOpen) {
         setIsDropdownOpen(false);
       }
     };
-
+  
     // Añadir listener para el scroll
     window.addEventListener("scroll", handleScroll, { passive: true });
-
+  
     // Limpiar el listener para el scroll
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [isDropdownOpen, isMobile]);
+  }, [isDropdownOpen, isReservationsModalOpen, isHistoryModalOpen]);
+  
   const handleMobileMenuToggle = () => {
     // Cambiar el estado del menú móvil
     setIsMenuOpen(!isMenuOpen);
