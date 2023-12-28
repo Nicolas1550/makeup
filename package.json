@@ -43,7 +43,7 @@
     "polished": "^4.2.2",
     "postcss": "8.4.28",
     "rc-slider": "^10.2.1",
-    "react": "^18.2.0",
+    "react": "^17.0.0",
     "react-big-calendar": "^1.8.4",
     "react-chartjs-2": "^5.2.0",
     "react-color": "^2.19.3",
