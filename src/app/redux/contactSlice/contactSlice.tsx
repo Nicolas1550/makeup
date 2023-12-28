@@ -11,6 +11,11 @@ interface ContactState {
   error: string | null;
   success: boolean;
 }
+interface ContactFormData {
+  name: string;
+  email: string;
+  message: string;
+}
 
 const initialState: ContactState = {
   loading: false,
@@ -20,10 +25,7 @@ const initialState: ContactState = {
 
 export const sendContactForm = createAsyncThunk(
   "contact/sendContactForm",
-  async (
-    formData: { email: string; name: string; message: string },
-    thunkAPI
-  ) => {
+  async (formData: ContactFormData, thunkAPI) => {
     try {
       const response = await fetch("/contact", {
         method: "POST",
@@ -32,9 +34,17 @@ export const sendContactForm = createAsyncThunk(
         },
         body: JSON.stringify(formData),
       });
-      if (!response.ok) throw new Error("Network response was not ok");
+      if (!response.ok) {
+        const errorResponse = await response.json();
+        throw new Error(errorResponse.message || "Network response was not ok");
+      }
       return await response.json();
     } catch (error) {
+      // Verifica si 'error' es una instancia de 'Error'
+      if (error instanceof Error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
+      // Retorna un mensaje genérico si el error no es una instancia de 'Error'
       return thunkAPI.rejectWithValue(
         "Error al enviar el formulario de contacto"
       );
