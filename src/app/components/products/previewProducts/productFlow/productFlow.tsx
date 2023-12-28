@@ -5,7 +5,6 @@ import {
   ProductFlowContainer,
 } from "../preview-flow-productStyles/previewProductsStyle";
 import { Product } from "@/app/components/admin/productAction-reducer-types/types/types";
-import Image from "next/image";
 import { ProductImage as StyledProductImage } from "../../products/styles/styleProducts"; // Importa el componente estilizado
 
 type ProductFlowProps = {

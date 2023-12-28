@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { motion } from "framer-motion";
-import Link from "next/link";
 
 const BackgroundContainer = styled.div`
   width: 100%;

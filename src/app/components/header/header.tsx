@@ -1,7 +1,7 @@
-import React, { useEffect, useState, ReactNode } from "react";
+import React, { useEffect, useState } from "react";
 import "./shinyButton.css";
-import Link, { LinkProps } from "next/link";
-import ButtonLink from "./buttomLink";
+import Link from "next/link";
+
 
 const colors = {
   neutralLight: "#FAF3E0",

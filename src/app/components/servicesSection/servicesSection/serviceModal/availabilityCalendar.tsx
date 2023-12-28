@@ -56,25 +56,7 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
   eventPropGetter, // Añadir esto
 
 }) => {
-  const eventStyleGetter: EventPropGetter<CalendarEvent> = (
-    event,
-    start,
-    end,
-    isSelected
-  ) => {
-    let newStyle = {};
-    if (event.estado === "disponible") {
-      newStyle = {
-        style: {
-          backgroundColor: "brown",
-          color: "white",
-        },
-      };
-    } else if (event.estado === "reservado") {
-      newStyle = { className: "event-reservado" };
-    }
-    return newStyle;
-  };
+ 
   useEffect(() => {
     // Encuentra todos los botones en la barra de herramientas del calendario
     const toolbarButtons = Array.from(

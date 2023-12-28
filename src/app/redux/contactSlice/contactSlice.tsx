@@ -57,7 +57,7 @@ const contactSlice = createSlice({
       state.loading = true;
       state.error = null;
     });
-    builder.addCase(sendContactForm.fulfilled, (state, action) => {
+    builder.addCase(sendContactForm.fulfilled, (state) => {
       state.loading = false;
       state.success = true;
       // Manejo adicional del estado si es necesario

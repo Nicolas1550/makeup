@@ -35,7 +35,6 @@ const ReservaModal: React.FC<ReservaModalProps> = ({
   disponibilidadSeleccionada,
 }) => {
   const [activeStep, setActiveStep] = useState(0);
-  const [datosUsuario, setDatosUsuario] = useState(""); // Captura de datos adicionales del usuario
   const [comprobanteFile, setComprobanteFile] = useState<File | null>(null); // Estado para el archivo de comprobante
   const [reservaEnProceso, setReservaEnProceso] = useState(false);
 

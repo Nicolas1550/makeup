@@ -207,7 +207,6 @@ const StickyFilterContainerBase = forwardRef<
 >(
   (
     {
-      isSticky,
       isExpanded,
       onMouseEnter,
       onMouseLeave,
@@ -275,7 +274,7 @@ export const StickyFilterContainer = styled(StickyFilterContainerBase)`
   @media (max-width: 768px) {
     position: fixed;
 
-    top: ${({ isSticky, isExpanded }) => (isExpanded ? "20" : "-90%")};
+    top: ${({ isExpanded }) => (isExpanded ? "20" : "-90%")};
     left: 0;
     right: 0;
     margin: 0;

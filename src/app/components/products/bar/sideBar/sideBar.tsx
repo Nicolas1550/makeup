@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaRegSmile, FaRegEye } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
@@ -105,6 +105,7 @@ const CombinedFilterComponent: React.FC = () => {
   const classes = useStyles();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isSelectMenuOpen, setIsSelectMenuOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [forceShowScrollbar, setForceShowScrollbar] = useState(false);
 
   const [isFilterOpen, setIsFilterOpen] = useState(true);
@@ -115,6 +116,7 @@ const CombinedFilterComponent: React.FC = () => {
   };
   const dispatch = useDispatch();
   const sidebarRef = useRef<HTMLDivElement>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [scrollY, setScrollY] = useState(0); // Nuevo estado para rastrear la posición del scroll
   const [isButtonVisible, setIsButtonVisible] = useState(false); // Nuevo estado para la visibilidad del botón
 
@@ -269,7 +271,7 @@ const CombinedFilterComponent: React.FC = () => {
     window.addEventListener("resize", checkIfMobile);
     return () => window.removeEventListener("resize", checkIfMobile);
   }, []);
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     const currentScrollY = window.scrollY;
     setIsButtonVisible(currentScrollY > 200);
     setScrollY(currentScrollY);
@@ -279,16 +281,16 @@ const CombinedFilterComponent: React.FC = () => {
     if (!isMobile) {
       setIsExpanded(currentScrollY === 0);
     }
-  };
+  }, [isMobile]);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isMobile]); // Asegúrate de que isMobile esté en la lista de dependencias
+  }, [handleScroll, isMobile]);
 
-  const updateSidebarState = () => {
+  const updateSidebarState = useCallback(() => {
     const atTop = window.scrollY === 0;
-
+  
     if (isMobile) {
       // En móviles, el estado de apertura se maneja exclusivamente a través del botón.
       setIsFilterOpen(atTop);
@@ -296,12 +298,12 @@ const CombinedFilterComponent: React.FC = () => {
       // En escritorio, se puede manejar de forma diferente si es necesario
       setIsExpanded(atTop);
     }
-  };
+  }, [isMobile]);
 
   useEffect(() => {
     window.addEventListener("scroll", updateSidebarState);
     return () => window.removeEventListener("scroll", updateSidebarState);
-  }, [isMobile]);
+  }, [updateSidebarState, isMobile]); // Añadir 'updateSidebarState' aquí
 
   useEffect(() => {
     if (isMobile && isExpanded) {

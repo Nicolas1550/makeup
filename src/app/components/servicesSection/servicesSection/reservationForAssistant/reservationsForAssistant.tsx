@@ -136,6 +136,7 @@ function ReservationsForAssistant() {
       (reservation) => reservation.estado === selectedStatus
     );
   }, [courseReservations, selectedStatus]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [orderedCourseReservations, setOrderedCourseReservations] = useState<
     ReservaConHorarios[]
   >([]);
@@ -143,18 +144,20 @@ function ReservationsForAssistant() {
     Reservation[]
   >([]);
   console.log("Reservas filtradas", filteredCourseReservations);
-  const sortReservations = <T extends { fecha_reserva?: string }>(
-    reservations: T[]
-  ) => {
-    return reservations.slice().sort((a, b) => {
-      if (!a.fecha_reserva || !b.fecha_reserva) return 0;
-      const dateA = new Date(a.fecha_reserva);
-      const dateB = new Date(b.fecha_reserva);
-      return sortOrder === "asc"
-        ? dateA.getTime() - dateB.getTime()
-        : dateB.getTime() - dateA.getTime();
-    });
-  };
+  const sortReservations = useCallback(
+    <T extends { fecha_reserva?: string }>(reservations: T[]) => {
+      return reservations.slice().sort((a, b) => {
+        if (!a.fecha_reserva || !b.fecha_reserva) return 0;
+        const dateA = new Date(a.fecha_reserva);
+        const dateB = new Date(b.fecha_reserva);
+        return sortOrder === "asc"
+          ? dateA.getTime() - dateB.getTime()
+          : dateB.getTime() - dateA.getTime();
+      });
+    },
+    [sortOrder] // Dependencias de useCallback
+  );
+  
 
   const handleCompleteClick = (reservationId: number) => {
     dispatch(markReservationAsCompleted(reservationId));
@@ -205,7 +208,8 @@ function ReservationsForAssistant() {
   useEffect(() => {
     setOrderedCourseReservations(sortReservations(filteredCourseReservations));
     setOrderedServiceReservations(sortReservations(reservations));
-  }, [sortOrder, filteredCourseReservations, reservations]);
+  }, [sortOrder, filteredCourseReservations, reservations, sortReservations]); // Añadir 'sortReservations' aquí
+  
   return (
     <Container>
       <Heading>Reservas para el ayudante {ayudanteName || ayudanteId}</Heading>

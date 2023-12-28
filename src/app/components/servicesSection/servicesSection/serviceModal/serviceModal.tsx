@@ -151,11 +151,8 @@ const ServiceModal: React.FC<ServiceModalProps> = ({
 
   const eventStyleGetter: EventPropGetter<MyEvent> = (
     event,
-    start,
-    end,
-    isSelected
   ) => {
-    let newStyle = {
+    const newStyle = {
       className: "",
       style: {},
     };

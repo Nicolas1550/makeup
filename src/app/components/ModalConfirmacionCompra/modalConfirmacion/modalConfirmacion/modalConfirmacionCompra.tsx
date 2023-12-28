@@ -35,11 +35,6 @@ interface ModalConfirmacionCompraProps {
   loadedComprobante?: File | null;
 }
 
-interface DatosUsuarioType {
-  nombre: string;
-  email: string;
-  telefono: string;
-}
 
 interface DatosEnvioType {
   metodo_envio: string;
