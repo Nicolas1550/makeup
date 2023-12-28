@@ -112,7 +112,7 @@ const ContactPage: React.FC = () => {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
           />
-          <SubmitButton type="submit">Enviar Mensaje</SubmitButton>
+          <SubmitButton type="submit">Enviar Mensajeeee</SubmitButton>
         </Form>
       </ContactContainer>
     </>
