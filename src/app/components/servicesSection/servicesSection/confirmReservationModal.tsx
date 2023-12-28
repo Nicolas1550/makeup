@@ -96,7 +96,13 @@ const ConfirmReservationModal: React.FC<ConfirmReservationModalProps> = ({
   const [step, setStep] = useState<number>(1);
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      setFile(event.target.files[0]);
+      const selectedFile = event.target.files[0];
+      if (selectedFile.size > 10485760) {
+        // 10 MB = 10 * 1024 * 1024 bytes
+        alert("El archivo es demasiado grande. El límite es de 10 MB.");
+        return;
+      }
+      setFile(selectedFile);
     }
   };
   useEffect(() => {
@@ -143,6 +149,13 @@ const ConfirmReservationModal: React.FC<ConfirmReservationModalProps> = ({
       setFetchedServices((prev) => [...prev, serviceId]);
     }
   }, [serviceId, optionsForService, fetchedServices, dispatch]);
+  useEffect(() => {
+    if (!isOpen) {
+      setStep(1); // Reiniciar el paso al valor inicial
+      setSelectedOptions([]); // Opcional: reiniciar también las opciones seleccionadas si es necesario
+      setFile(null); // Reiniciar cualquier otro estado relevante para el modal
+    }
+  }, [isOpen]);
 
   return (
     <StyledModal isOpen={isOpen} onRequestClose={onRequestClose}>
@@ -171,11 +184,24 @@ const ConfirmReservationModal: React.FC<ConfirmReservationModalProps> = ({
             <OptionTitle>Selecciona Las Opciones:</OptionTitle>
             <ServiceOptionsSelector
               options={optionsForService}
+              selectedOptions={selectedOptions} // Paso de las opciones seleccionadas
               onOptionsSelected={handleOptionsSelected}
             />
           </ServiceOptionsContainer>
           <Actions>
-            <NextButton onClick={() => setStep(3)}>Siguiente</NextButton>
+            <NextButton
+              onClick={() => {
+                if (selectedOptions.length === 0) {
+                  alert(
+                    "Por favor, selecciona al menos una opción para continuar."
+                  );
+                } else {
+                  setStep(3);
+                }
+              }}
+            >
+              Siguiente
+            </NextButton>
             <BackButton onClick={() => setStep(1)}>Atrás</BackButton>
           </Actions>
         </StepContainer>

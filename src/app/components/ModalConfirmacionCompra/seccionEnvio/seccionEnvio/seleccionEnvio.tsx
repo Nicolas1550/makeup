@@ -29,6 +29,7 @@ interface SeleccionEnvioProps {
     codigo_postal: string;
     pais: string;
   };
+  
 }
 
 const SeleccionEnvio: React.FC<SeleccionEnvioProps> = ({
@@ -242,7 +243,7 @@ const SeleccionEnvio: React.FC<SeleccionEnvioProps> = ({
       {metodo_envio === "recoger" && (
         <div>
           <h6>Dirección de la Tienda:</h6>
-          <p>Dirección de la tienda aquí</p>
+          <p>Thorne 1145 | Horario 14 a 20</p>
         </div>
       )}
       <ButtonContainer>

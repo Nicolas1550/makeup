@@ -147,7 +147,7 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
       // Mostrar "Buscar en tienda (direccion)" cuando el método de envío es "Recoger en Tienda"
       return (
         <p>
-          <strong>Buscar en tienda (direccion)</strong>
+          <strong>Buscar en tienda (Thorne 1145 Horario 14 a 20)</strong>
         </p>
       );
     } else {

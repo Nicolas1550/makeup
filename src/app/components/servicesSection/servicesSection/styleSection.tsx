@@ -97,8 +97,11 @@ export const ServiceIcon = styled.div`
 `;
 
 export const ServiceTitle = styled.h3`
+  display: flex;
+  justify-content: center;
+  aling-items: center;
   font-family: "Roboto", sans-serif;
-  font-size: 26px;
+  font-size: 25px;
   margin-bottom: 18px;
   color: ${colors.darkerGray};
 `;

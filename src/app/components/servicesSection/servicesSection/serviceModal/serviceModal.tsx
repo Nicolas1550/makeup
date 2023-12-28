@@ -38,6 +38,7 @@ import {
 } from "./styledModalService";
 import ServiceCarousel from "./serviceCarousel";
 import ServiceOptionsManager from "./serviceOptionsManager";
+import { EventPropGetter } from "react-big-calendar";
 
 interface CalendarEvent {
   id?: number;
@@ -113,7 +114,7 @@ const ServiceModal: React.FC<ServiceModalProps> = ({
     (state) => state.services.availabilities
   );
   type CalendarView = "month" | "week" | "day" | "agenda" | "work_week";
-  const [currentView, setCurrentView] = useState<CalendarView>("week");
+  const [currentView, setCurrentView] = useState<CalendarView>("day");
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [localSelectedService, setLocalSelectedService] =
     useState(selectedService);
@@ -139,7 +140,42 @@ const ServiceModal: React.FC<ServiceModalProps> = ({
       setConfirmModalOpen(true);
     }
   };
+  interface MyEvent {
+    id?: number;
+    title: string;
+    start: Date;
+    end: Date;
+    allDay: boolean;
+    estado?: string;
+  }
 
+  const eventStyleGetter: EventPropGetter<MyEvent> = (
+    event,
+    start,
+    end,
+    isSelected
+  ) => {
+    let newStyle = {
+      className: "",
+      style: {},
+    };
+
+    if (event.estado === "reservado") {
+      newStyle.className = "rbc-event-Reservado";
+      newStyle.style = {
+        backgroundColor: "#800020",
+        color: "FFFDD0",
+      };
+    } else if (event.estado === "disponible") {
+      newStyle.className = "rbc-event-Disponible";
+      newStyle.style = {
+        backgroundColor: "#B2AC88",
+        color: "FFFFFF",
+      };
+    }
+
+    return newStyle;
+  };
   // Convertir disponibilidades al formato adecuado para el calendario
   const calendarEvents = [
     ...availabilities.map((availability) => ({
@@ -505,6 +541,7 @@ const ServiceModal: React.FC<ServiceModalProps> = ({
               ) : (
                 <>
                   <AvailabilityCalendar
+                    eventPropGetter={eventStyleGetter}
                     isOpen={showCalendar}
                     onRequestClose={() => setShowCalendar(false)}
                     currentView={currentView}

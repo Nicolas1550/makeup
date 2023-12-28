@@ -19,7 +19,9 @@ import {
   removeItem,
 } from "../../../../redux/cartSlice/cartSlice";
 import { Stepper } from "../../stepper/stepper";
-import DatosUsuario from "../../datosUsuario/datosUsuario/datosUsuario";
+import DatosUsuario, {
+  Datos,
+} from "../../datosUsuario/datosUsuario/datosUsuario";
 import SeleccionEnvio from "../../seccionEnvio/seccionEnvio/seleccionEnvio";
 import PasarelaPago from "../../pasarelaPago/pasarelaPago/pasarelaPago";
 import { useDispatch } from "react-redux";
@@ -60,10 +62,14 @@ const ModalConfirmacionCompra: React.FC<ModalConfirmacionCompraProps> = ({
   );
   const [currentStep, setCurrentStep] = useState(1);
   const [ordenId, setOrdenId] = useState<string | null>(null);
-  const [datosUsuario, setDatosUsuario] = useState<DatosUsuarioType | null>(
-    null
+
+  const [datosUsuario, setDatosUsuario] = useState<Datos | undefined>(
+    undefined
   );
-  const [datosEnvio, setDatosEnvio] = useState<DatosEnvioType | null>(null);
+
+  const [datosEnvio, setDatosEnvio] = useState<DatosEnvioType | undefined>(
+    undefined
+  );
   const dispatch = useDispatch();
 
   const total = productos.reduce(
@@ -74,7 +80,8 @@ const ModalConfirmacionCompra: React.FC<ModalConfirmacionCompraProps> = ({
   useEffect(() => {
     if (isOpen) {
       setCurrentStep(1);
-      setDatosUsuario(null);
+      setDatosEnvio(undefined);
+      setDatosUsuario(undefined);
     }
   }, [isOpen]);
   useEffect(() => {
@@ -204,12 +211,9 @@ const ModalConfirmacionCompra: React.FC<ModalConfirmacionCompraProps> = ({
       case 2:
         return (
           <DatosUsuario
+            datosExistentes={datosUsuario} // Pasar los datos existentes
             onContinue={(data) => {
-              setDatosUsuario({
-                nombre: data.nombre,
-                email: data.email,
-                telefono: data.telefono,
-              });
+              setDatosUsuario(data);
               setOrdenId(data.orderId);
               setCurrentStep(currentStep + 1);
             }}
@@ -222,6 +226,7 @@ const ModalConfirmacionCompra: React.FC<ModalConfirmacionCompraProps> = ({
         return (
           <SeleccionEnvio
             orden_id={ordenId || ""}
+            datosEnvio={datosEnvio} // Pasar los datos de envío existentes
             onContinue={(datos) => {
               setDatosEnvio(datos);
               setCurrentStep(currentStep + 1);
@@ -234,18 +239,36 @@ const ModalConfirmacionCompra: React.FC<ModalConfirmacionCompraProps> = ({
       case 4:
         if (datosUsuario && datosEnvio && ordenId) {
           return (
-            <PasarelaPago
-              onPaymentSuccess={() => onContinuar()}
-              onPaymentFailure={() => {}}
-              total={total}
-              datosUsuario={datosUsuario}
-              datosEnvio={datosEnvio}
-              ordenId={ordenId}
-              loadedComprobante={loadedComprobante}
-              setLoadedComprobante={setLoadedComprobante}
-              countdown={countdown}
-              comprobanteMessage={comprobanteMessage}
-            />
+            <>
+              <PasarelaPago
+                onPaymentSuccess={() => onContinuar()}
+                onPaymentFailure={() => {}}
+                total={total}
+                datosUsuario={datosUsuario}
+                datosEnvio={datosEnvio}
+                ordenId={ordenId}
+                loadedComprobante={loadedComprobante}
+                setLoadedComprobante={setLoadedComprobante}
+                countdown={countdown}
+                comprobanteMessage={comprobanteMessage}
+              />
+              {/* Botón para volver atrás */}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  marginTop: "20px",
+                }}
+              >
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => setCurrentStep(currentStep - 1)}
+                >
+                  Volver
+                </Button>
+              </div>
+            </>
           );
         } else {
           return null;
@@ -258,7 +281,6 @@ const ModalConfirmacionCompra: React.FC<ModalConfirmacionCompraProps> = ({
       <ModalContent>
         <Stepper currentStep={currentStep} />
         {renderStepContent()}
-     
 
         {currentStep === 4 && !comprobanteMessage && (
           <Button variant="contained" color="primary" onClick={handleContinuar}>

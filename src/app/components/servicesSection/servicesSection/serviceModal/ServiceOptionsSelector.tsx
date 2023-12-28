@@ -48,13 +48,18 @@ const TotalPriceText = styled.div`
 `;
 interface Props {
   options: ServiceOption[];
+  selectedOptions: ServiceOption[]; // Añade esto
   onOptionsSelected: (selectedOptions: ServiceOption[]) => void;
 }
+
 const ServiceOptionsSelector: React.FC<Props> = ({
   options,
+  selectedOptions: initialSelectedOptions, // Usa un nombre diferente para evitar confusiones
   onOptionsSelected,
 }) => {
-  const [selectedOptions, setSelectedOptions] = useState<ServiceOption[]>([]);
+  const [selectedOptions, setSelectedOptions] = useState<ServiceOption[]>(
+    initialSelectedOptions
+  );
 
   const handleOptionToggle = (option: ServiceOption) => {
     if (selectedOptions.find((o) => o.id === option.id)) {
@@ -65,10 +70,10 @@ const ServiceOptionsSelector: React.FC<Props> = ({
   };
 
   // Informar al componente padre sobre las opciones seleccionadas
+
   useEffect(() => {
     onOptionsSelected(selectedOptions);
   }, [selectedOptions, onOptionsSelected]);
-
   return (
     <OptionsContainer>
       <OptionList>

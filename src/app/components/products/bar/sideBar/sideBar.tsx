@@ -519,7 +519,7 @@ const CombinedFilterComponent: React.FC = () => {
                     onChange={(event, newValue) => handleSliderChange(newValue)}
                     valueLabelDisplay="auto"
                     min={0}
-                    max={1000}
+                    max={100000}
                     track="inverted"
                   />
                   <PriceRangeInputs>
@@ -592,7 +592,7 @@ const CombinedFilterComponent: React.FC = () => {
                     onChange={(event, newValue) => handleSliderChange(newValue)}
                     valueLabelDisplay="auto"
                     min={0}
-                    max={1000}
+                    max={100000}
                   />
                   <PriceRangeInputs>
                     <PriceRangeInput

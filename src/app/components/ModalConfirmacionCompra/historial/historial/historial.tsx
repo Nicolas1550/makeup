@@ -309,7 +309,7 @@ const Historial: React.FC = () => {
                     <SectionTitle>
                       <FaShippingFast /> Información de Envío
                     </SectionTitle>
-                    <div>Buscar en Tienda (direccion)</div>
+                    <div>Buscar en Tienda (Thorne 1145 Horario 14 a 20)</div>
                   </OrderSection>
                 )}
                 {order.comprobante_pago ? (

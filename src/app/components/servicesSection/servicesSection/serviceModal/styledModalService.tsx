@@ -335,14 +335,13 @@ export const CalendarWrapper = styled.div`
 
   /* Cambia el estilo del evento en el calendario */
   .rbc-event {
-    background-color: #f67280 !important;
     border: none !important;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 
     &:hover {
-      transform: scale(1.03);
+      transform: scale(1.02);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
     }
 
@@ -350,7 +349,16 @@ export const CalendarWrapper = styled.div`
       color: white !important;
     }
   }
-
+  @media (max-width: 468px) {
+    .rbc-event {
+      font-size: 0.8rem !important;
+    }
+  }
+  @media (max-width: 768px) {
+    .rbc-event {
+      font-size: 1rem !important;
+    }
+  }
   /* Estilo para la etiqueta del toolbar */
   .rbc-toolbar-label {
     color: #6c5b7b !important;

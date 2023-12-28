@@ -1,4 +1,6 @@
 import React, { useState, FormEvent } from "react";
+import { useAppDispatch, useAppSelector } from "../../redux/store/appHooks"; // Ajusta la ruta según tu estructura
+import { sendContactForm, reset } from "../../redux/contactSlice/contactSlice"; // Ajusta la ruta según tu estructura
 import styled from "styled-components";
 import BackgroundImageWithTitle from "./backgroundImageWithTitle";
 
@@ -40,13 +42,12 @@ const Input = styled.input`
   }
 `;
 
-
 const TextArea = styled.textarea`
   padding: 1rem;
   border-radius: 5px;
   border: 1px solid #ccc;
   height: 150px;
-    &:focus {
+  &:focus {
     outline: none;
     border: 1px solid #fff;
   }
@@ -67,42 +68,53 @@ const SubmitButton = styled.button`
 `;
 
 const ContactPage: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const contactStatus = useAppSelector((state) => state.contact);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    // Aquí puedes manejar el envío del formulario, por ejemplo, enviar los datos a una API
-    console.log({ name, email, message });
+    dispatch(sendContactForm({ name, email, message }));
   };
+
+  // Opcional: Resetear el estado cuando el componente se desmonta
+  React.useEffect(() => {
+    return () => {
+      dispatch(reset());
+    };
+  }, [dispatch]);
 
   return (
     <>
-    <BackgroundImageWithTitle/>
-    <ContactContainer>
-      <h2>Formulario de contacto</h2>
-      <Form onSubmit={handleSubmit}>
-        <Input
-          type="text"
-          placeholder="Tu nombre"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <Input
-          type="email"
-          placeholder="Tu correo electrónico"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <TextArea
-          placeholder="Tu mensaje"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
-        <SubmitButton type="submit">Enviar Mensaje</SubmitButton>
-      </Form>
-    </ContactContainer>
+      <BackgroundImageWithTitle />
+      <ContactContainer>
+        <h2>Formulario de contacto</h2>
+        {contactStatus.error && <p>Error: {contactStatus.error}</p>}
+        {contactStatus.loading && <p>Enviando mensaje...</p>}
+        {contactStatus.success && <p>Mensaje enviado con éxito!</p>}
+        <Form onSubmit={handleSubmit}>
+          <Input
+            type="text"
+            placeholder="Tu nombre"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <Input
+            type="email"
+            placeholder="Tu correo electrónico"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <TextArea
+            placeholder="Tu mensaje"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          />
+          <SubmitButton type="submit">Enviar Mensaje</SubmitButton>
+        </Form>
+      </ContactContainer>
     </>
   );
 };

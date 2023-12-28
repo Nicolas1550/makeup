@@ -9,7 +9,7 @@ import {
   StyledTextField,
 } from "../styleDatosUsuario/styleDatosUsuario";
 
-interface Datos {
+export interface Datos {
   nombre: string;
   email: string;
   telefono: string;
@@ -17,21 +17,67 @@ interface Datos {
 }
 
 interface DatosProps {
+  datosExistentes?: Datos; // Usar 'Datos' aquí
   onContinue: (datos: Datos) => void;
   onBack: () => void;
 }
 
-const DatosUsuario: React.FC<DatosProps> = ({ onContinue, onBack }) => {
-  const [nombre, setNombre] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [telefono, setTelefono] = useState<string>("");
+const DatosUsuario: React.FC<DatosProps> = ({
+  datosExistentes,
+  onContinue,
+  onBack,
+}) => {
+  const [nombreError, setNombreError] = useState<string>("");
+  const [emailError, setEmailError] = useState<string>("");
+  const [telefonoError, setTelefonoError] = useState<string>("");
+
+  const [nombre, setNombre] = useState<string>(datosExistentes?.nombre || "");
+  const [email, setEmail] = useState<string>(datosExistentes?.email || "");
+  const [telefono, setTelefono] = useState<string>(
+    datosExistentes?.telefono || ""
+  );
 
   const cart = useSelector((state: RootState) => state.cart);
   const userId = useSelector((state: RootState) => state.auth.userId);
   const userToken = localStorage.getItem("jwt");
+  const validate = () => {
+    let isValid = true;
+
+    if (!nombre.trim()) {
+      setNombreError("El nombre es requerido.");
+      isValid = false;
+    } else {
+      setNombreError("");
+    }
+
+    if (!email.trim()) {
+      setEmailError("El email es requerido.");
+      isValid = false;
+    } else if (!/^\S+@\S+\.\S+$/.test(email)) {
+      setEmailError("El formato del email no es válido.");
+      isValid = false;
+    } else {
+      setEmailError("");
+    }
+
+    if (!telefono.trim()) {
+      setTelefonoError("El teléfono es requerido.");
+      isValid = false;
+    } else if (!/^\d+$/.test(telefono)) {
+      setTelefonoError("El teléfono debe contener solo números.");
+      isValid = false;
+    } else {
+      setTelefonoError("");
+    }
+
+    return isValid;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validate()) {
+      return;
+    }
 
     try {
       const response = await axios.post(
@@ -82,16 +128,22 @@ const DatosUsuario: React.FC<DatosProps> = ({ onContinue, onBack }) => {
     <StyledFormContainer>
       <Typography variant="h6">Tus Datos</Typography>
       <StyledTextField
+        error={nombreError !== ""}
+        helperText={nombreError}
         label="Nombre"
         value={nombre}
         onChange={(e) => setNombre(e.target.value)}
       />
       <StyledTextField
+        error={emailError !== ""}
+        helperText={emailError}
         label="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
       <StyledTextField
+        error={telefonoError !== ""}
+        helperText={telefonoError}
         label="Telefono"
         value={telefono}
         onChange={(e) => setTelefono(e.target.value)}

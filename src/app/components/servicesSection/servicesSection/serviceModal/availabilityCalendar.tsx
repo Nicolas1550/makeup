@@ -1,5 +1,10 @@
 import React, { useEffect } from "react";
-import { Calendar, momentLocalizer, SlotInfo } from "react-big-calendar";
+import {
+  Calendar,
+  momentLocalizer,
+  SlotInfo,
+  EventPropGetter,
+} from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { CalendarWrapper } from "./styledModalService";
@@ -26,6 +31,7 @@ interface AvailabilityCalendarProps {
   onCurrentViewChange: (view: CalendarView) => void;
   isOpen: boolean;
   onRequestClose: () => void;
+  eventPropGetter?: EventPropGetter<CalendarEvent>;
 }
 
 const messages = {
@@ -47,8 +53,28 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
   onSelectEvent,
   currentView,
   onCurrentViewChange,
+  eventPropGetter, // Añadir esto
+
 }) => {
-  
+  const eventStyleGetter: EventPropGetter<CalendarEvent> = (
+    event,
+    start,
+    end,
+    isSelected
+  ) => {
+    let newStyle = {};
+    if (event.estado === "disponible") {
+      newStyle = {
+        style: {
+          backgroundColor: "brown",
+          color: "white",
+        },
+      };
+    } else if (event.estado === "reservado") {
+      newStyle = { className: "event-reservado" };
+    }
+    return newStyle;
+  };
   useEffect(() => {
     // Encuentra todos los botones en la barra de herramientas del calendario
     const toolbarButtons = Array.from(
@@ -60,7 +86,10 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
       (button) => button.textContent === "Mes"
     ) as HTMLElement | null;
     if (monthButton) monthButton.style.display = "none";
-
+    const dayButton = toolbarButtons.find(
+      (button) => button.textContent === "Semana"
+    ) as HTMLElement | null;
+    if (dayButton) dayButton.style.display = "none";
     // Filtra y oculta el botón 'Agenda'
     const agendaButton = toolbarButtons.find(
       (button) => button.textContent === "Agenda"
@@ -77,6 +106,7 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
   return (
     <CalendarWrapper>
       <Calendar
+        eventPropGetter={eventPropGetter} // Usar la prop aquí
         localizer={localizer}
         events={events}
         startAccessor="start"

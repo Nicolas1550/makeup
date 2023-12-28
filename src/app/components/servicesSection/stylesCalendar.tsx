@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const CalendarContainer = styled.div`
+/* export const CalendarContainer = styled.div`
   height: 50vh;
   width: 1000px;
   border-radius: 8px;
@@ -39,7 +39,7 @@ export const CalendarContainer = styled.div`
   }
 
   .rbc-event {
-    background-color: #3498db;
+    background-color: #bñ;
     color: white;
     border-radius: 4px;
     padding: 4px 8px;
@@ -89,3 +89,4 @@ export const CalendarContainer = styled.div`
     border-bottom: 1px solid #d1d5d8;
   }
 `;
+ */

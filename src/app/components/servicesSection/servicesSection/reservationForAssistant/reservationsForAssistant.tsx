@@ -5,6 +5,7 @@ import {
   markReservationAsCompleted,
   deleteReservation,
   markReservationAsPending,
+  Reservation,
 } from "../../../../redux/serviceSlice/servicesSlice";
 import {
   useAppDispatch,
@@ -24,6 +25,7 @@ import {
   fetchTodasLasReservas,
   actualizarEstadoReservaCurso,
   eliminarReservaCurso,
+  ReservaConHorarios,
 } from "@/app/redux/coursesSlice/coursesSlice";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -50,12 +52,14 @@ function ReservationsForAssistant() {
   const [expandedReservation, setExpandedReservation] = useState<number | null>(
     null
   );
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   const [selectedOption, setSelectedOption] = useState<OptionType | null>(null);
   const courseReservations = useAppSelector((state) => state.cursos.reservas);
   const handleSelectChange = (option: SingleValue<OptionType>) => {
     setSelectedOption(option);
   };
+
   const handleToggleDetails = (id: number) => {
     if (expandedReservation === id) {
       setExpandedReservation(null);
@@ -132,8 +136,25 @@ function ReservationsForAssistant() {
       (reservation) => reservation.estado === selectedStatus
     );
   }, [courseReservations, selectedStatus]);
-
+  const [orderedCourseReservations, setOrderedCourseReservations] = useState<
+    ReservaConHorarios[]
+  >([]);
+  const [orderedServiceReservations, setOrderedServiceReservations] = useState<
+    Reservation[]
+  >([]);
   console.log("Reservas filtradas", filteredCourseReservations);
+  const sortReservations = <T extends { fecha_reserva?: string }>(
+    reservations: T[]
+  ) => {
+    return reservations.slice().sort((a, b) => {
+      if (!a.fecha_reserva || !b.fecha_reserva) return 0;
+      const dateA = new Date(a.fecha_reserva);
+      const dateB = new Date(b.fecha_reserva);
+      return sortOrder === "asc"
+        ? dateA.getTime() - dateB.getTime()
+        : dateB.getTime() - dateA.getTime();
+    });
+  };
 
   const handleCompleteClick = (reservationId: number) => {
     dispatch(markReservationAsCompleted(reservationId));
@@ -181,7 +202,10 @@ function ReservationsForAssistant() {
   useEffect(() => {
     console.log("Reservas filtradas con fechas", filteredCourseReservations);
   }, [filteredCourseReservations]);
-  
+  useEffect(() => {
+    setOrderedCourseReservations(sortReservations(filteredCourseReservations));
+    setOrderedServiceReservations(sortReservations(reservations));
+  }, [sortOrder, filteredCourseReservations, reservations]);
   return (
     <Container>
       <Heading>Reservas para el ayudante {ayudanteName || ayudanteId}</Heading>
@@ -203,10 +227,26 @@ function ReservationsForAssistant() {
         options={reservationOptions}
         styles={customStyles}
       />
-
+      {selectedOption && (
+        <>
+        
+          {/* Selector de ordenamiento */}
+          <div>
+            <label htmlFor="sortOrder">Ordenar por fecha:</label>
+            <select
+              id="sortOrder"
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value as "asc" | "desc")}
+            >
+              <option value="desc">Descendente</option>
+              <option value="asc">Ascendente</option>
+            </select>
+          </div>
+        </>
+      )}
       {selectedOption?.value === "servicios" && (
         <ReservationsList
-          reservations={reservations}
+          reservations={orderedServiceReservations} // Usar las reservas de servicios ordenadas
           status={selectedStatus}
           onMarkComplete={handleCompleteClick}
           onDelete={handleDeleteClick}
@@ -215,7 +255,6 @@ function ReservationsForAssistant() {
           format={format}
         />
       )}
-
       {selectedOption?.value === "cursos" &&
         filteredCourseReservations.map((courseReservation) => (
           <ReservationItem

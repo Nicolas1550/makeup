@@ -549,4 +549,12 @@ export const GlobalRangeStyles = createGlobalStyle`
   .react-big-calendar .rbc-toolbar button:contains('Agenda') {
     display: none;
   }
+
+  @media (max-width: 768px) {
+    .react-big-calendar .rbc-toolbar button:contains('Semana')    
+      display: none !important;
+    }
+  }
+
+  
 `;
