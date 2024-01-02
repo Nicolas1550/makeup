@@ -130,7 +130,7 @@ const AdminPanel: React.FC<Props> = ({ products }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const response = await axios.get(`http://localhost:3002/api/products`);
+  const response = await axios.get(`https://sofiacomar1.latincloud.app/api/products`);
   const products = response.data;
 
   return {

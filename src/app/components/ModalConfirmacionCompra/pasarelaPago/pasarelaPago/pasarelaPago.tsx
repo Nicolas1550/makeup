@@ -49,6 +49,7 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
   const dispatch = useAppDispatch();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const depositPaymentRef = useRef<HTMLDivElement>(null);
+  const notificationsRef = useRef<HTMLDivElement>(null); // Referencia para el contenedor de notificaciones
 
   const [showUploadOption, setShowUploadOption] = useState(false);
   const [uploadSuccessMessage, setUploadSuccessMessage] = useState<
@@ -79,6 +80,8 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
 
     // Llamada a la función callback proporcionada por ModalConfirmacionCompra
     setLoadedComprobante(data.comprobante); // Usar directamente aquí
+    setUploadSuccessMessage("Comprobante cargado con éxito");
+    notificationsRef.current?.scrollIntoView({ behavior: "smooth" });
 
     setTimeout(() => {
       setUploadSuccessMessage(null);
@@ -106,7 +109,7 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
 
     try {
       const response = await axios.post(
-        "http://localhost:3002/api/mercadopago/create_preference",
+        "https://sofiacomar1.latincloud.app/api/mercadopago/create_preference",
         paymentData,
         {
           headers: {
@@ -147,7 +150,10 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
       // Mostrar "Buscar en tienda (direccion)" cuando el método de envío es "Recoger en Tienda"
       return (
         <p>
-          <strong>Buscar en tienda (Thorne 1145 Horario 14 a 20)</strong>
+          <strong>
+            Buscar en tienda: <br />Direccion: Thorne 1145 <br /> Horarios: De Luenes a Viernes
+            14hs a 20hs
+          </strong>
         </p>
       );
     } else {
@@ -201,7 +207,7 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
                   producto?.imagen_url
                     ? producto.imagen_url.startsWith("http")
                       ? producto.imagen_url
-                      : `http://localhost:3002${producto.imagen_url}`
+                      : `https://sofiacomar1.latincloud.app${producto.imagen_url}`
                     : "/path/to/default/image.jpg"
                 }
                 alt={producto.nombre}
@@ -267,7 +273,7 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
         </div>
       </div>
 
-      <div className="notifications">
+      <div className="notifications" ref={notificationsRef}>
         {uploadSuccessMessage && (
           <p className="success-message">{uploadSuccessMessage}</p>
         )}

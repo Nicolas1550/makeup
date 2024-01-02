@@ -29,7 +29,6 @@ interface SeleccionEnvioProps {
     codigo_postal: string;
     pais: string;
   };
-  
 }
 
 const SeleccionEnvio: React.FC<SeleccionEnvioProps> = ({
@@ -39,7 +38,7 @@ const SeleccionEnvio: React.FC<SeleccionEnvioProps> = ({
   datosEnvio,
 }) => {
   useEffect(() => {
-    const socket = io("http://localhost:3002");
+    const socket = io("https://sofiacomar1.latincloud.app");
     socket.on("stock-updated", () => {});
     return () => {
       socket.disconnect();
@@ -78,7 +77,7 @@ const SeleccionEnvio: React.FC<SeleccionEnvioProps> = ({
 
     try {
       const response = await axios.post(
-        "http://localhost:3002/api/orders/create/shipping-info",
+        "https://sofiacomar1.latincloud.app/api/orders/create/shipping-info",
         {
           orden_id,
           metodo_envio,
@@ -242,8 +241,8 @@ const SeleccionEnvio: React.FC<SeleccionEnvioProps> = ({
       )}
       {metodo_envio === "recoger" && (
         <div>
-          <h6>Dirección de la Tienda:</h6>
-          <p>Thorne 1145 | Horario 14 a 20</p>
+          <h6>Dirección y Horarios de la Tienda:</h6>
+          <p>Thorne 1145 | Horario De Luenes a Viernes 14hs a 20hs</p>
         </div>
       )}
       <ButtonContainer>

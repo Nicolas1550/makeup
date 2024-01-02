@@ -276,7 +276,7 @@ const Historial: React.FC = () => {
                               detail?.imagen_url
                                 ? detail.imagen_url.startsWith("http")
                                   ? detail.imagen_url
-                                  : `http://localhost:3002${detail.imagen_url}`
+                                  : `https://sofiacomar1.latincloud.app${detail.imagen_url}`
                                 : "/path_to_default_image.jpg"
                             }
                             alt={`Producto ${detail.nombre}`}
@@ -309,7 +309,10 @@ const Historial: React.FC = () => {
                     <SectionTitle>
                       <FaShippingFast /> Información de Envío
                     </SectionTitle>
-                    <div>Buscar en Tienda (Thorne 1145 Horario 14 a 20)</div>
+                    <div>
+                      Buscar en Tienda (Thorne 1145 | Horario De Luenes a
+                      Viernes 14hs a 20hs)
+                    </div>
                   </OrderSection>
                 )}
                 {order.comprobante_pago ? (

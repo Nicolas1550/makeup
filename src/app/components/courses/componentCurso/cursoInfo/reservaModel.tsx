@@ -13,6 +13,7 @@ import {
   useAppDispatch,
   useAppSelector,
 } from "../../../../redux/store/appHooks";
+import { isEmailValid, isPhoneValid, isTextValid } from "./validations"; // Asumiendo que tienes un archivo de validaciones
 
 interface Disponibilidad {
   id: number;
@@ -44,9 +45,13 @@ const ReservaModal: React.FC<ReservaModalProps> = ({
   const [correoUsuario, setCorreoUsuario] = useState("");
   const [telefonoUsuario, setTelefonoUsuario] = useState("");
   const handleNext = () => {
+    // Validar los datos del usuario en el paso 1 antes de avanzar
+    if (activeStep === 1 && !validarDatosUsuario()) {
+      return; // Detener la ejecución si la validación falla
+    }
+  
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
-
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
@@ -59,13 +64,32 @@ const ReservaModal: React.FC<ReservaModalProps> = ({
       setComprobanteFile(event.target.files[0]);
     }
   };
-
+  const validarDatosUsuario = () => {
+    if (!isTextValid(nombreUsuario)) {
+      toast.error("Por favor, ingrese un nombre válido.");
+      return false;
+    }
+    if (!isEmailValid(correoUsuario)) {
+      toast.error("Por favor, ingrese un correo electrónico válido.");
+      return false;
+    }
+    if (!isPhoneValid(telefonoUsuario)) {
+      toast.error("Por favor, ingrese un número de teléfono válido.");
+      return false;
+    }
+    return true;
+  };
   const confirmarReserva = async () => {
     console.log("La reserva ya está en proceso.");
 
     if (reservaEnProceso) return; // Evitar múltiples clics
     setReservaEnProceso(true);
+    // Validar los datos del usuario antes de continuar
 
+    if (!validarDatosUsuario()) {
+      setReservaEnProceso(false); // Re-habilitar el botón si la validación falla
+      return; // Detener la ejecución si la validación falla
+    }
     console.log("Datos a enviar en la reserva:", {
       disponibilidad_id: disponibilidadSeleccionada?.id,
       usuario_id: usuarioId,
@@ -117,7 +141,6 @@ const ReservaModal: React.FC<ReservaModalProps> = ({
       toast.error("Por favor, complete todos los pasos.");
       setReservaEnProceso(false); // Re-habilitar el botón si faltan pasos
     }
-
   };
   // Cuando el modal se cierre, resetea los campos
   useEffect(() => {
@@ -195,12 +218,12 @@ const ReservaModal: React.FC<ReservaModalProps> = ({
               {activeStep < 3 ? (
                 <StyledButton onClick={handleNext}>Siguiente</StyledButton>
               ) : (
-                <StyledButton 
-                onClick={confirmarReserva} 
-                disabled={reservaEnProceso} // Desactivar el botón durante el proceso
-              >
-                Confirmar Reserva
-              </StyledButton>
+                <StyledButton
+                  onClick={confirmarReserva}
+                  disabled={reservaEnProceso} // Desactivar el botón durante el proceso
+                >
+                  Confirmar Reserva
+                </StyledButton>
               )}
             </div>
           </div>

@@ -206,14 +206,7 @@ const StickyFilterContainerBase = forwardRef<
   StickyFilterContainerProps
 >(
   (
-    {
-      isExpanded,
-      onMouseEnter,
-      onMouseLeave,
-      children,
-      className,
-      ...rest
-    },
+    { isExpanded, onMouseEnter, onMouseLeave, children, className, ...rest },
     ref
   ) => {
     return (
@@ -554,6 +547,10 @@ export const GlobalRangeStyles = createGlobalStyle`
       display: none !important;
     }
   }
-
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
+    text-transform: lowercase !important;
+  }
   
 `;

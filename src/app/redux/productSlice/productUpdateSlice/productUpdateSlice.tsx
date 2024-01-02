@@ -19,7 +19,7 @@ const initialState: UpdatedProduct[] = [];
 export const fetchUpdatedProducts = createAsyncThunk(
   "productUpdate/fetchUpdatedProducts",
   async () => {
-    const response = await axios.get("http://localhost:3002/api/products");
+    const response = await axios.get("https://sofiacomar1.latincloud.app/api/products");
     return response.data as UpdatedProduct[];
   }
 );

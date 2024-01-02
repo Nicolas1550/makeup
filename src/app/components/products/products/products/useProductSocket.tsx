@@ -21,11 +21,11 @@ const useProductSocket = (initialProduct?: ProductType) => {
   );
 
   useEffect(() => {
-    const socket = io("http://localhost:3002");
+    const socket = io("https://sofiacomar1.latincloud.app");
 
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:3002/api/products");
+        const response = await axios.get("https://sofiacomar1.latincloud.app/api/products");
         setProductList(response.data);
         if (currentProduct) {
           const updatedProduct = response.data.find(

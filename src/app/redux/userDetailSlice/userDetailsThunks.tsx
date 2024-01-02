@@ -12,7 +12,7 @@ export const fetchUserDetails = createAsyncThunk(
     thunkAPI.dispatch(fetchUserDetailsStart());
     try {
       const { data } = await axios.get(
-        `http://localhost:3002/api/users/${userId}`
+        `https://sofiacomar1.latincloud.app/api/users/${userId}`
       );
       console.log("User details from server:", data);
 

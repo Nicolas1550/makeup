@@ -67,11 +67,15 @@ const ResetPasswordPage = () => {
     }
 
     try {
-      await axios.post("http://localhost:3002/api/users/reset-password", {
+      await axios.post("https://sofiacomar1.latincloud.app/api/users/reset-password", {
         token,
         newPassword: password,
       });
       setMessage("Contraseña actualizada con éxito.");
+      // Redirigir al usuario después de un corto retraso
+      setTimeout(() => {
+        router.push("/"); // Cambia esto a la URL de inicio que prefieras
+      }, 2000); // Redirige después de 2 segundos
     } catch (error) {
       console.error("Error al restablecer contraseña:", error);
       setMessage("Error al restablecer la contraseña. Intente de nuevo.");

@@ -39,6 +39,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const userRoles = useAppSelector((state) => state.auth.userRoles);
   const dispatch = useAppDispatch();
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const toggleEditMode = () => {
     setIsEditing(!isEditing);
@@ -82,6 +83,11 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
 
     return () => clearInterval(interval);
   }, [images.length]);
+  useEffect(() => {
+    if (isAuthenticated && userRoles?.includes("admin")) {
+      setIsAdmin(true);
+    }
+  }, [isAuthenticated, userRoles]);
   return (
     <>
       <MainContainer>
@@ -89,11 +95,11 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
           <ImageContainer
             style={{ transform: `translateX(-${currentIndex * 100}%)` }}
           >
-            {images.map((image, index) => (
+            {images.map((image) => (
               <CarouselImage
-                key={index}
-                src={`${baseUrl}image/cursos/${image.url_imagen}`}
-                alt={`Imagen del Curso ${index + 1}`}
+                key={image.id} // Usa el id único de la imagen como clave
+                src={`${baseUrl}db/image/cursos/${image.url_imagen}`}
+                alt={`Imagen del Curso ${image.id}`}
               />
             ))}
           </ImageContainer>
@@ -126,7 +132,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
           </InnerTextBox>
         </TextContainer>
       </MainContainer>
-      {isAuthenticated && userRoles?.includes("admin") && (
+      {isAdmin && (
         <Button onClick={toggleEditMode}>
           {isEditing ? <DoneIcon /> : <EditIcon />}
           {isEditing ? "Finalizar Edición" : "Editar"}

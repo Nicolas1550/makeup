@@ -81,7 +81,6 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
     setShowPassword(!showPassword);
   };
 
-
   const handleModalClose = useCallback(() => {
     dispatch(closeLoginModal());
     setUsername("");
@@ -122,8 +121,8 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
     }
   }, [loginMessage, dispatch, handleModalClose]);
 
-  const handleSubmitSignIn = (username: string, password: string) => {
-    dispatch(loginUser({ username, password }))
+  const handleSubmitSignIn = (usernameOrEmail: string, password: string) => {
+    dispatch(loginUser({ usernameOrEmail, password }))
       .then((action) => {
         if (loginUser.fulfilled.match(action)) {
           dispatch(setLoginMessage("Inicio de sesión exitoso"));
@@ -188,7 +187,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
           >
             <input
               type="text"
-              placeholder="usuario"
+              placeholder="Nombre de usuario o correo"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />

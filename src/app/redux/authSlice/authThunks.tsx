@@ -48,7 +48,7 @@ export const verifyToken = createAsyncThunk<AuthThunkResponse, void>(
     try {
       const decodedToken = jwt_decode(token) as DecodedToken;
       const response = await axios.post(
-        "http://localhost:3002/api/validateToken",
+        "https://sofiacomar1.latincloud.app/api/validateToken",
         { token }
       );
 
@@ -71,12 +71,15 @@ export const verifyToken = createAsyncThunk<AuthThunkResponse, void>(
 
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
-  async (credentials: { username: string; password: string }, thunkAPI) => {
+  async (
+    credentials: { usernameOrEmail: string; password: string },
+    thunkAPI
+  ) => {
     thunkAPI.dispatch(setLoading(true));
 
     try {
       const response = await axios.post<LoginResponse>(
-        "http://localhost:3002/api/login",
+        "https://sofiacomar1.latincloud.app/api/login",
         credentials
       );
       const token = response.data.token;
@@ -109,7 +112,7 @@ export const registerUser = createAsyncThunk(
     thunkAPI.dispatch(setLoading(true));
 
     try {
-      await axios.post("http://localhost:3002/api/users/register", userData);
+      await axios.post("https://sofiacomar1.latincloud.app/api/users/register", userData);
       thunkAPI.dispatch(setLoading(false));
       return "Registro exitoso";
     } catch (error: unknown) {

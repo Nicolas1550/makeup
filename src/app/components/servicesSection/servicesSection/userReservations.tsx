@@ -252,7 +252,7 @@ function UserReservations() {
                           <CardValue>
                             {reservation.comprobante_path ? (
                               <CardLink
-                                href={`http://localhost:3002/${reservation.comprobante_path}`}
+                                href={`https://sofiacomar1.latincloud.app/${reservation.comprobante_path}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                               >

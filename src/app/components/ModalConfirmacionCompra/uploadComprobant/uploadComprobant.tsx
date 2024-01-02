@@ -110,7 +110,7 @@ const CargarComprobante: React.FC<CargarComprobanteProps> = ({
       setIsLoading(true);
       try {
         const response = await axios.post<UploadSuccessResponse>(
-          `http://localhost:3002/api/orders/upload-comprobante/${orderId}`,
+          `https://sofiacomar1.latincloud.app/api/orders/upload-comprobante/${orderId}`,
           formData
         );
         onUploadSuccess({ estado: 'Aprobado', comprobante: file });

@@ -27,24 +27,26 @@ export const sendContactForm = createAsyncThunk(
   "contact/sendContactForm",
   async (formData: ContactFormData, thunkAPI) => {
     try {
-      const response = await fetch("/contact", {
+      const response = await fetch("https://sofiacomar1.latincloud.app/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
+
+      const data = await response.json(); // Obtener la respuesta en formato JSON
+      console.log("Respuesta del servidor:", data);
+
       if (!response.ok) {
-        const errorResponse = await response.json();
-        throw new Error(errorResponse.message || "Network response was not ok");
+        throw new Error(data.error || "Network response was not ok");
       }
-      return await response.json();
+
+      return data.message; // Asegúrate de devolver el mensaje de éxito
     } catch (error) {
-      // Verifica si 'error' es una instancia de 'Error'
       if (error instanceof Error) {
         return thunkAPI.rejectWithValue(error.message);
       }
-      // Retorna un mensaje genérico si el error no es una instancia de 'Error'
       return thunkAPI.rejectWithValue(
         "Error al enviar el formulario de contacto"
       );
@@ -64,25 +66,22 @@ const contactSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(sendContactForm.pending, (state) => {
+      console.log("Pendiente de envío");
       state.loading = true;
       state.error = null;
     });
-    builder.addCase(sendContactForm.fulfilled, (state) => {
+    builder.addCase(sendContactForm.fulfilled, (state, action) => {
+      console.log("Enviado con éxito", action.payload);
       state.loading = false;
       state.success = true;
-      // Manejo adicional del estado si es necesario
+      state.error = null;
     });
-    builder.addCase(
-      sendContactForm.rejected,
-      (
-        state,
-        action: PayloadAction<unknown, string, never, SerializedError>
-      ) => {
-        state.loading = false;
-        state.error = action.error?.message || "Failed to send";
-        state.success = false;
-      }
-    );
+    builder.addCase(sendContactForm.rejected, (state, action) => {
+      console.log("Rechazado con error", action.error.message);
+      state.loading = false;
+      state.error = action.error?.message || "Failed to send";
+      state.success = false;
+    });
   },
 });
 

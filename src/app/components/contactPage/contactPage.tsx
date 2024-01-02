@@ -66,7 +66,19 @@ const SubmitButton = styled.button`
     background-color: #ff1493;
   }
 `;
-
+const Message = styled.p<MessageProps>`
+  color: ${(props) => (props.type === "error" ? "#ff6b6b" : "#51cf66")};
+  background-color: ${(props) =>
+    props.type === "error" ? "#ffe3e3" : "#ebfbee"};
+  border: ${(props) =>
+    props.type === "error" ? "1px solid #ffa8a8" : "1px solid #c0ebc0"};
+  padding: 1rem;
+  border-radius: 5px;
+  margin: 1rem 0;
+`;
+interface MessageProps {
+  type?: "error" | "success";
+}
 const ContactPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const contactStatus = useAppSelector((state) => state.contact);
@@ -76,6 +88,13 @@ const ContactPage: React.FC = () => {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+
+    // Validar que todos los campos estén llenos
+    if (!name.trim() || !email.trim() || !message.trim()) {
+      alert("Por favor, complete todos los campos."); // O maneja este error de manera más sofisticada
+      return;
+    }
+
     dispatch(sendContactForm({ name, email, message }));
   };
 
@@ -85,15 +104,21 @@ const ContactPage: React.FC = () => {
       dispatch(reset());
     };
   }, [dispatch]);
-
+  React.useEffect(() => {
+    console.log("Estado actualizado:", contactStatus);
+  }, [contactStatus]);
   return (
     <>
       <BackgroundImageWithTitle />
       <ContactContainer>
         <h2>Formulario de contacto</h2>
-        {contactStatus.error && <p>Error: {contactStatus.error}</p>}
-        {contactStatus.loading && <p>Enviando mensaje...</p>}
-        {contactStatus.success && <p>Mensaje enviado con éxito!</p>}
+        {contactStatus.loading && <Message>Enviando mensaje...</Message>}
+        {contactStatus.error && !contactStatus.loading && (
+          <Message type="error">Error: {contactStatus.error}</Message>
+        )}
+        {contactStatus.success && !contactStatus.loading && (
+          <Message type="success">Mensaje enviado con éxito!</Message>
+        )}
         <Form onSubmit={handleSubmit}>
           <Input
             type="text"
@@ -113,7 +138,6 @@ const ContactPage: React.FC = () => {
             onChange={(e) => setMessage(e.target.value)}
           />
           <SubmitButton type="submit">Enviar Mensaje </SubmitButton>
-
         </Form>
       </ContactContainer>
     </>

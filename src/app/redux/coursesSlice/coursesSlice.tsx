@@ -29,8 +29,8 @@ interface Disponibilidad {
   fecha_fin: string;
   max_reservas: number;
   horarios?: HorarioDisponibilidad[];
+  reservasActuales?: number; // Asegúrate de que esta línea esté presente
 }
-
 interface CursoConDisponibilidades extends Curso {
   disponibilidades?: Disponibilidad[];
 }
@@ -81,6 +81,22 @@ interface CursoState {
   error: string | null;
   reservas: ReservaConHorarios[]; // Asegúrate de que este tipo sea compatible con tu nueva estructura
 }
+export const verificarReservasActuales = createAsyncThunk(
+  "cursos/verificarReservasActuales",
+  async (disponibilidadId: number, { rejectWithValue }) => {
+    try {
+      const response = await fetch(
+        `https://sofiacomar1.latincloud.app/api/reservas/verificar/${disponibilidadId}`
+      );
+      if (!response.ok) throw new Error("Error al verificar las reservas");
+      return await response.json();
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Error desconocido"
+      );
+    }
+  }
+);
 export const subirComprobantePago = createAsyncThunk(
   "cursos/subirComprobantePago",
   async (
@@ -92,7 +108,7 @@ export const subirComprobantePago = createAsyncThunk(
   ) => {
     try {
       const response = await fetch(
-        `http://localhost:3002/api/reservas/${reservaId}/comprobante`,
+        `https://sofiacomar1.latincloud.app/api/reservas/${reservaId}/comprobante`,
         {
           method: "POST",
           body: comprobanteData,
@@ -124,7 +140,7 @@ export const actualizarEstadoReservaCurso = createAsyncThunk(
   ) => {
     try {
       const response = await fetch(
-        `http://localhost:3002/api/reservas/cursos/${reservaId}/estado`,
+        `https://sofiacomar1.latincloud.app/api/reservas/cursos/${reservaId}/estado`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -150,7 +166,7 @@ export const eliminarReservaCurso = createAsyncThunk(
   async (reservaId: number, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `http://localhost:3002/api/reservas/cursos/${reservaId}`,
+        `https://sofiacomar1.latincloud.app/api/reservas/cursos/${reservaId}`,
         {
           method: "DELETE",
         }
@@ -170,7 +186,7 @@ export const fetchTodasLasReservas = createAsyncThunk(
   "cursos/fetchTodasLasReservas",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch(`http://localhost:3002/api/reservas/todas`);
+      const response = await fetch(`https://sofiacomar1.latincloud.app/api/reservas/todas`);
       if (!response.ok) {
         throw new Error("Error al obtener todas las reservas");
       }
@@ -195,7 +211,7 @@ export const updateCursoPrecio = createAsyncThunk<
   async ({ cursoId, nuevoPrecio }, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `http://localhost:3002/api/cursos/${cursoId}/precio`,
+        `https://sofiacomar1.latincloud.app/api/cursos/${cursoId}/precio`,
         {
           method: "PUT",
           headers: {
@@ -228,7 +244,7 @@ export const fetchReservasAdminPorCurso = createAsyncThunk<
   async ({ cursoId }, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `http://localhost:3002/api/cursos/${cursoId}/reservas/admin`
+        `https://sofiacomar1.latincloud.app/api/cursos/${cursoId}/reservas/admin`
       );
 
       if (!response.ok) {
@@ -246,7 +262,6 @@ export const fetchReservasAdminPorCurso = createAsyncThunk<
   }
 );
 
-
 export const fetchReservasPorCursoYUsuario = createAsyncThunk<
   ReservaConHorarios[],
   { usuarioId: number },
@@ -256,7 +271,7 @@ export const fetchReservasPorCursoYUsuario = createAsyncThunk<
   async ({ usuarioId }, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `http://localhost:3002/api/cursos/usuarios/${usuarioId}/reservas`
+        `https://sofiacomar1.latincloud.app/api/cursos/usuarios/${usuarioId}/reservas`
       );
 
       if (!response.ok) {
@@ -282,7 +297,7 @@ export const deleteImageFromCurso = createAsyncThunk<
   async ({ cursoId, imagenId }, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `http://localhost:3002/api/cursos/${cursoId}/imagenes/${imagenId}`,
+        `https://sofiacomar1.latincloud.app/api/cursos/${cursoId}/imagenes/${imagenId}`,
         {
           method: "DELETE",
         }
@@ -312,7 +327,7 @@ export const agregarHorariosDisponibilidad = createAsyncThunk<
   async ({ disponibilidadId, horarios }, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `http://localhost:3002/api/disponibilidades/${disponibilidadId}/horarios`,
+        `https://sofiacomar1.latincloud.app/api/disponibilidades/${disponibilidadId}/horarios`,
         {
           method: "POST",
           headers: {
@@ -343,7 +358,7 @@ export const fetchDisponibilidades = createAsyncThunk<
 >("cursos/fetchDisponibilidades", async (cursoId, { rejectWithValue }) => {
   try {
     const response = await fetch(
-      `http://localhost:3002/api/cursos/${cursoId}/disponibilidades`
+      `https://sofiacomar1.latincloud.app/api/cursos/${cursoId}/disponibilidades`
     );
     if (!response.ok) {
       throw new Error("Error al obtener disponibilidades");
@@ -381,7 +396,7 @@ export const agregarDisponibilidad = createAsyncThunk<
   ) => {
     try {
       const response = await fetch(
-        `http://localhost:3002/api/cursos/${cursoId}/disponibilidades`,
+        `https://sofiacomar1.latincloud.app/api/cursos/${cursoId}/disponibilidades`,
         {
           method: "POST",
           headers: {
@@ -416,7 +431,7 @@ export const agregarReservaConDatos = createAsyncThunk(
   "cursos/agregarReservaConDatos",
   async (datosReserva: ReservaConHorarios, { rejectWithValue }) => {
     try {
-      const response = await fetch(`http://localhost:3002/api/reservas`, {
+      const response = await fetch(`https://sofiacomar1.latincloud.app/api/reservas`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -425,7 +440,10 @@ export const agregarReservaConDatos = createAsyncThunk(
       });
 
       if (!response.ok) {
-        throw new Error("Error al agregar reserva con datos");
+        const errorData = await response.json();
+        throw new Error(
+          errorData.error || "Error al agregar reserva con datos"
+        );
       }
 
       const nuevaReserva = await response.json();
@@ -440,14 +458,14 @@ export const agregarReservaConDatos = createAsyncThunk(
 // Agregar reserva a una disponibilidad
 // Agregar reserva a una disponibilidad
 export const agregarReserva = createAsyncThunk<
-  ReservaConHorarios, // Tipo de respuesta esperada, ajusta según sea necesario
+  ReservaConHorarios, // Tipo de respuesta esperada
   ReservaConHorarios, // Tipo de argumento para la acción
   { rejectValue: string }
 >("cursos/agregarReserva", async (datosReserva, { rejectWithValue }) => {
   console.log("Enviando datos de reserva:", datosReserva); // Log para depurar
 
   try {
-    const response = await fetch(`http://localhost:3002/api/reservas`, {
+    const response = await fetch(`https://sofiacomar1.latincloud.app/api/reservas`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -456,6 +474,11 @@ export const agregarReserva = createAsyncThunk<
     });
 
     if (!response.ok) {
+      const errorData = await response.json();
+      if (errorData.error) {
+        // Si el backend envía un mensaje de error específico
+        return rejectWithValue(errorData.error);
+      }
       throw new Error("Error al agregar reserva");
     }
 
@@ -478,7 +501,7 @@ export const addImageToCurso = createAsyncThunk<
     try {
       console.log("Enviando imagen al servidor", { cursoId, imageData });
       const response = await fetch(
-        `http://localhost:3002/api/cursos/${cursoId}/imagenes`,
+        `https://sofiacomar1.latincloud.app/api/cursos/${cursoId}/imagenes`,
         {
           method: "POST",
           body: imageData,
@@ -509,7 +532,7 @@ export const fetchCursoCompletoById = createAsyncThunk<
   try {
     console.log("Solicitando datos del curso", cursoId);
     const response = await fetch(
-      `http://localhost:3002/api/cursos/${cursoId}/completo`
+      `https://sofiacomar1.latincloud.app/api/cursos/${cursoId}/completo`
     );
     if (!response.ok) {
       throw new Error("No se pudo cargar el curso");
@@ -539,13 +562,25 @@ const cursosSlice = createSlice({
   reducers: {
     actualizarDisponibilidad(state, action: PayloadAction<Disponibilidad>) {
       state.disponibilidades.push(action.payload);
+      
     },
   },
   extraReducers: (builder) => {
     builder
+    .addCase(verificarReservasActuales.fulfilled, (state, action) => {
+      const disponibilidadId = action.meta.arg;
+      const index = state.disponibilidades.findIndex(d => d.id === disponibilidadId);
+      if (index !== -1) {
+        state.disponibilidades[index].reservasActuales = action.payload.reservasActuales;
+      }
+    })
       .addCase(agregarReservaConDatos.fulfilled, (state, action) => {
         // Agregar la nueva reserva al estado
         state.reservas.push(action.payload);
+      })
+      .addCase(agregarReservaConDatos.rejected, (state, action) => {
+        // Manejar el caso en que la reserva no se pudo agregar
+        state.error = action.error.message || "No se pudo agregar la reserva";
       })
       .addCase(subirComprobantePago.fulfilled, (state, action) => {
         // Actualizar la reserva con la URL del comprobante
@@ -621,6 +656,16 @@ const cursosSlice = createSlice({
         // Asegúrate de que la acción devuelva un objeto de tipo ReservaConHorarios
         const nuevaReserva: ReservaConHorarios = action.payload;
         state.reservas.push(nuevaReserva);
+      })
+      .addCase(agregarReserva.rejected, (state, action) => {
+        // Aquí puedes manejar el error
+        if (action.payload) {
+          // Si el payload contiene un mensaje de error específico
+          state.error = action.payload;
+        } else {
+          // Manejo de otros errores
+          state.error = "No se pudo agregar la reserva. Error desconocido.";
+        }
       })
       .addCase(deleteImageFromCurso.fulfilled, (state, action) => {
         if (state.cursoActual && state.cursoActual.imagenes) {

@@ -62,6 +62,7 @@ interface Disponibilidad {
   fecha_fin: string;
   max_reservas: number;
   horarios?: HorarioDisponibilidad[];
+  reservasActuales?: number; // Agregar esta línea
 }
 
 type CursoInfoProps = {
@@ -143,9 +144,34 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
   const [horarios, setHorarios] = useState([
     { dia_semana: "", hora_inicio: "", hora_fin: "" },
   ]);
-  const handleOpenReservaModal = (disponibilidad: Disponibilidad) => {
-    setDisponibilidadSeleccionada(disponibilidad);
-    setIsReservaModalOpen(true);
+  const handleOpenReservaModal = async (disponibilidad: Disponibilidad) => {
+    let reservasActuales = disponibilidad.reservasActuales;
+
+    // Si reservasActuales es undefined, obtener el número actual de reservas del backend
+    if (reservasActuales === undefined) {
+      try {
+        const response = await fetch(
+          `https://sofiacomar1.latincloud.app/api/reservas/verificar/${disponibilidad.id}`
+        );
+        if (!response.ok) throw new Error("Error al verificar las reservas");
+        const data = await response.json();
+        reservasActuales = data.reservasActuales;
+      } catch (error) {
+        toast.error("Error al verificar las reservas");
+        return;
+      }
+    }
+
+    // Asegurarse de que reservasActuales tenga un valor antes de comparar
+    if (
+      reservasActuales !== undefined &&
+      reservasActuales >= disponibilidad.max_reservas
+    ) {
+      toast.info("Este curso ya ha alcanzado el máximo de reservas.");
+    } else if (reservasActuales !== undefined) {
+      setDisponibilidadSeleccionada(disponibilidad);
+      setIsReservaModalOpen(true);
+    }
   };
 
   // Función para cerrar el modal de reserva
