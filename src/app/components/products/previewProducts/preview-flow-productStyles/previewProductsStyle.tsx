@@ -230,37 +230,42 @@ export const ProductDetailsContainer = styled.div`
   }
 `;
 export const Title = styled.h2`
-  font-family: "Raleway", sans-serif; /* Una fuente elegante y versátil */
-  font-weight: 800; /* Mantenemos un peso fuerte para destacar */
-  font-size: 32px; /* Incrementamos ligeramente el tamaño para mejorar la visibilidad */
+  font-family: "Raleway", sans-serif;
+  font-weight: 800;
+  font-size: 32px;
   text-align: center;
-  
-  margin-bottom: 24px; /* Un espacio adecuado debajo del título */
+  margin-bottom: 24px;
   background: linear-gradient(
     to right,
     #d5b895,
     #baaaa8
-  ); /* Gradiente de izquierda a derecha */
-  -webkit-background-clip: text; /* Recortamos el fondo al texto para el efecto de gradiente */
-  -webkit-text-fill-color: transparent; /* Hacemos el texto transparente para mostrar el gradiente */
-  text-transform: uppercase; /* Mayúsculas para un look limpio y ordenado */
-  letter-spacing: 1.5px; /* Espaciado entre letras para sofisticación */
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
   position: relative;
+
   &:after {
-    /* Decoración sutil debajo del título */
     content: "";
     position: absolute;
-    bottom: -10px; /* Ligeramente más cerca del texto */
+    bottom: -10px;
     left: 50%;
     transform: translateX(-50%);
-    width: 60%; /* Ancho más conservador */
-    height: 2px; /* Una línea más fina */
+    width: 60%;
+    height: 2px;
     background: linear-gradient(
       to right,
       #baa378,
       #d5b895
-    ); /* Gradiente para la decoración */
-    border-radius: 1px; /* Un borde suavemente redondeado */
+    );
+    border-radius: 1px;
+  }
+
+  /* Media query para dispositivos móviles */
+  @media (max-width: 768px) {
+    -webkit-text-fill-color: #808080 !important; /* Cambia el color del texto a blanco */
+    color: #808080 !important; /* Para navegadores que no soportan -webkit-text-fill-color */
   }
 `;
 
