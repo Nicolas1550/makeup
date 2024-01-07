@@ -1,5 +1,5 @@
 import styled, { keyframes } from "styled-components";
-import { FaSpinner } from "react-icons/fa";
+import { FaPalette } from "react-icons/fa"; // Un icono más temático
 import { motion } from "framer-motion";
 
 const spin = keyframes`
@@ -7,36 +7,42 @@ const spin = keyframes`
   100% { transform: rotate(360deg); }
 `;
 
-const LoadingContainer = styled.div`
+const LoadingContainer = styled(motion.div)`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: beige;
+  background: linear-gradient(135deg, #f6d5c8 0%, #f4c1d0 100%);
 `;
 
-const SpinnerIcon = styled(FaSpinner)`
+const SpinnerIcon = styled(FaPalette)`
   animation: ${spin} 2s linear infinite;
   font-size: 3rem;
-  color: pink;
+  color: #8a4f7d; // Un color que combina bien con el fondo
 `;
 
 const LoadingText = styled(motion.div)`
   margin-top: 20px;
   font-size: 1.5rem;
-  color: black;
+  color: #3a3845;
 `;
 
-const loadingVariants = {
+const containerVariants = {
   start: { opacity: 0 },
-  end: { opacity: 1, transition: { duration: 0.5, yoyo: Infinity } },
+  end: { opacity: 1, transition: { duration: 1 } }
+};
+
+const textVariants = {
+  start: { y: 20, opacity: 0 },
+  end: { y: 0, opacity: 1, transition: { duration: 0.5, yoyo: Infinity } }
 };
 
 const LoadingComponent = () => {
   return (
-    <LoadingContainer>
+    <LoadingContainer variants={containerVariants} initial="start" animate="end">
       <SpinnerIcon />
-      <LoadingText variants={loadingVariants} initial="start" animate="end">
+      <LoadingText variants={textVariants}>
         Cargando...
       </LoadingText>
     </LoadingContainer>
