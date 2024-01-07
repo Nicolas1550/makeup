@@ -68,7 +68,7 @@ const OverlayText = styled.div`
 
 const Title = styled(motion.h1)`
   position: absolute;
-  top: 54%;
+  top: 48%;
   left: 30%;
   transform: translate(-50%, -50%);
   color: #fff0f5; // Asegúrate de que el color del texto contraste con la imagen
