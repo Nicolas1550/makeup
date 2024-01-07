@@ -137,5 +137,6 @@ const ServiceCarousel: React.FC<ServiceCarouselProps> = memo(
     );
   }
 );
+ServiceCarousel.displayName = 'ServiceCarousel'; // Asigna un nombre de visualización
 
 export default ServiceCarousel;

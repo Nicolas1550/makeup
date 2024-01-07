@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { motion } from "framer-motion";
 import { io } from "socket.io-client";
 const socket = io("https://asdasdasd3.onrender.com");
@@ -676,4 +682,5 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
     );
   }
 );
+ServiceModal.displayName = "ServiceModal";
 export default ServiceModal;

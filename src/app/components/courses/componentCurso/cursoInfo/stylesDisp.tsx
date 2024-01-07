@@ -1,4 +1,3 @@
-import { Box } from "@mui/material";
 import styled from "styled-components";
 export const StyledModal = styled.div`
   background-color: #fffaf0; // Fondo beige claro

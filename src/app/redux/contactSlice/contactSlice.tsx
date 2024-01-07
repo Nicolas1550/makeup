@@ -2,8 +2,6 @@
 import {
   createSlice,
   createAsyncThunk,
-  PayloadAction,
-  SerializedError,
 } from "@reduxjs/toolkit";
 
 interface ContactState {

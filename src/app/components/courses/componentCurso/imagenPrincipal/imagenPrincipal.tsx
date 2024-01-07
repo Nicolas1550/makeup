@@ -2,69 +2,7 @@ import { motion } from "framer-motion";
 import React from "react";
 import styled, { keyframes } from "styled-components";
 
-const fadeInScaleUp = keyframes`
-  from {
-    transform: scale(0.5) translate(-50%, -50% ) translateY(-100px);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1) translate(-50%, -50%) translateY(0);
-    opacity: 1;
-  }
-`;
 
-const ImagenPrincipalContainer = styled.div`
-  position: relative;
-  width: auto;
-  height: 60vh; // Altura ajustada
-
-  @media (max-width: 768px) {
-    height: 40vh; // Altura más baja para dispositivos más pequeños
-  }
-
-  @media (max-width: 480px) {
-    height: 50vh; // Altura aún más baja para pantallas de móviles
-  }
-`;
-
-const StyledImage = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover; // Asegura que la imagen cubra todo el ancho y alto
-`;
-
-const Overlay = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); // Capa semi-transparente negra
-`;
-
-const OverlayText = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: #c0c0c0;
-  text-align: center;
-  font-size: 3rem; // Tamaño de la fuente para pantallas grandes
-  font-family: "Playfair Display", serif;
-  animation: ${fadeInScaleUp} 1.5s ease-in-out forwards;
-
-  @media (max-width: 768px) {
-    font-size: 1.8rem; // Fuente más pequeña para tabletas
-  }
-
-  @media (max-width: 480px) {
-    font-size: 1.5rem; // Fuente aún más pequeña para móviles
-    transform: translate(
-      -50%,
-      -60%
-    ); // Ajustar la posición para que no se pierda por lo alto
-  }
-`;
 
 const Title = styled(motion.h1)`
   position: absolute;
