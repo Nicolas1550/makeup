@@ -63,9 +63,9 @@ const ProductDetail: React.FC<ProductProps> = ({ product }) => {
             <Image
               src={
                 currentProduct.imagen_url
-                  ? currentProduct.imagen_url.startsWith("http")
+                  ? currentProduct.imagen_url.startsWith("https")
                     ? currentProduct.imagen_url
-                    : `https://asdasdasd3.onrender.com/${currentProduct.imagen_url}`
+                    : `https://asdasdasd3.onrender.com${currentProduct.imagen_url}`
                   : "/path_to_default_image.jpg"
               }
               alt={currentProduct.nombre}
