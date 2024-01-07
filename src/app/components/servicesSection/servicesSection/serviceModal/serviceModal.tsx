@@ -218,6 +218,7 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
 
         setLastAddedTimestamp(Date.now());
         setSelectedEvents([]); // Limpiamos el arreglo después de agregar las disponibilidades
+        console.log("SelectedEvents reset");
       }
     };
 
@@ -225,8 +226,12 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
       (state) => state.services.lastFetchedServiceId
     );
     const handleCloseModal = () => {
+      console.log("handleCloseModal called");
+
       setSelectedEvents([]); // Limpiamos las disponibilidades seleccionadas
       setShowCalendar(false); // Reiniciar el estado del calendario
+      console.log("ShowCalendar set to false");
+
       onRequestClose(); // Notifica al componente padre para cerrar el modal
     };
 
@@ -242,12 +247,15 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
 
     useEffect(() => {
       if (isOpen && selectedService && selectedService.id) {
+        console.log("useEffect selectedService start:", selectedService);
+
         // Solo realiza la solicitud si el servicio seleccionado es diferente al último obtenido
         if (currentFetchedServiceId !== selectedService.id) {
           dispatch(fetchAvailabilities(selectedService.id));
           dispatch(checkIfUserIsAssigned(selectedService.id));
         }
       }
+      console.log("useEffect selectedService end");
     }, [isOpen, selectedService, currentFetchedServiceId, dispatch]);
 
     const handleDeleteSelected = () => {
@@ -379,15 +387,26 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
     }, [serviceImages]);
     // Controla la renderización del modal
     useEffect(() => {
+      console.log("useEffect isOpen start:", isOpen);
+
       if (isOpen) {
         hasRenderedRef.current = true; // Indica que el modal se ha abierto y renderizado
       } else {
         hasRenderedRef.current = false; // Resetea cuando el modal se cierra
       }
+      console.log("useEffect isOpen end");
     }, [isOpen]);
     if (!isOpen || !hasRenderedRef.current) {
+      console.log(
+        "Not rendering modal: isOpen, hasRenderedRef",
+        isOpen,
+        hasRenderedRef.current
+      );
+
       return null; // No renderiza el modal si no está abierto o ya se ha renderizado
     }
+    console.log("Rendering modal");
+
     if (!selectedService) return null;
     return (
       <>
