@@ -7,7 +7,9 @@ const nextConfig = {
     domains: [
       'localhost:3002',
       'localhost:3005',
-      'https://sofiacomar1.latincloud.app',
+      'https://sofiaportafolio.online',
+      'sofiaportafolio.online',
+
       'localhost',
       'tse1.mm.bing.net',
       'tse4.mm.bing.net',

@@ -37,11 +37,14 @@ import {
 } from "./reservationCard.styles";
 import Select, { SingleValue, StylesConfig, GroupBase } from "react-select";
 import { School, Person, CalendarToday, AccessTime } from "@mui/icons-material";
+import SortIcon from "@mui/icons-material/Sort";
+import SortByAlphaIcon from "@mui/icons-material/SortByAlpha";
 
 interface OptionType {
   value: string;
   label: string;
 }
+
 function ReservationsForAssistant() {
   const dispatch = useAppDispatch();
   const ayudanteId = useAppSelector((state) => state.auth.userId);
@@ -53,13 +56,16 @@ function ReservationsForAssistant() {
     null
   );
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const OrderIcon = sortOrder === "asc" ? SortByAlphaIcon : SortIcon;
 
   const [selectedOption, setSelectedOption] = useState<OptionType | null>(null);
   const courseReservations = useAppSelector((state) => state.cursos.reservas);
   const handleSelectChange = (option: SingleValue<OptionType>) => {
     setSelectedOption(option);
   };
-
+  const toggleSortOrder = () => {
+    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+  };
   const handleToggleDetails = (id: number) => {
     if (expandedReservation === id) {
       setExpandedReservation(null);
@@ -155,9 +161,8 @@ function ReservationsForAssistant() {
           : dateB.getTime() - dateA.getTime();
       });
     },
-    [sortOrder] // Dependencias de useCallback
+    [sortOrder]
   );
-  
 
   const handleCompleteClick = (reservationId: number) => {
     dispatch(markReservationAsCompleted(reservationId));
@@ -203,13 +208,29 @@ function ReservationsForAssistant() {
     }
   }, [dispatch, selectedOption]);
   useEffect(() => {
+    if (selectedOption?.value === "servicios") {
+      console.log("Estado seleccionado para filtrar:", selectedStatus);
+      const filtered = reservations.filter((reservation) =>
+        selectedStatus === "completada"
+          ? reservation.estado === "completada" ||
+            reservation.estado === "completado"
+          : reservation.estado === selectedStatus
+      );
+      const orderedFilteredReservations = sortReservations(filtered);
+      setOrderedServiceReservations(orderedFilteredReservations);
+    }
+  }, [reservations, selectedStatus, selectedOption, sortReservations]);
+
+  console.log("Reservas de servicios a mostrar:", orderedServiceReservations);
+
+  useEffect(() => {
     console.log("Reservas filtradas con fechas", filteredCourseReservations);
   }, [filteredCourseReservations]);
   useEffect(() => {
+    // Ordena las reservas de cursos cada vez que cambien las reservas filtradas, el orden de clasificación o la función de clasificación.
     setOrderedCourseReservations(sortReservations(filteredCourseReservations));
-    setOrderedServiceReservations(sortReservations(reservations));
-  }, [sortOrder, filteredCourseReservations, reservations, sortReservations]); // Añadir 'sortReservations' aquí
-  
+  }, [filteredCourseReservations, sortOrder, sortReservations]);
+
   return (
     <Container>
       <Heading>Reservas para el ayudante {ayudanteName || ayudanteId}</Heading>
@@ -233,24 +254,19 @@ function ReservationsForAssistant() {
       />
       {selectedOption && (
         <>
-        
-          {/* Selector de ordenamiento */}
           <div>
-            <label htmlFor="sortOrder">Ordenar por fecha:</label>
-            <select
-              id="sortOrder"
-              value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value as "asc" | "desc")}
-            >
-              <option value="desc">Descendente</option>
-              <option value="asc">Ascendente</option>
-            </select>
+            <OrderIcon
+              onClick={toggleSortOrder}
+              style={{ cursor: "pointer" }}
+            />
+        
           </div>
+          {/* ... resto de tu JSX */}
         </>
       )}
       {selectedOption?.value === "servicios" && (
         <ReservationsList
-          reservations={orderedServiceReservations} // Usar las reservas de servicios ordenadas
+          reservations={orderedServiceReservations}
           status={selectedStatus}
           onMarkComplete={handleCompleteClick}
           onDelete={handleDeleteClick}
@@ -260,7 +276,7 @@ function ReservationsForAssistant() {
         />
       )}
       {selectedOption?.value === "cursos" &&
-        filteredCourseReservations.map((courseReservation) => (
+        orderedCourseReservations.map((courseReservation) => (
           <ReservationItem
             key={courseReservation.id}
             onClick={() =>

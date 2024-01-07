@@ -98,7 +98,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
             {images.map((image) => (
               <CarouselImage
                 key={image.id} // Usa el id único de la imagen como clave
-                src={`${baseUrl}db/image/cursos/${image.url_imagen}`}
+                src={`${baseUrl}image/cursos/${image.url_imagen}`}
                 alt={`Imagen del Curso ${image.id}`}
               />
             ))}

@@ -36,7 +36,7 @@ export const fetchCurrentUser = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     const response = await axios.get(
-      "https://sofiacomar1.latincloud.app/api/users/current",
+      "https://sofiaportafolio.online/api/users/current",
       {
         headers: {
           "x-auth-token": userToken,
@@ -56,13 +56,13 @@ export const fetchCurrentUser = createAsyncThunk(
 
 // Creamos thunks para las acciones asíncronas
 export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
-  const response = await axios.get("https://sofiacomar1.latincloud.app/api/users");
+  const response = await axios.get("https://sofiaportafolio.online/api/users");
   return response.data as User[];
 });
 
 export const fetchHelpers = createAsyncThunk("users/fetchHelpers", async () => {
   const response = await axios.get(
-    "https://sofiacomar1.latincloud.app/api/users/role/ayudante"
+    "https://sofiaportafolio.online/api/users/role/ayudante"
   );
   return response.data as User[];
 });
@@ -71,7 +71,7 @@ export const assignRole = createAsyncThunk(
   "users/assignRole",
   async (userId: string, thunkAPI) => {
     try {
-      await axios.put(`https://sofiacomar1.latincloud.app/api/users/assignRole/${userId}`, {
+      await axios.put(`https://sofiaportafolio.online/api/users/assignRole/${userId}`, {
         role: "ayudante",
       });
       return userId;
@@ -90,7 +90,7 @@ export const assignRole = createAsyncThunk(
 export const revokeRole = createAsyncThunk(
   "users/revokeRole",
   async (userId: string) => {
-    await axios.put(`https://sofiacomar1.latincloud.app/api/users/revokeRole/${userId}`, {
+    await axios.put(`https://sofiaportafolio.online/api/users/revokeRole/${userId}`, {
       role: "ayudante",
     });
     return userId;

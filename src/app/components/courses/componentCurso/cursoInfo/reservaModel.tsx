@@ -2,7 +2,20 @@
 import React, { useEffect, useState } from "react";
 import Modal from "@mui/material/Modal";
 import Stepper from "./steper"; // Asumiendo que tienes un componente stepper
-import { StyledModal, StyledButton } from "./cursoInfoStyles";
+import {
+  StyledModal,
+  StyledButton,
+  StepperContainer,
+  ButtonContainer,
+  StepContainer,
+  StyledInput,
+  HorarioContainer,
+  DisponibilidadContainerr,
+  DisponibilidadInfoo,
+  StyledLabel,
+  StyledInputContainer,
+  StyledTitle,
+} from "./cursoInfoStyles";
 import { toast } from "react-toastify";
 import {
   HorarioDisponibilidad,
@@ -14,6 +27,7 @@ import {
   useAppSelector,
 } from "../../../../redux/store/appHooks";
 import { isEmailValid, isPhoneValid, isTextValid } from "./validations"; // Asumiendo que tienes un archivo de validaciones
+import { format } from "date-fns";
 
 interface Disponibilidad {
   id: number;
@@ -49,7 +63,7 @@ const ReservaModal: React.FC<ReservaModalProps> = ({
     if (activeStep === 1 && !validarDatosUsuario()) {
       return; // Detener la ejecución si la validación falla
     }
-  
+
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
   const handleBack = () => {
@@ -156,80 +170,109 @@ const ReservaModal: React.FC<ReservaModalProps> = ({
   const renderStepContent = (step: number) => {
     switch (step) {
       case 0:
+        const formattedStartDate = disponibilidadSeleccionada?.fecha_inicio
+          ? format(
+              new Date(disponibilidadSeleccionada.fecha_inicio),
+              "dd/MM/yyyy"
+            )
+          : "";
+        const formattedEndDate = disponibilidadSeleccionada?.fecha_fin
+          ? format(new Date(disponibilidadSeleccionada.fecha_fin), "dd/MM/yyyy")
+          : "";
         return (
-          <div>
+          <StepContainer>
             <h3>Confirmar Disponibilidad</h3>
-            <p>Fecha de Inicio: {disponibilidadSeleccionada?.fecha_inicio}</p>
-            <p>Fecha de Fin: {disponibilidadSeleccionada?.fecha_fin}</p>
-            {/* Más detalles según sea necesario */}
-          </div>
+            <DisponibilidadContainerr>
+              <DisponibilidadInfoo>
+                Fecha de Inicio: {formattedStartDate}
+              </DisponibilidadInfoo>
+              <DisponibilidadInfoo>
+                Fecha de Fin: {formattedEndDate}
+              </DisponibilidadInfoo>
+              <HorarioContainer>
+                <h4>Dias y Horarios:</h4>
+                {disponibilidadSeleccionada?.horarios?.map((horario, index) => (
+                  <p
+                    key={index}
+                  >{`Día: ${horario.dia_semana}, De ${horario.hora_inicio} a ${horario.hora_fin}`}</p>
+                ))}
+              </HorarioContainer>
+            </DisponibilidadContainerr>
+          </StepContainer>
         );
       case 1:
-        console.log({ nombreUsuario, correoUsuario, telefonoUsuario });
-
         return (
-          <div>
-            <h3>Información del Usuario</h3>
-            <input
-              type="text"
-              value={nombreUsuario}
-              onChange={(e) => setNombreUsuario(e.target.value)}
-              placeholder="Nombre"
-            />
-            <input
-              type="email"
-              value={correoUsuario}
-              onChange={(e) => setCorreoUsuario(e.target.value)}
-              placeholder="Correo electrónico"
-            />
-            <input
-              type="tel"
-              value={telefonoUsuario}
-              onChange={(e) => setTelefonoUsuario(e.target.value)}
-              placeholder="Teléfono"
-            />
-          </div>
+          <StepContainer>
+            <StyledTitle>Información del Usuario</StyledTitle>
+
+            <StyledInputContainer>
+              <StyledInput
+                type="text"
+                value={nombreUsuario}
+                onChange={(e) => setNombreUsuario(e.target.value)}
+                placeholder=" " // Dejar un espacio en blanco para el efecto
+              />
+              <StyledLabel>Nombre</StyledLabel>
+            </StyledInputContainer>
+
+            <StyledInputContainer>
+              <StyledInput
+                type="email"
+                value={correoUsuario}
+                onChange={(e) => setCorreoUsuario(e.target.value)}
+                placeholder=" " // Espacio en blanco para el efecto
+              />
+              <StyledLabel>Correo electrónico</StyledLabel>
+            </StyledInputContainer>
+
+            <StyledInputContainer>
+              <StyledInput
+                type="tel"
+                value={telefonoUsuario}
+                onChange={(e) => setTelefonoUsuario(e.target.value)}
+                placeholder=" " // Espacio en blanco para el efecto
+              />
+              <StyledLabel>Teléfono</StyledLabel>
+            </StyledInputContainer>
+          </StepContainer>
         );
       case 2:
         return (
-          <div>
-            <h3>Subir Comprobante de Pago</h3>
-            <input type="file" onChange={handleComprobanteUpload} />
-          </div>
+          <StepContainer>
+            <StyledTitle>Subir Comprobante de Pago</StyledTitle>
+            <StyledInput type="file" onChange={handleComprobanteUpload} />
+          
+          </StepContainer>
         );
-      case 3:
-        return <div>¿Desea confirmar la reserva?</div>;
       default:
-        return "Paso desconocido";
+        return <StepContainer>Paso desconocido</StepContainer>;
     }
   };
-
   return (
-    <>
-      <Modal open={open} onClose={onClose}>
-        <StyledModal>
+    <Modal open={open} onClose={onClose}>
+      <StyledModal>
+        <StepperContainer>
+          {/* Asumiendo que tienes un componente Stepper */}
           <Stepper currentStep={activeStep} />
-          <div>
-            {renderStepContent(activeStep)}
-            <div>
-              {activeStep > 0 && (
-                <StyledButton onClick={handleBack}>Atrás</StyledButton>
-              )}
-              {activeStep < 3 ? (
-                <StyledButton onClick={handleNext}>Siguiente</StyledButton>
-              ) : (
-                <StyledButton
-                  onClick={confirmarReserva}
-                  disabled={reservaEnProceso} // Desactivar el botón durante el proceso
-                >
-                  Confirmar Reserva
-                </StyledButton>
-              )}
-            </div>
-          </div>
-        </StyledModal>
-      </Modal>
-    </>
+        </StepperContainer>
+        {renderStepContent(activeStep)}
+        <ButtonContainer>
+          {activeStep > 0 && (
+            <StyledButton onClick={handleBack}>Atrás</StyledButton>
+          )}
+          {activeStep < 2 ? (
+            <StyledButton onClick={handleNext}>Siguiente</StyledButton>
+          ) : (
+            <StyledButton
+              onClick={confirmarReserva}
+              disabled={reservaEnProceso}
+            >
+              Confirmar Reserva
+            </StyledButton>
+          )}
+        </ButtonContainer>
+      </StyledModal>
+    </Modal>
   );
 };
 

@@ -14,6 +14,7 @@ interface ReservationsListProps {
   format: (date: Date, format: string) => string;
 }
 
+// ReservationsList.tsx
 const ReservationsList: React.FC<ReservationsListProps> = ({
   reservations,
   status,
@@ -23,16 +24,12 @@ const ReservationsList: React.FC<ReservationsListProps> = ({
   getServiceNameById,
   format,
 }) => {
-  const filteredReservations = reservations.filter((r) => r.estado === status);
-
   return (
     <div>
       <h2>
-        {status === "pendiente"
-          ? "Reservas Pendientes"
-          : "Reservas Completadas"}
+        {status === "pendiente" ? "Reservas Pendientes" : "Reservas Completadas"}
       </h2>
-      {filteredReservations.map((reservation) => (
+      {reservations.map((reservation) => (
         <ReservationCard
           key={reservation.id}
           reservation={reservation}
@@ -46,5 +43,6 @@ const ReservationsList: React.FC<ReservationsListProps> = ({
     </div>
   );
 };
+
 
 export default ReservationsList;

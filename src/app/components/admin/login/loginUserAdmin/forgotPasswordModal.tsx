@@ -80,7 +80,7 @@ const ForgotPasswordModal: FC<ForgotPasswordModalProps> = ({
   const handleForgotPassword = async () => {
     try {
       const response = await axios.post(
-        "https://sofiacomar1.latincloud.app/api/users/forgot-password",
+        "https://sofiaportafolio.online/api/users/forgot-password",
         { email }
       );
       setMessage(response.data);

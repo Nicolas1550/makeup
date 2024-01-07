@@ -33,7 +33,7 @@ const ProductFlow: React.FC<ProductFlowProps> = ({ products }) => {
           <StyledProductImage // Usa el componente estilizado
             src={
               product.imagen_url
-                ? `https://sofiacomar1.latincloud.app${product.imagen_url}`
+                ? `https://sofiaportafolio.online${product.imagen_url}`
                 : "/path/to/default/image.png"
             }
             alt={product.nombre}
