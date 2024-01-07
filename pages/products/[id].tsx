@@ -65,7 +65,7 @@ const ProductDetail: React.FC<ProductProps> = ({ product }) => {
                 currentProduct.imagen_url
                   ? currentProduct.imagen_url.startsWith("http")
                     ? currentProduct.imagen_url
-                    : `https://sofiaportafolio.online${currentProduct.imagen_url}`
+                    : `https://sofiaportafolioonline.latincloud.app${currentProduct.imagen_url}`
                   : "/path_to_default_image.jpg"
               }
               alt={currentProduct.nombre}
@@ -149,7 +149,7 @@ export const getServerSideProps = async (
   let product = {};
   try {
     const response = await axios.get(
-      `https://sofiaportafolio.online/api/products/${id}`
+      `https://sofiaportafolioonline.latincloud.app/api/products/${id}`
     );
     product = response.data;
   } catch (error) {

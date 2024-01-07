@@ -48,7 +48,7 @@ export const verifyToken = createAsyncThunk<AuthThunkResponse, void>(
     try {
       const decodedToken = jwt_decode(token) as DecodedToken;
       const response = await axios.post(
-        "https://sofiaportafolio.online/api/validateToken",
+        "https://sofiaportafolioonline.latincloud.app/api/validateToken",
         { token }
       );
 
@@ -79,7 +79,7 @@ export const loginUser = createAsyncThunk(
 
     try {
       const response = await axios.post<LoginResponse>(
-        "https://sofiaportafolio.online/api/login",
+        "https://sofiaportafolioonline.latincloud.app/api/login",
         credentials
       );
       const token = response.data.token;
@@ -112,7 +112,7 @@ export const registerUser = createAsyncThunk(
     thunkAPI.dispatch(setLoading(true));
 
     try {
-      await axios.post("https://sofiaportafolio.online/api/users/register", userData);
+      await axios.post("https://sofiaportafolioonline.latincloud.app/api/users/register", userData);
       thunkAPI.dispatch(setLoading(false));
       return "Registro exitoso";
     } catch (error: unknown) {

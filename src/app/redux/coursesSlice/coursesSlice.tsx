@@ -94,7 +94,7 @@ export const actualizarEstadoDisponibilidad = createAsyncThunk(
   ) => {
     try {
       const response = await fetch(
-        `https://sofiaportafolio.online/api/cursos/${cursoId}/disponibilidades/${disponibilidadId}`,
+        `https://sofiaportafolioonline.latincloud.app/api/cursos/${cursoId}/disponibilidades/${disponibilidadId}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -120,7 +120,7 @@ export const verificarReservasActuales = createAsyncThunk(
   async (disponibilidadId: number, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `https://sofiaportafolio.online/api/reservas/verificar/${disponibilidadId}`
+        `https://sofiaportafolioonline.latincloud.app/api/reservas/verificar/${disponibilidadId}`
       );
       if (!response.ok) throw new Error("Error al verificar las reservas");
       return await response.json();
@@ -142,7 +142,7 @@ export const subirComprobantePago = createAsyncThunk(
   ) => {
     try {
       const response = await fetch(
-        `https://sofiaportafolio.online/api/reservas/${reservaId}/comprobante`,
+        `https://sofiaportafolioonline.latincloud.app/api/reservas/${reservaId}/comprobante`,
         {
           method: "POST",
           body: comprobanteData,
@@ -174,7 +174,7 @@ export const actualizarEstadoReservaCurso = createAsyncThunk(
   ) => {
     try {
       const response = await fetch(
-        `https://sofiaportafolio.online/api/reservas/cursos/${reservaId}/estado`,
+        `https://sofiaportafolioonline.latincloud.app/api/reservas/cursos/${reservaId}/estado`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -200,7 +200,7 @@ export const eliminarReservaCurso = createAsyncThunk(
   async (reservaId: number, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `https://sofiaportafolio.online/api/reservas/cursos/${reservaId}`,
+        `https://sofiaportafolioonline.latincloud.app/api/reservas/cursos/${reservaId}`,
         {
           method: "DELETE",
         }
@@ -220,7 +220,7 @@ export const fetchTodasLasReservas = createAsyncThunk(
   "cursos/fetchTodasLasReservas",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch(`https://sofiaportafolio.online/api/reservas/todas`);
+      const response = await fetch(`https://sofiaportafolioonline.latincloud.app/api/reservas/todas`);
       if (!response.ok) {
         throw new Error("Error al obtener todas las reservas");
       }
@@ -245,7 +245,7 @@ export const updateCursoPrecio = createAsyncThunk<
   async ({ cursoId, nuevoPrecio }, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `https://sofiaportafolio.online/api/cursos/${cursoId}/precio`,
+        `https://sofiaportafolioonline.latincloud.app/api/cursos/${cursoId}/precio`,
         {
           method: "PUT",
           headers: {
@@ -278,7 +278,7 @@ export const fetchReservasAdminPorCurso = createAsyncThunk<
   async ({ cursoId }, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `https://sofiaportafolio.online/api/cursos/${cursoId}/reservas/admin`
+        `https://sofiaportafolioonline.latincloud.app/api/cursos/${cursoId}/reservas/admin`
       );
 
       if (!response.ok) {
@@ -305,7 +305,7 @@ export const fetchReservasPorCursoYUsuario = createAsyncThunk<
   async ({ usuarioId }, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `https://sofiaportafolio.online/api/cursos/usuarios/${usuarioId}/reservas`
+        `https://sofiaportafolioonline.latincloud.app/api/cursos/usuarios/${usuarioId}/reservas`
       );
 
       if (!response.ok) {
@@ -331,7 +331,7 @@ export const deleteImageFromCurso = createAsyncThunk<
   async ({ cursoId, imagenId }, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `https://sofiaportafolio.online/api/cursos/${cursoId}/imagenes/${imagenId}`,
+        `https://sofiaportafolioonline.latincloud.app/api/cursos/${cursoId}/imagenes/${imagenId}`,
         {
           method: "DELETE",
         }
@@ -361,7 +361,7 @@ export const agregarHorariosDisponibilidad = createAsyncThunk<
   async ({ disponibilidadId, horarios }, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `https://sofiaportafolio.online/api/disponibilidades/${disponibilidadId}/horarios`,
+        `https://sofiaportafolioonline.latincloud.app/api/disponibilidades/${disponibilidadId}/horarios`,
         {
           method: "POST",
           headers: {
@@ -392,7 +392,7 @@ export const fetchDisponibilidades = createAsyncThunk<
 >("cursos/fetchDisponibilidades", async (cursoId, { rejectWithValue }) => {
   try {
     const response = await fetch(
-      `https://sofiaportafolio.online/api/cursos/${cursoId}/disponibilidades`
+      `https://sofiaportafolioonline.latincloud.app/api/cursos/${cursoId}/disponibilidades`
     );
     if (!response.ok) {
       throw new Error("Error al obtener disponibilidades");
@@ -436,7 +436,7 @@ export const agregarDisponibilidad = createAsyncThunk<
         max_reservas,
       }); // Nuevo log
       const response = await fetch(
-        `https://sofiaportafolio.online/api/cursos/${cursoId}/disponibilidades`,
+        `https://sofiaportafolioonline.latincloud.app/api/cursos/${cursoId}/disponibilidades`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -464,7 +464,7 @@ export const agregarReservaConDatos = createAsyncThunk(
   "cursos/agregarReservaConDatos",
   async (datosReserva: ReservaConHorarios, { rejectWithValue }) => {
     try {
-      const response = await fetch(`https://sofiaportafolio.online/api/reservas`, {
+      const response = await fetch(`https://sofiaportafolioonline.latincloud.app/api/reservas`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -498,7 +498,7 @@ export const agregarReserva = createAsyncThunk<
   console.log("Enviando datos de reserva:", datosReserva); // Log para depurar
 
   try {
-    const response = await fetch(`https://sofiaportafolio.online/api/reservas`, {
+    const response = await fetch(`https://sofiaportafolioonline.latincloud.app/api/reservas`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -534,7 +534,7 @@ export const addImageToCurso = createAsyncThunk<
     try {
       console.log("Enviando imagen al servidor", { cursoId, imageData });
       const response = await fetch(
-        `https://sofiaportafolio.online/api/cursos/${cursoId}/imagenes`,
+        `https://sofiaportafolioonline.latincloud.app/api/cursos/${cursoId}/imagenes`,
         {
           method: "POST",
           body: imageData,
@@ -565,7 +565,7 @@ export const fetchCursoCompletoById = createAsyncThunk<
   try {
     console.log("Solicitando datos del curso", cursoId);
     const response = await fetch(
-      `https://sofiaportafolio.online/api/cursos/${cursoId}/completo`
+      `https://sofiaportafolioonline.latincloud.app/api/cursos/${cursoId}/completo`
     );
     if (!response.ok) {
       throw new Error("No se pudo cargar el curso");

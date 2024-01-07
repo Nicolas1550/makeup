@@ -67,7 +67,7 @@ const ResetPasswordPage = () => {
     }
 
     try {
-      await axios.post("https://sofiaportafolio.online/api/users/reset-password", {
+      await axios.post("https://sofiaportafolioonline.latincloud.app/api/users/reset-password", {
         token,
         newPassword: password,
       });

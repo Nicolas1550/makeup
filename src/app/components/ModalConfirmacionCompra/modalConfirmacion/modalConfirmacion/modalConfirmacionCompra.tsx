@@ -138,7 +138,7 @@ const ModalConfirmacionCompra: React.FC<ModalConfirmacionCompraProps> = ({
                       producto?.imagen_url
                         ? producto.imagen_url.startsWith("http")
                           ? producto.imagen_url
-                          : `https://sofiaportafolio.online${producto.imagen_url}`
+                          : `https://sofiaportafolioonline.latincloud.app${producto.imagen_url}`
                         : "/path_to_default_image.jpg"
                     }
                     alt={producto.nombre}

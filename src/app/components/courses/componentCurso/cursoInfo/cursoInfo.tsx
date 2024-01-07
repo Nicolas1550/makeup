@@ -170,7 +170,7 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
     if (reservasActuales === undefined) {
       try {
         const response = await fetch(
-          `https://sofiaportafolio.online/api/reservas/verificar/${disponibilidad.id}`
+          `https://sofiaportafolioonline.latincloud.app/api/reservas/verificar/${disponibilidad.id}`
         );
         if (!response.ok) throw new Error("Error al verificar las reservas");
         const data = await response.json();

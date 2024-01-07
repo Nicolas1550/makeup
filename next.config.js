@@ -7,7 +7,7 @@ const nextConfig = {
     domains: [
       'localhost:3002',
       'localhost:3005',
-      'https://sofiaportafolio.online',
+      'https://sofiaportafolioonline.latincloud.app',
       'sofiaportafolio.online',
 
       'localhost',

@@ -130,7 +130,7 @@ const AdminPanel: React.FC<Props> = ({ products }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const response = await axios.get(`https://sofiaportafolio.online/api/products`);
+  const response = await axios.get(`https://sofiaportafolioonline.latincloud.app/api/products`);
   const products = response.data;
 
   return {

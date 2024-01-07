@@ -68,7 +68,7 @@ export const fetchReservationDetails =
       };
 
       const response = await axios.get(
-        `https://sofiaportafolio.online/api/reservas/details/${reservationId}`,
+        `https://sofiaportafolioonline.latincloud.app/api/reservas/details/${reservationId}`,
         config
       );
       if (response.data) {

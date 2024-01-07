@@ -38,7 +38,7 @@ const SeleccionEnvio: React.FC<SeleccionEnvioProps> = ({
   datosEnvio,
 }) => {
   useEffect(() => {
-    const socket = io("https://sofiaportafolio.online");
+    const socket = io("https://sofiaportafolioonline.latincloud.app");
     socket.on("stock-updated", () => {});
     return () => {
       socket.disconnect();
@@ -77,7 +77,7 @@ const SeleccionEnvio: React.FC<SeleccionEnvioProps> = ({
 
     try {
       const response = await axios.post(
-        "https://sofiaportafolio.online/api/orders/create/shipping-info",
+        "https://sofiaportafolioonline.latincloud.app/api/orders/create/shipping-info",
         {
           orden_id,
           metodo_envio,
