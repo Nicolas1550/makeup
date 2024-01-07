@@ -75,7 +75,7 @@ const Title = styled(motion.h1)`
   font-size: 2.5rem; // Tamaño del título
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6); // Añade sombra al texto para mejorar la legibilidad
   @media (max-width: 480px) {
-    top: 45%;
+    top: 35%;
     left: 10%;
   }
 `;
