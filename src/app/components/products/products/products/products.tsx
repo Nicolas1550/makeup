@@ -57,7 +57,7 @@ const ProductCard: React.FC<ProductType & { highlighted?: boolean }> = ({
           <ProductImage
             src={
               imagen_url
-                ? `https://sofiaportafolioonline.latincloud.app${imagen_url}`
+                ? `https://sofiaportafolio.online${imagen_url}`
                 : "/path_to_default_image.jpg"
             }
             alt={nombre}

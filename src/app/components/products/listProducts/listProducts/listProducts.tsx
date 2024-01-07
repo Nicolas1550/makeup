@@ -27,7 +27,7 @@ const ListProduct: React.FC = () => {
   if (process.env.NODE_ENV === "development" && highlightedProductList) {
   }
   useEffect(() => {
-    const socket = io("https://sofiaportafolioonline.latincloud.app");
+    const socket = io("https://sofiaportafolio.online");
     socket.on("product-updated", () => {
       fetchProducts();
     });
@@ -41,7 +41,7 @@ const ListProduct: React.FC = () => {
 
   const fetchProducts = () => {
     axios
-      .get("https://sofiaportafolioonline.latincloud.app/api/products")
+      .get("https://sofiaportafolio.online/api/products")
       .then((response) => {
         setProductList(response.data);
         setHighlightedProductList(response.data.slice(0, 6));

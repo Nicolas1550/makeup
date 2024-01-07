@@ -87,7 +87,7 @@ export const changeOrderStatus = createAsyncThunk<
 
     try {
       const response = await fetch(
-        `https://sofiaportafolioonline.latincloud.app/api/orders/update-status/${orderId}`,
+        `https://sofiaportafolio.online/api/orders/update-status/${orderId}`,
         {
           method: "PUT",
           headers: {
@@ -129,7 +129,7 @@ export const fetchUserOrders = createAsyncThunk<
 
   try {
     const response = await fetch(
-      "https://sofiaportafolioonline.latincloud.app/api/orders/user-orders",
+      "https://sofiaportafolio.online/api/orders/user-orders",
       {
         headers: {
           "x-auth-token": userToken,
@@ -172,7 +172,7 @@ export const fetchOrdersByStatus = createAsyncThunk<
       );
     }
 
-    let url = `https://sofiaportafolioonline.latincloud.app/api/orders/orders-by-status/${status}`;
+    let url = `https://sofiaportafolio.online/api/orders/orders-by-status/${status}`;
     const queryParams = [];
     if (sortByDate) {
       queryParams.push(`sortByDate=${sortByDate}`);
@@ -225,7 +225,7 @@ export const deleteOrderById = createAsyncThunk<
 
   try {
     const response = await fetch(
-      `https://sofiaportafolioonline.latincloud.app/api/orders/order/${orderId}`,
+      `https://sofiaportafolio.online/api/orders/order/${orderId}`,
       {
         method: "DELETE",
         headers: {

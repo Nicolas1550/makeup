@@ -164,7 +164,7 @@ export const fetchReservationsSummary = createAsyncThunk(
 
     try {
       const response = await axios.get(
-        `https://sofiaportafolioonline.latincloud.app/api/servicios/reservas/cierreCaja`,
+        `https://sofiaportafolio.online/api/servicios/reservas/cierreCaja`,
         {
           params: { fechaInicio: args.fechaInicio, fechaFin: args.fechaFin },
           headers: {
@@ -205,7 +205,7 @@ export const markReservationAsPending = createAsyncThunk<
 >("services/markReservationAsPending", async (reservationId, thunkAPI) => {
   try {
     const response = await axios.put(
-      `https://sofiaportafolioonline.latincloud.app/api/servicios/reservas/${reservationId}/pendiente`
+      `https://sofiaportafolio.online/api/servicios/reservas/${reservationId}/pendiente`
     );
     return response.data.message;
   } catch (error) {
@@ -218,7 +218,7 @@ export const deleteReservation = createAsyncThunk(
   async (reservationId: number, thunkAPI) => {
     try {
       const response = await axios.delete(
-        `https://sofiaportafolioonline.latincloud.app/api/servicios/reservas/${reservationId}`
+        `https://sofiaportafolio.online/api/servicios/reservas/${reservationId}`
       );
       return response.data;
     } catch (error) {
@@ -235,7 +235,7 @@ export const markReservationAsCompleted = createAsyncThunk<
 >("services/markReservationAsCompleted", async (reservationId, thunkAPI) => {
   try {
     const response = await axios.put(
-      `https://sofiaportafolioonline.latincloud.app/api/servicios/reservas/${reservationId}/completar`
+      `https://sofiaportafolio.online/api/servicios/reservas/${reservationId}/completar`
     );
     return response.data.message;
   } catch (error) {
@@ -250,7 +250,7 @@ export const fetchReservationsForUser = createAsyncThunk<
   console.log("Dentro del thunk fetchReservationsForUser con userId:", userId);
 
   const response = await axios.get(
-    `https://sofiaportafolioonline.latincloud.app/api/servicios/reservasPorUsuario/${userId}`
+    `https://sofiaportafolio.online/api/servicios/reservasPorUsuario/${userId}`
   );
 
   console.log("Respuesta obtenida dentro del thunk:", response.data);
@@ -269,7 +269,7 @@ export const fetchReservationsForAssistant = createAsyncThunk<
   for (const service of services) {
     const serviceId = service.id;
     const response = await axios.get(
-      `https://sofiaportafolioonline.latincloud.app/api/servicios/${serviceId}/reservasPorAyudante/${params.ayudanteId}`
+      `https://sofiaportafolio.online/api/servicios/${serviceId}/reservasPorAyudante/${params.ayudanteId}`
     );
     if (response.data.length > 0) {
       allReservations.push({
@@ -290,7 +290,7 @@ export const deleteServiceOption = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     await axios.delete(
-      `https://sofiaportafolioonline.latincloud.app/api/servicios/options/${optionId}`,
+      `https://sofiaportafolio.online/api/servicios/options/${optionId}`,
       {
         headers: {
           "x-auth-token": userToken,
@@ -310,7 +310,7 @@ export const editServiceOption = createAsyncThunk(
     }
 
     const response = await axios.put(
-      `https://sofiaportafolioonline.latincloud.app/api/servicios/options/${data.optionId}`,
+      `https://sofiaportafolio.online/api/servicios/options/${data.optionId}`,
       {
         nombre: data.name,
         precio: data.price,
@@ -342,7 +342,7 @@ export const fetchServiceOptions = createAsyncThunk(
   async (serviceId: number, thunkAPI) => {
     try {
       const response = await axios.get(
-        `https://sofiaportafolioonline.latincloud.app/api/servicios/${serviceId}/options`
+        `https://sofiaportafolio.online/api/servicios/${serviceId}/options`
       );
       console.log("Opciones obtenidas del backend:", response.data);
       return { serviceId, options: response.data };
@@ -367,7 +367,7 @@ export const addServiceOption = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     const response = await axios.post(
-      `https://sofiaportafolioonline.latincloud.app/api/servicios/${data.serviceId}/options`,
+      `https://sofiaportafolio.online/api/servicios/${data.serviceId}/options`,
       {
         nombre: data.name,
         precio: data.price,
@@ -394,7 +394,7 @@ export const uploadServiceImages = createAsyncThunk(
 
     try {
       const response = await axios.post(
-        `https://sofiaportafolioonline.latincloud.app/api/servicios/${data.serviceId}/uploadImages`,
+        `https://sofiaportafolio.online/api/servicios/${data.serviceId}/uploadImages`,
         formData,
         {
           headers: {
@@ -427,7 +427,7 @@ export const deleteServiceImage = createAsyncThunk(
 
     try {
       const response = await axios.delete(
-        `https://sofiaportafolioonline.latincloud.app/api/servicios/${data.serviceId}/deleteImage`,
+        `https://sofiaportafolio.online/api/servicios/${data.serviceId}/deleteImage`,
         {
           headers: {
             "x-auth-token": userToken,
@@ -456,7 +456,7 @@ export const fetchServiceImages = createAsyncThunk(
 
     try {
       const response = await axios.get(
-        `https://sofiaportafolioonline.latincloud.app/api/servicios/${serviceId}/images`,
+        `https://sofiaportafolio.online/api/servicios/${serviceId}/images`,
         {
           headers: {
             "x-auth-token": userToken,
@@ -487,7 +487,7 @@ export const updateSocialLinks = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     await axios.put(
-      `https://sofiaportafolioonline.latincloud.app/api/servicios/${data.serviceId}/socialLinks`,
+      `https://sofiaportafolio.online/api/servicios/${data.serviceId}/socialLinks`,
       {
         facebook_url: data.facebook_url,
         whatsapp_url: data.whatsapp_url,
@@ -517,7 +517,7 @@ export const updateServiceDescription = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     await axios.put(
-      `https://sofiaportafolioonline.latincloud.app/api/servicios/${data.serviceId}`,
+      `https://sofiaportafolio.online/api/servicios/${data.serviceId}`,
       { modal_description: data.newDescription },
       {
         headers: {
@@ -559,7 +559,7 @@ export const uploadProofOfPayment = createAsyncThunk(
     );
 
     const response = await axios.post(
-      `https://sofiaportafolioonline.latincloud.app/api/servicios/${data.serviceId}/availabilities/${data.disponibilidadId}/uploadProof`,
+      `https://sofiaportafolio.online/api/servicios/${data.serviceId}/availabilities/${data.disponibilidadId}/uploadProof`,
       formData,
       {
         headers: {
@@ -581,7 +581,7 @@ export const checkIfUserIsAssigned = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     const response = await axios.get(
-      `https://sofiaportafolioonline.latincloud.app/api/servicios/${serviceId}/isUserAssigned`,
+      `https://sofiaportafolio.online/api/servicios/${serviceId}/isUserAssigned`,
       {
         headers: {
           "x-auth-token": userToken,
@@ -599,7 +599,7 @@ export const deleteAvailability = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     await axios.delete(
-      `https://sofiaportafolioonline.latincloud.app/api/servicios/availability/${availabilityId}`,
+      `https://sofiaportafolio.online/api/servicios/availability/${availabilityId}`,
       {
         headers: {
           "x-auth-token": userToken,
@@ -618,7 +618,7 @@ export const fetchAvailabilities = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     const response = await axios.get(
-      `https://sofiaportafolioonline.latincloud.app/api/servicios/${serviceId}/availabilities`,
+      `https://sofiaportafolio.online/api/servicios/${serviceId}/availabilities`,
       {
         headers: {
           "x-auth-token": userToken,
@@ -643,7 +643,7 @@ export const addAvailability = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     await axios.post(
-      `https://sofiaportafolioonline.latincloud.app/api/servicios/${data.serviceId}/addAvailability`,
+      `https://sofiaportafolio.online/api/servicios/${data.serviceId}/addAvailability`,
       {
         fechaInicio: data.fechaInicio,
         fechaFin: data.fechaFin,
@@ -664,7 +664,7 @@ export const addAvailability = createAsyncThunk(
 export const fetchServices = createAsyncThunk(
   "services/fetchServices",
   async () => {
-    const response = await axios.get("https://sofiaportafolioonline.latincloud.app/api/servicios");
+    const response = await axios.get("https://sofiaportafolio.online/api/servicios");
     const data = response.data as Service[];
 
     const servicesWithCategoryAndIcon = data.map((service) => {
@@ -686,7 +686,7 @@ export const reserveAvailability = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     const response = await axios.post(
-      `https://sofiaportafolioonline.latincloud.app/api/servicios/${data.serviceId}/reserve/${data.availabilityId}`,
+      `https://sofiaportafolio.online/api/servicios/${data.serviceId}/reserve/${data.availabilityId}`,
       {},
       {
         headers: {
@@ -711,7 +711,7 @@ export const completeReservation = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     await axios.post(
-      `https://sofiaportafolioonline.latincloud.app/api/servicios/reservations/${reservaId}/complete`,
+      `https://sofiaportafolio.online/api/servicios/reservations/${reservaId}/complete`,
       {},
       {
         headers: {
@@ -731,7 +731,7 @@ export const toggleServiceColor = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     const response = await axios.put(
-      `https://sofiaportafolioonline.latincloud.app/api/servicios/${serviceId}/toggleColor`,
+      `https://sofiaportafolio.online/api/servicios/${serviceId}/toggleColor`,
       {},
       {
         headers: {

@@ -34,7 +34,7 @@ const websocketMiddleware = (storeAPI: MiddlewareAPI) => {
 
     if (token) {
       axios
-        .post("https://sofiaportafolioonline.latincloud.app/api/validateToken", { token })
+        .post("https://sofiaportafolio.online/api/validateToken", { token })
         .then((response) => {
           if (response.data.isValid) {
             const decodedToken: DecodedToken = jwt_decode(token);
@@ -57,7 +57,7 @@ const websocketMiddleware = (storeAPI: MiddlewareAPI) => {
   }
 
   // Websocket events
-  const socket = io("https://sofiaportafolioonline.latincloud.app");
+  const socket = io("https://sofiaportafolio.online");
   console.log("Configurando escuchador de evento new-reservation...");
 
   socket.on("new-reservation", (data) => {

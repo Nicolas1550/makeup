@@ -19,7 +19,7 @@ const initialState: UpdatedProduct[] = [];
 export const fetchUpdatedProducts = createAsyncThunk(
   "productUpdate/fetchUpdatedProducts",
   async () => {
-    const response = await axios.get("https://sofiaportafolioonline.latincloud.app/api/products");
+    const response = await axios.get("https://sofiaportafolio.online/api/products");
     return response.data as UpdatedProduct[];
   }
 );
