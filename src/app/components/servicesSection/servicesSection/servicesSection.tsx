@@ -24,6 +24,7 @@ import { RootState } from "@/app/redux/store/rootReducer";
 import AdminLogin from "../../admin/login/loginUserAdmin/loginUserAdmin";
 import { openLoginModal } from "@/app/redux/loginModalSlice/loginModalSlice";
 import ServiceModal from "./serviceModal/serviceModal"; // Importación del nuevo componente modal
+import LoadingComponent from "./loading";
 
 interface Service {
   id: number;
@@ -99,7 +100,7 @@ const ServicesSection: React.FC = () => {
     }
   }, [services, selectedService?.id]);
 
-  if (loading) return <div>Cargando servicios...</div>;
+  if (loading) return  <LoadingComponent />;
 
   return (
     <div>
