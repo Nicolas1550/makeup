@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import React from "react";
 import styled, { keyframes } from "styled-components";
 
@@ -65,20 +66,34 @@ const OverlayText = styled.div`
   }
 `;
 
-const StyledHeading = styled.div`
-  font-size: 4rem;
-  font-weight: bold;
-  margin: 0;
-  color: #c0c0c0;
-  text-align: center;
-  letter-spacing: 0.05em;
-
-  @media (max-width: 768px) {
-    font-size: 2.8rem;
-  }
-
+const Title = styled(motion.h1)`
+  position: absolute;
+  top: 54%;
+  left: 30%;
+  transform: translate(-50%, -50%);
+  color: #fff0f5; // Asegúrate de que el color del texto contraste con la imagen
+  font-size: 2.5rem; // Tamaño del título
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6); // Añade sombra al texto para mejorar la legibilidad
   @media (max-width: 480px) {
-    font-size: 2.2rem; // Tamaño de fuente más pequeño para móviles
+    top: 50%;
+    left: 10%;
+  }
+`;
+const BackgroundContainer = styled.div`
+  width: 100%;
+  height: 300px; // Puedes ajustar el alto según necesites
+  position: relative;
+  overflow: hidden;
+`;
+
+const BackgroundImage = styled(motion.img)`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.5; // Opacidad reducida para la imagen
+  &:hover {
+    transform: scale(1.05); // Efecto de zoom al pasar el cursor
+    transition: transform 0.5s ease;
   }
 `;
 type ImagenPrincipalProps = {
@@ -91,14 +106,22 @@ const ImagenPrincipal: React.FC<ImagenPrincipalProps> = ({ urlImagen }) => {
   }
 
   return (
-    <ImagenPrincipalContainer>
-      <StyledImage src={urlImagen} alt="Imagen Principal" />
-      <Overlay />
-      <OverlayText>
-        <StyledHeading>Descubre la Belleza del Maquillaje</StyledHeading>
-        {/* Puedes agregar más elementos aquí si lo deseas */}
-      </OverlayText>
-    </ImagenPrincipalContainer>
+    <BackgroundContainer>
+      <BackgroundImage
+        src={urlImagen}
+        alt="Imagen Principal"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.5 }}
+        transition={{ duration: 1 }}
+      />
+      <Title
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.5, duration: 0.5 }}
+      >
+        Descubre la Belleza del Maquillaje{" "}
+      </Title>
+    </BackgroundContainer>
   );
 };
 
