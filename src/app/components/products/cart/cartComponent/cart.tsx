@@ -52,7 +52,7 @@ export const Cart: React.FC<CartProps> = ({ onClose, onCheckout }) => {
   const cartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const socket = io("https://sofiaportafolio.online");
+    const socket = io("https://asdasdasd3.onrender.com");
 
     socket.on("stock-updated", async () => {
       try {
@@ -138,7 +138,7 @@ export const Cart: React.FC<CartProps> = ({ onClose, onCheckout }) => {
                         item.imagen_url
                           ? item.imagen_url.startsWith("http")
                             ? item.imagen_url
-                            : `https://sofiaportafolio.online${item.imagen_url}`
+                            : `https://asdasdasd3.onrender.com${item.imagen_url}`
                           : "/path_to_default_image.jpg"
                       }
                       alt={item.nombre}

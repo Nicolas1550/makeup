@@ -100,7 +100,7 @@ const ServiceCarousel: React.FC<ServiceCarouselProps> = ({
             <SwiperSlide key={index}>
               <ImageContainer>
                 <img
-                  src={`https://sofiaportafolio.online/${image.replace(/\\/g, "/")}`}
+                  src={`https://asdasdasd3.onrender.com/${image.replace(/\\/g, "/")}`}
                   alt={`Carousel ${index}`}
                 />
                 {isUserAssigned && isEditing && (

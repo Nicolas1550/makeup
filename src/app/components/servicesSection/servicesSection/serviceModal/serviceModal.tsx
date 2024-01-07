@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { io } from "socket.io-client";
-const socket = io("https://sofiaportafolio.online");
+const socket = io("https://asdasdasd3.onrender.com");
 import { FaFacebook, FaInstagram, FaWhatsapp } from "react-icons/fa";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";

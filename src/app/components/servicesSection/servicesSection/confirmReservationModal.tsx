@@ -32,7 +32,7 @@ import {
 } from "./stylesConfirmReservation";
 import ServiceOptionsSelector from "../servicesSection/serviceModal/ServiceOptionsSelector";
 
-const socket = io("https://sofiaportafolio.online");
+const socket = io("https://asdasdasd3.onrender.com");
 
 interface ConfirmReservationModalProps {
   isOpen: boolean;
