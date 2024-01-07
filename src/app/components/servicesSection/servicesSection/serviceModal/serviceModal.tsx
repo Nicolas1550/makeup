@@ -74,6 +74,8 @@ const ServiceModal: React.FC<ServiceModalProps> = ({
   const serviceImages = useAppSelector(
     (state) => state.services.serviceImages[selectedService.id] || []
   );
+  const hasRenderedRef = useRef(false);
+
   console.log("ServiceModal serviceImages:", serviceImages);
   const [isEditingOptions, setIsEditingOptions] = useState(false);
 
@@ -149,9 +151,7 @@ const ServiceModal: React.FC<ServiceModalProps> = ({
     estado?: string;
   }
 
-  const eventStyleGetter: EventPropGetter<MyEvent> = (
-    event,
-  ) => {
+  const eventStyleGetter: EventPropGetter<MyEvent> = (event) => {
     const newStyle = {
       className: "",
       style: {},
@@ -359,7 +359,17 @@ const ServiceModal: React.FC<ServiceModalProps> = ({
   useEffect(() => {
     console.log("serviceImages ha cambiado:", serviceImages);
   }, [serviceImages]);
-
+  // Controla la renderización del modal
+  useEffect(() => {
+    if (isOpen) {
+      hasRenderedRef.current = true; // Indica que el modal se ha abierto y renderizado
+    } else {
+      hasRenderedRef.current = false; // Resetea cuando el modal se cierra
+    }
+  }, [isOpen]);
+  if (!isOpen || !hasRenderedRef.current) {
+    return null; // No renderiza el modal si no está abierto o ya se ha renderizado
+  }
   if (!selectedService) return null;
   return (
     <>
