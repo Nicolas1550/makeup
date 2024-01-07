@@ -9,7 +9,7 @@ const nextConfig = {
       'localhost:3005',
       'https://asdasdasd3.onrender.com',
       'sofiaportafolio.online',
-
+      'asdasdasd3.onrender.com',
       'localhost',
       'tse1.mm.bing.net',
       'tse4.mm.bing.net',
