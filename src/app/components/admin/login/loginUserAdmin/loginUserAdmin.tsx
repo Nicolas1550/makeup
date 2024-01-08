@@ -168,12 +168,16 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
           dispatch(setLoginError(null));
         }
       })
-      .catch(() => {
-        dispatch(
-          setLoginError(
-            "Error desconocido al registrarse. Por favor, intente nuevamente."
-          )
-        );
+      .catch((error) => {
+        if (error.response && error.response.status === 400) {
+          dispatch(setLoginError("Error al registrar el usuario"));
+        } else {
+          dispatch(
+            setLoginError(
+              "Error desconocido al registrarse. Por favor, intente nuevamente."
+            )
+          );
+        }
       });
   };
 
