@@ -8,7 +8,10 @@ import {
   FaUserMd as DermatologyIcon,
 } from "react-icons/fa";
 import { useAppDispatch, useAppSelector } from "../../../redux/store/appHooks";
-import { fetchServices } from "../../../redux/serviceSlice/servicesSlice";
+import {
+  Service,
+  fetchServices,
+} from "../../../redux/serviceSlice/servicesSlice";
 import {
   CategoryContainer,
   CategoryDescription,
@@ -25,17 +28,6 @@ import AdminLogin from "../../admin/login/loginUserAdmin/loginUserAdmin";
 import { openLoginModal } from "@/app/redux/loginModalSlice/loginModalSlice";
 import ServiceModal from "./serviceModal/serviceModal"; // Importación del nuevo componente modal
 import LoadingComponent from "./loading";
-
-interface Service {
-  id: number;
-  title: string;
-  description: string;
-  icon: string;
-  category: string;
-  assistantId?: number;
-  color?: string;
-  image_url?: string; // <-- Agrega esta línea
-}
 
 const ServicesSection: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -100,7 +92,7 @@ const ServicesSection: React.FC = () => {
     }
   }, [services, selectedService?.id]);
 
-  if (loading) return  <LoadingComponent />;
+  if (loading) return <LoadingComponent />;
 
   return (
     <div>

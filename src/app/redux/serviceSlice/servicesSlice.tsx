@@ -15,19 +15,21 @@ export interface Service {
   title: string;
   description: string;
   icon: string;
-  icon_name?: string; // Agregamos esta propiedad
+  icon_name?: string;
   category: string;
   assistantId?: number;
   color?: string;
   image_url?: string;
+  image_path?: string;
   modal_description?: string;
   facebook_url?: string;
   whatsapp_url?: string;
   instagram_url?: string;
-  images: string[];
-  price: number;
-  options: ServiceOption[]; // Lista de opciones para este servicio
+  price?: number;
+  options?: ServiceOption[];
+  images?: string[];
 }
+
 export interface ServiceOption {
   id: number;
   nombre: string;
@@ -1014,9 +1016,13 @@ const servicesSlice = createSlice({
           (s) => s.id === action.payload.serviceId
         );
         if (serviceToUpdate) {
-          const updatedImages = serviceToUpdate.images.filter(
-            (path) => path !== action.payload.imagePath
-          );
+          // Asegúrate de que "images" no sea undefined antes de llamar a filter
+          const updatedImages = serviceToUpdate.images
+            ? serviceToUpdate.images.filter(
+                (path) => path !== action.payload.imagePath
+              )
+            : [];
+
           serviceToUpdate.images = updatedImages;
           state.serviceImages[action.payload.serviceId] = updatedImages;
           console.log("Imagenes después de eliminar:", updatedImages);
