@@ -106,7 +106,7 @@ export const ClasesContainer = styled.div`
   }
 
   @media (max-width: 1350px) {
-    width: auto;
+    width: 100%;
     max-height: 400px;
     padding: 1rem;
     margin-top: 1rem;
