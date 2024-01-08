@@ -46,6 +46,10 @@ import {
   StyledModal,
   StyledSubmitButton,
 } from "./stylesDisp";
+import {
+  openLoginModal,
+  closeLoginModal,
+} from "../../../../redux/loginModalSlice/loginModalSlice";
 
 interface OptionType {
   value: string;
@@ -85,6 +89,7 @@ type CursoInfoProps = {
 
 const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
   const dispatch = useAppDispatch();
+
   const disponibilidades = useAppSelector(
     (state) => state.cursos.disponibilidades
   );
@@ -164,6 +169,11 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
     { dia_semana: "", hora_inicio: "", hora_fin: "" },
   ]);
   const handleOpenReservaModal = async (disponibilidad: Disponibilidad) => {
+    if (!isAuthenticated) {
+      // Abrir modal de inicio de sesión
+      dispatch(openLoginModal());
+      return;
+    }
     let reservasActuales = disponibilidad.reservasActuales;
 
     // Si reservasActuales es undefined, obtener el número actual de reservas del backend
