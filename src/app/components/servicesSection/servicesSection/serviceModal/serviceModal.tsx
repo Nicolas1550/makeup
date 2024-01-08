@@ -26,7 +26,6 @@ import {
   updateSocialLinks,
   Service,
   setServiceData,
-  ServiceOption,
 } from "../../../../redux/serviceSlice/servicesSlice";
 import AvailabilityCalendar from "./availabilityCalendar";
 import ConfirmReservationModal from "../confirmReservationModal";
@@ -61,7 +60,18 @@ interface CalendarEvent {
 interface ServiceModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
-  selectedService: Service;
+  selectedService: {
+    id: number;
+    title: string;
+    description: string;
+    color?: string;
+    image_url?: string;
+    image_path?: string;
+    modal_description?: string;
+    facebook_url?: string; // Añade esta línea
+    whatsapp_url?: string; // Añade esta línea
+    instagram_url?: string; // Añade esta línea
+  };
 }
 
 const ServiceModal: React.FC<ServiceModalProps> = React.memo(
@@ -241,71 +251,14 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
     const serviceData = useAppSelector(
       (state) => state.services.serviceData[selectedService.id]
     );
-
-    function serviceDataNeedsUpdate(
-      serviceData: Service,
-      selectedService: Service
-    ): boolean {
-      if (!serviceData || !selectedService) return true;
-
-      if (serviceData.id !== selectedService.id) return true;
-      if (serviceData.title !== selectedService.title) return true;
-      if (serviceData.description !== selectedService.description) return true;
-      if (serviceData.icon !== selectedService.icon) return true;
-      if (serviceData.category !== selectedService.category) return true;
-      if (serviceData.color !== selectedService.color) return true;
-      if (serviceData.image_url !== selectedService.image_url) return true;
-      if (serviceData.modal_description !== selectedService.modal_description)
-        return true;
-      if (serviceData.facebook_url !== selectedService.facebook_url)
-        return true;
-      if (serviceData.whatsapp_url !== selectedService.whatsapp_url)
-        return true;
-      if (serviceData.instagram_url !== selectedService.instagram_url)
-        return true;
-
-      // Compara arrays y objetos complejos si es necesario
-      // Por ejemplo, para comparar las imágenes y opciones, que son arrays:
-      if (
-        JSON.stringify(serviceData.images) !==
-        JSON.stringify(selectedService.images)
-      )
-        return true;
-      if (
-        JSON.stringify(serviceData.options) !==
-        JSON.stringify(selectedService.options)
-      )
-        return true;
-
-      return false;
-    }
     useEffect(() => {
       if (isOpen && selectedService && selectedService.id) {
-        if (
-          !serviceData ||
-          serviceDataNeedsUpdate(serviceData, selectedService)
-        ) {
+        // Verificar si los datos del servicio ya están cargados
+        if (!serviceData) {
+          // Si no están cargados, realiza las acciones de carga necesarias
           dispatch(fetchAvailabilities(selectedService.id));
           dispatch(checkIfUserIsAssigned(selectedService.id));
-
-          const updatedServiceData = {
-            ...serviceData,
-            ...selectedService,
-            // Proporcionar valores por defecto para las propiedades que podrían faltar en selectedService
-            icon: selectedService.icon || serviceData?.icon || "defaultIcon",
-            category:
-              selectedService.category ||
-              serviceData?.category ||
-              "defaultCategory",
-            images: selectedService.images || serviceData?.images || [],
-            price:
-              selectedService.price !== undefined
-                ? selectedService.price
-                : serviceData?.price || 0,
-            options: selectedService.options || serviceData?.options || [],
-          };
-
-          dispatch(setServiceData(updatedServiceData));
+          dispatch(setServiceData(selectedService));
         } else {
           console.log(
             "Usando datos del servicio cargado desde el estado global:",
