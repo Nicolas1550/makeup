@@ -270,7 +270,7 @@ const Products: React.FC<{
       if (lastProductLoaded) {
         const lastProductLoadedOffset =
           lastProductLoaded.offsetTop + lastProductLoaded.clientHeight;
-        const pageOffset = window.pageYOffset + window.innerHeight;
+        const pageOffset = window.scrollY + window.innerHeight;
 
         if (pageOffset > lastProductLoadedOffset) {
           loadMoreProducts();
