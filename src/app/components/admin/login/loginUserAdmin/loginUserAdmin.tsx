@@ -62,6 +62,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
   const loginError = useAppSelector(
     (state: RootState) => state.messages.loginError
   );
+
   const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
     useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -226,6 +227,8 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
             </button>
 
             {loginError && <div style={{ color: "red" }}>{loginError}</div>}
+            {loginError && <div className="error-message">{loginError}</div>}
+
             {loginMessage && (
               <div style={{ color: "green" }}>{loginMessage}</div>
             )}
