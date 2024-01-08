@@ -79,13 +79,9 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
     const serviceImages = useAppSelector(
       (state) => state.services.serviceImages[selectedService.id] || []
     );
-    const hasRenderedRef = useRef(false);
 
     console.log("ServiceModal serviceImages:", serviceImages);
     const [isEditingOptions, setIsEditingOptions] = useState(false);
-    const [loadedServices, setLoadedServices] = useState<
-      Record<number, Service>
-    >({});
 
     const [selectedEvents, setSelectedEvents] = useState<CalendarEvent[]>([]);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -249,34 +245,25 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
     const selectedAvailabilityDetails = availabilities.find(
       (availability) => availability.id === selectedAvailabilityId
     );
-
+    const serviceData = useAppSelector(
+      (state) => state.services.serviceData[selectedService.id]
+    );
     useEffect(() => {
       if (isOpen && selectedService && selectedService.id) {
-        // Obtener los datos del servicio del estado global
-        const serviceData = useAppSelector(
-          (state) => state.services.serviceData[selectedService.id]
-        );
-
         // Verificar si los datos del servicio ya están cargados
         if (!serviceData) {
           // Si no están cargados, realiza las acciones de carga necesarias
           dispatch(fetchAvailabilities(selectedService.id));
           dispatch(checkIfUserIsAssigned(selectedService.id));
-
-          // Almacena los datos del servicio seleccionado en el estado global
           dispatch(setServiceData(selectedService));
         } else {
-          // Si los datos ya están cargados, utiliza esos datos
           console.log(
             "Usando datos del servicio cargado desde el estado global:",
             serviceData
           );
-
-          // Aquí puedes realizar acciones adicionales basadas en los datos cargados
-          // Por ejemplo, configurar otros estados o propiedades basados en los datos del servicio
         }
       }
-    }, [isOpen, selectedService, dispatch]);
+    }, [isOpen, selectedService, dispatch, serviceData]);
 
     const handleDeleteSelected = () => {
       if (
