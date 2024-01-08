@@ -310,7 +310,11 @@ const Products: React.FC<{
             {visibleProducts.map((product) => (
               <ProductCard key={product.id} {...product} />
             ))}
-            {loading && <LoadingSpinner />}
+            {loading && (
+              <div style={{ width: "100%" }}>
+                <LoadingSpinner />
+              </div>
+            )}
           </ProductListContainer>
         )}
       </ProductContainer>
