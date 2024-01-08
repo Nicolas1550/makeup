@@ -48,7 +48,7 @@ const ProductTable: React.FC<ProductTableProps> = ({}) => {
   }, [dispatch]);
 
   useEffect(() => {
-    const socket = io("https://sofiaportafolio.online");
+    const socket = io("https://asdasdasd3.onrender.com");
 
     socket.on("prices-updated", () => {
       dispatch(apiGetAllProducts());
@@ -138,7 +138,7 @@ const ProductTable: React.FC<ProductTableProps> = ({}) => {
       return URL.createObjectURL(image);
     } else if (typeof image === "string" && image.startsWith("/")) {
       // Asegúrate de que `image` comienza con `/`
-      return `https://sofiaportafolio.online${image}`;
+      return `https://asdasdasd3.onrender.com${image}`;
     }
     // Retornar una imagen por defecto o un placeholder si no hay imagen
     return "/path_to_default_image.jpg";
