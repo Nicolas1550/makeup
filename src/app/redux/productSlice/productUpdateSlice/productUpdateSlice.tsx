@@ -10,16 +10,17 @@ export interface UpdatedProduct {
   imagen_url: string;
   marca?: string;
   color?: string;
-  categoria?: string;  
+  categoria?: string;
 }
-
 
 const initialState: UpdatedProduct[] = [];
 
 export const fetchUpdatedProducts = createAsyncThunk(
   "productUpdate/fetchUpdatedProducts",
   async () => {
-    const response = await axios.get("https://asdasdasd3.onrender.com/api/products");
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/products`
+    );
     return response.data as UpdatedProduct[];
   }
 );

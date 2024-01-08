@@ -109,7 +109,7 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
 
     try {
       const response = await axios.post(
-        "https://asdasdasd3.onrender.com/api/mercadopago/create_preference",
+        `${process.env.REACT_APP_API_URL}/api/mercadopago/create_preference`,
         paymentData,
         {
           headers: {
@@ -151,7 +151,8 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
       return (
         <p>
           <strong>
-            Buscar en tienda: <br />Direccion: Thorne 1145 <br /> Horarios: De Luenes a Viernes
+            Buscar en tienda: <br />
+            Direccion: Thorne 1145 <br /> Horarios: De Luenes a Viernes
             14hs a 20hs
           </strong>
         </p>
@@ -207,7 +208,7 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
                   producto?.imagen_url
                     ? producto.imagen_url.startsWith("http")
                       ? producto.imagen_url
-                      : `https://asdasdasd3.onrender.com${producto.imagen_url}`
+                      : `${process.env.REACT_APP_API_URL}${producto.imagen_url}`
                     : "/path/to/default/image.jpg"
                 }
                 alt={producto.nombre}

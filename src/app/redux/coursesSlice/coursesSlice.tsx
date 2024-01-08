@@ -94,7 +94,7 @@ export const actualizarEstadoDisponibilidad = createAsyncThunk(
   ) => {
     try {
       const response = await fetch(
-        `https://asdasdasd3.onrender.com/api/cursos/${cursoId}/disponibilidades/${disponibilidadId}`,
+        `${process.env.REACT_APP_API_URL}/api/cursos/${cursoId}/disponibilidades/${disponibilidadId}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -120,7 +120,7 @@ export const verificarReservasActuales = createAsyncThunk(
   async (disponibilidadId: number, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `https://asdasdasd3.onrender.com/api/reservas/verificar/${disponibilidadId}`
+        `${process.env.REACT_APP_API_URL}/api/reservas/verificar/${disponibilidadId}`
       );
       if (!response.ok) throw new Error("Error al verificar las reservas");
       return await response.json();
@@ -142,7 +142,7 @@ export const subirComprobantePago = createAsyncThunk(
   ) => {
     try {
       const response = await fetch(
-        `https://asdasdasd3.onrender.com/api/reservas/${reservaId}/comprobante`,
+        `${process.env.REACT_APP_API_URL}/api/reservas/${reservaId}/comprobante`,
         {
           method: "POST",
           body: comprobanteData,
@@ -174,7 +174,7 @@ export const actualizarEstadoReservaCurso = createAsyncThunk(
   ) => {
     try {
       const response = await fetch(
-        `https://asdasdasd3.onrender.com/api/reservas/cursos/${reservaId}/estado`,
+        `${process.env.REACT_APP_API_URL}/api/reservas/cursos/${reservaId}/estado`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -200,7 +200,7 @@ export const eliminarReservaCurso = createAsyncThunk(
   async (reservaId: number, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `https://asdasdasd3.onrender.com/api/reservas/cursos/${reservaId}`,
+        `${process.env.REACT_APP_API_URL}/api/reservas/cursos/${reservaId}`,
         {
           method: "DELETE",
         }
@@ -220,7 +220,10 @@ export const fetchTodasLasReservas = createAsyncThunk(
   "cursos/fetchTodasLasReservas",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch(`https://asdasdasd3.onrender.com/api/reservas/todas`);
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/reservas/todas`
+      );
+
       if (!response.ok) {
         throw new Error("Error al obtener todas las reservas");
       }
@@ -245,7 +248,7 @@ export const updateCursoPrecio = createAsyncThunk<
   async ({ cursoId, nuevoPrecio }, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `https://asdasdasd3.onrender.com/api/cursos/${cursoId}/precio`,
+        `${process.env.REACT_APP_API_URL}/api/cursos/${cursoId}/precio`,
         {
           method: "PUT",
           headers: {
@@ -278,7 +281,7 @@ export const fetchReservasAdminPorCurso = createAsyncThunk<
   async ({ cursoId }, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `https://asdasdasd3.onrender.com/api/cursos/${cursoId}/reservas/admin`
+        `${process.env.REACT_APP_API_URL}/api/cursos/${cursoId}/reservas/admin`
       );
 
       if (!response.ok) {
@@ -305,7 +308,7 @@ export const fetchReservasPorCursoYUsuario = createAsyncThunk<
   async ({ usuarioId }, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `https://asdasdasd3.onrender.com/api/cursos/usuarios/${usuarioId}/reservas`
+        `${process.env.REACT_APP_API_URL}/api/cursos/usuarios/${usuarioId}/reservas`
       );
 
       if (!response.ok) {
@@ -331,7 +334,7 @@ export const deleteImageFromCurso = createAsyncThunk<
   async ({ cursoId, imagenId }, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `https://asdasdasd3.onrender.com/api/cursos/${cursoId}/imagenes/${imagenId}`,
+        `${process.env.REACT_APP_API_URL}/api/cursos/${cursoId}/imagenes/${imagenId}`,
         {
           method: "DELETE",
         }
@@ -361,7 +364,7 @@ export const agregarHorariosDisponibilidad = createAsyncThunk<
   async ({ disponibilidadId, horarios }, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `https://asdasdasd3.onrender.com/api/disponibilidades/${disponibilidadId}/horarios`,
+        `${process.env.REACT_APP_API_URL}/api/disponibilidades/${disponibilidadId}/horarios`,
         {
           method: "POST",
           headers: {
@@ -392,7 +395,7 @@ export const fetchDisponibilidades = createAsyncThunk<
 >("cursos/fetchDisponibilidades", async (cursoId, { rejectWithValue }) => {
   try {
     const response = await fetch(
-      `https://asdasdasd3.onrender.com/api/cursos/${cursoId}/disponibilidades`
+      `${process.env.REACT_APP_API_URL}/api/cursos/${cursoId}/disponibilidades`
     );
     if (!response.ok) {
       throw new Error("Error al obtener disponibilidades");
@@ -436,7 +439,7 @@ export const agregarDisponibilidad = createAsyncThunk<
         max_reservas,
       }); // Nuevo log
       const response = await fetch(
-        `https://asdasdasd3.onrender.com/api/cursos/${cursoId}/disponibilidades`,
+        `${process.env.REACT_APP_API_URL}/api/cursos/${cursoId}/disponibilidades`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -464,13 +467,16 @@ export const agregarReservaConDatos = createAsyncThunk(
   "cursos/agregarReservaConDatos",
   async (datosReserva: ReservaConHorarios, { rejectWithValue }) => {
     try {
-      const response = await fetch(`https://asdasdasd3.onrender.com/api/reservas`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(datosReserva),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/reservas`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(datosReserva),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -498,13 +504,16 @@ export const agregarReserva = createAsyncThunk<
   console.log("Enviando datos de reserva:", datosReserva); // Log para depurar
 
   try {
-    const response = await fetch(`https://asdasdasd3.onrender.com/api/reservas`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(datosReserva),
-    });
+    const response = await fetch(
+      `${process.env.REACT_APP_API_URL}/api/reservas`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(datosReserva),
+      }
+    );
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -534,7 +543,7 @@ export const addImageToCurso = createAsyncThunk<
     try {
       console.log("Enviando imagen al servidor", { cursoId, imageData });
       const response = await fetch(
-        `https://asdasdasd3.onrender.com/api/cursos/${cursoId}/imagenes`,
+        `${process.env.REACT_APP_API_URL}/api/cursos/${cursoId}/imagenes`,
         {
           method: "POST",
           body: imageData,
@@ -565,7 +574,7 @@ export const fetchCursoCompletoById = createAsyncThunk<
   try {
     console.log("Solicitando datos del curso", cursoId);
     const response = await fetch(
-      `https://asdasdasd3.onrender.com/api/cursos/${cursoId}/completo`
+      `${process.env.REACT_APP_API_URL}/api/cursos/${cursoId}/completo`
     );
     if (!response.ok) {
       throw new Error("No se pudo cargar el curso");

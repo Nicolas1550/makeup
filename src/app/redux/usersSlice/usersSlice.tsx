@@ -36,7 +36,7 @@ export const fetchCurrentUser = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     const response = await axios.get(
-      "https://asdasdasd3.onrender.com/api/users/current",
+      `${process.env.REACT_APP_API_URL}/api/users/current`,
       {
         headers: {
           "x-auth-token": userToken,
@@ -56,13 +56,15 @@ export const fetchCurrentUser = createAsyncThunk(
 
 // Creamos thunks para las acciones asíncronas
 export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
-  const response = await axios.get("https://asdasdasd3.onrender.com/api/users");
+  const response = await axios.get(
+    `${process.env.REACT_APP_API_URL}/api/users`
+  );
   return response.data as User[];
 });
 
 export const fetchHelpers = createAsyncThunk("users/fetchHelpers", async () => {
   const response = await axios.get(
-    "https://asdasdasd3.onrender.com/api/users/role/ayudante"
+    `${process.env.REACT_APP_API_URL}/api/users/role/ayudante`
   );
   return response.data as User[];
 });
@@ -71,9 +73,12 @@ export const assignRole = createAsyncThunk(
   "users/assignRole",
   async (userId: string, thunkAPI) => {
     try {
-      await axios.put(`https://asdasdasd3.onrender.com/api/users/assignRole/${userId}`, {
-        role: "ayudante",
-      });
+      await axios.put(
+        `${process.env.REACT_APP_API_URL}/api/users/assignRole/${userId}`,
+        {
+          role: "ayudante",
+        }
+      );
       return userId;
     } catch (error) {
       const axiosError = error as AxiosError; // Haciendo un type assertion
@@ -90,9 +95,12 @@ export const assignRole = createAsyncThunk(
 export const revokeRole = createAsyncThunk(
   "users/revokeRole",
   async (userId: string) => {
-    await axios.put(`https://asdasdasd3.onrender.com/api/users/revokeRole/${userId}`, {
-      role: "ayudante",
-    });
+    await axios.put(
+      `${process.env.REACT_APP_API_URL}/api/users/revokeRole/${userId}`,
+      {
+        role: "ayudante",
+      }
+    );
     return userId;
   }
 );

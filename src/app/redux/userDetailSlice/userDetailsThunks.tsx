@@ -12,13 +12,12 @@ export const fetchUserDetails = createAsyncThunk(
     thunkAPI.dispatch(fetchUserDetailsStart());
     try {
       const { data } = await axios.get(
-        `https://asdasdasd3.onrender.com/api/users/${userId}`
+        `${process.env.REACT_APP_API_URL}/api/users/${userId}`
       );
       console.log("User details from server:", data);
 
       thunkAPI.dispatch(fetchUserDetailsSuccess(data));
       console.log("Dispatching action with data:", data);
-
     } catch (error) {
       console.error("Error fetching user details:", error);
       thunkAPI.dispatch(fetchUserDetailsError());

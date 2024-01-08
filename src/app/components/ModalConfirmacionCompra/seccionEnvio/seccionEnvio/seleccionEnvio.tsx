@@ -38,7 +38,7 @@ const SeleccionEnvio: React.FC<SeleccionEnvioProps> = ({
   datosEnvio,
 }) => {
   useEffect(() => {
-    const socket = io("https://asdasdasd3.onrender.com");
+    const socket = io(`${process.env.REACT_APP_API_URL}`);
     socket.on("stock-updated", () => {});
     return () => {
       socket.disconnect();
@@ -77,7 +77,7 @@ const SeleccionEnvio: React.FC<SeleccionEnvioProps> = ({
 
     try {
       const response = await axios.post(
-        "https://asdasdasd3.onrender.com/api/orders/create/shipping-info",
+        `${process.env.REACT_APP_API_URL}/api/orders/create/shipping-info`,
         {
           orden_id,
           metodo_envio,

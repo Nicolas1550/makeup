@@ -48,7 +48,7 @@ export const verifyToken = createAsyncThunk<AuthThunkResponse, void>(
     try {
       const decodedToken = jwt_decode(token) as DecodedToken;
       const response = await axios.post(
-        "https://asdasdasd3.onrender.com/api/validateToken",
+        `${process.env.REACT_APP_API_URL}/api/validateToken`,
         { token }
       );
 
@@ -79,7 +79,7 @@ export const loginUser = createAsyncThunk(
 
     try {
       const response = await axios.post<LoginResponse>(
-        "https://asdasdasd3.onrender.com/api/login",
+        `${process.env.REACT_APP_API_URL}/api/login`,
         credentials
       );
       const token = response.data.token;
@@ -112,7 +112,11 @@ export const registerUser = createAsyncThunk(
     thunkAPI.dispatch(setLoading(true));
 
     try {
-      await axios.post("https://asdasdasd3.onrender.com/api/users/register", userData);
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/users/register`,
+        userData
+      );
+
       thunkAPI.dispatch(setLoading(false));
       return "Registro exitoso";
     } catch (error: unknown) {

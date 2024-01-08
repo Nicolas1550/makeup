@@ -34,7 +34,7 @@ const websocketMiddleware = (storeAPI: MiddlewareAPI) => {
 
     if (token) {
       axios
-        .post("https://asdasdasd3.onrender.com/api/validateToken", { token })
+        .post(`${process.env.REACT_APP_API_URL}/api/validateToken`, { token })
         .then((response) => {
           if (response.data.isValid) {
             const decodedToken: DecodedToken = jwt_decode(token);
@@ -57,7 +57,7 @@ const websocketMiddleware = (storeAPI: MiddlewareAPI) => {
   }
 
   // Websocket events
-  const socket = io("https://asdasdasd3.onrender.com");
+  const socket = io(`${process.env.REACT_APP_API_URL}`);
   console.log("Configurando escuchador de evento new-reservation...");
 
   socket.on("new-reservation", (data) => {

@@ -32,7 +32,7 @@ export const apiUpdateAllPrices = createAsyncThunk(
   "productManagement/updateAllPrices",
   async (percentage: number, { dispatch }) => {
     const response = await axios.put(
-      `https://asdasdasd3.onrender.com/api/products/update-prices`,
+      `${process.env.REACT_APP_API_URL}/api/products/update-prices`,
       { percentage }
     );
     dispatch(setMessage(`Precios actualizados exitosamente.`));
@@ -45,7 +45,7 @@ export const apiRevertLastPercentage = createAsyncThunk(
   "productManagement/revertLastPercentage",
   async (_, { dispatch }) => {
     const response = await axios.put(
-      `https://asdasdasd3.onrender.com/api/products/revert-last-percentage`
+      `${process.env.REACT_APP_API_URL}/api/products/revert-last-percentage`
     );
     dispatch(setMessage(`Precios revertidos al último porcentaje aplicado.`));
     return response.data;
@@ -57,7 +57,7 @@ export const apiAdjustPricesToPreviousPercentage = createAsyncThunk(
   "productManagement/adjustPricesToPreviousPercentage",
   async (previousPercentage: number, { dispatch }) => {
     const response = await axios.put(
-      `https://asdasdasd3.onrender.com/api/products/adjust-prices`,
+      `${process.env.REACT_APP_API_URL}/api/products/adjust-prices`,
       { previousPercentage }
     );
     dispatch(setMessage(`Precios ajustados al porcentaje anterior.`));
@@ -70,7 +70,7 @@ export const apiRevertAndApplyNewPercentage = createAsyncThunk(
   "productManagement/revertAndApplyNewPercentage",
   async (newPercentage: number, { dispatch }) => {
     const response = await axios.put(
-      `https://asdasdasd3.onrender.com/api/products/revert-and-apply-percentage`,
+      `${process.env.REACT_APP_API_URL}/api/products/revert-and-apply-percentage`,
       { newPercentage }
     );
     dispatch(
@@ -100,7 +100,7 @@ export const apiAddProduct = createAsyncThunk(
 
     try {
       const response = await axios.post(
-        `https://asdasdasd3.onrender.com/api/products`,
+        `${process.env.REACT_APP_API_URL}/api/products`,
         formData,
         {
           headers: {
@@ -124,7 +124,7 @@ export const apiAddProduct = createAsyncThunk(
 export const apiDeleteProduct = createAsyncThunk(
   "productManagement/deleteProduct",
   async (id: number) => {
-    await axios.delete(`https://asdasdasd3.onrender.com/api/products/${id}`);
+    await axios.delete(`${process.env.REACT_APP_API_URL}/api/products/${id}`);
     return id;
   }
 );
@@ -136,7 +136,7 @@ export const apiEditProduct = createAsyncThunk(
     { dispatch }
   ) => {
     const response = await axios.put(
-      `https://asdasdasd3.onrender.com/api/products/${id}`,
+      `${process.env.REACT_APP_API_URL}/api/products/${id}`,
       formData,
       {
         headers: {
@@ -153,7 +153,9 @@ export const apiEditProduct = createAsyncThunk(
 export const apiGetAllProducts = createAsyncThunk(
   "productManagement/getAllProducts",
   async () => {
-    const response = await axios.get(`https://asdasdasd3.onrender.com/api/products`);
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/products`
+    );
     return response.data;
   }
 );

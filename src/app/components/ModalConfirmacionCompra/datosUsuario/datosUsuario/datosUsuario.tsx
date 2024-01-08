@@ -81,7 +81,7 @@ const DatosUsuario: React.FC<DatosProps> = ({
 
     try {
       const response = await axios.post(
-        "https://asdasdasd3.onrender.com/api/orders/create",
+        `${process.env.REACT_APP_API_URL}/api/orders/create`,
         {
           total: 100,
           userId,

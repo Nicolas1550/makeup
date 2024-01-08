@@ -1,8 +1,5 @@
 // contactSlice.ts
-import {
-  createSlice,
-  createAsyncThunk,
-} from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 interface ContactState {
   loading: boolean;
@@ -25,7 +22,7 @@ export const sendContactForm = createAsyncThunk(
   "contact/sendContactForm",
   async (formData: ContactFormData, thunkAPI) => {
     try {
-      const response = await fetch("https://asdasdasd3.onrender.com/contact", {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/contact`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

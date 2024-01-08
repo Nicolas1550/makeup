@@ -67,10 +67,13 @@ const ResetPasswordPage = () => {
     }
 
     try {
-      await axios.post("https://asdasdasd3.onrender.com/api/users/reset-password", {
-        token,
-        newPassword: password,
-      });
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/users/reset-password`,
+        {
+          token,
+          newPassword: password,
+        }
+      );
       setMessage("Contraseña actualizada con éxito.");
       // Redirigir al usuario después de un corto retraso
       setTimeout(() => {

@@ -35,7 +35,6 @@ interface ModalConfirmacionCompraProps {
   loadedComprobante?: File | null;
 }
 
-
 interface DatosEnvioType {
   metodo_envio: string;
   direccion: string;
@@ -138,7 +137,7 @@ const ModalConfirmacionCompra: React.FC<ModalConfirmacionCompraProps> = ({
                       producto?.imagen_url
                         ? producto.imagen_url.startsWith("http")
                           ? producto.imagen_url
-                          : `https://asdasdasd3.onrender.com${producto.imagen_url}`
+                          : `${process.env.REACT_APP_API_URL}${producto.imagen_url}`
                         : "/path_to_default_image.jpg"
                     }
                     alt={producto.nombre}

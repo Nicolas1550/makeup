@@ -57,7 +57,7 @@ const ProductCard: React.FC<ProductType & { highlighted?: boolean }> = ({
           <ProductImage
             src={
               imagen_url
-                ? `https://asdasdasd3.onrender.com${imagen_url}`
+                ? `${process.env.REACT_APP_API_URL}${imagen_url}`
                 : "/path_to_default_image.jpg"
             }
             alt={nombre}

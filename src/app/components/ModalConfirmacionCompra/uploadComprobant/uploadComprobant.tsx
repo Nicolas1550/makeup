@@ -110,7 +110,7 @@ const CargarComprobante: React.FC<CargarComprobanteProps> = ({
       setIsLoading(true);
       try {
         const response = await axios.post<UploadSuccessResponse>(
-          `https://asdasdasd3.onrender.com/api/orders/upload-comprobante/${orderId}`,
+          `${process.env.REACT_APP_API_URL}/api/orders/upload-comprobante/${orderId}`,
           formData
         );
         onUploadSuccess({ estado: 'Aprobado', comprobante: file });
