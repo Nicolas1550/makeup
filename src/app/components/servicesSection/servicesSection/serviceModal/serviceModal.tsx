@@ -390,21 +390,19 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
       console.log("useEffect isOpen start:", isOpen);
 
       if (isOpen) {
-        hasRenderedRef.current = true; // Indica que el modal se ha abierto y renderizado
+        console.log("Modal is opening");
       } else {
-        hasRenderedRef.current = false; // Resetea cuando el modal se cierra
+        console.log("Modal is closing");
+        setSelectedEvents([]); // Limpieza cuando el modal se cierra
+        setShowCalendar(false); // Reiniciar el estado del calendario cuando el modal se cierra
       }
       console.log("useEffect isOpen end");
     }, [isOpen]);
-    if (!isOpen || !hasRenderedRef.current) {
-      console.log(
-        "Not rendering modal: isOpen, hasRenderedRef",
-        isOpen,
-        hasRenderedRef.current
-      );
-
-      return null; // No renderiza el modal si no está abierto o ya se ha renderizado
+    if (!isOpen) {
+      console.log("Not rendering modal: isOpen is false");
+      return null; // No renderiza el modal si no está abierto
     }
+    console.log("Rendering modal");
     console.log("Rendering modal");
 
     if (!selectedService) return null;
