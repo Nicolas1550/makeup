@@ -154,6 +154,7 @@ const Products: React.FC<{
     (state: RootState) => state.filter.selectedCategory
   );
   // Función para cargar más productos
+  const [hasMoreProducts, setHasMoreProducts] = useState(true);
 
   const [windowWidth, setWindowWidth] = useState<number>(0);
   useEffect(() => {
@@ -180,13 +181,24 @@ const Products: React.FC<{
 
   const { productList } = useProductSocket();
   const loadMoreProducts = () => {
+    if (!hasMoreProducts) return;
+
     setLoading(true);
-    // Simular una carga asincrónica, por ejemplo, obtener datos de una API
+    // Aquí iría tu lógica de carga real, por ejemplo, una solicitud a una API
     setTimeout(() => {
-      setItemsCount((prevItemsCount) => prevItemsCount + 6);
+      const newItemsCount = itemsCount + 6;
+      setItemsCount(newItemsCount);
+
+      // Suponiendo que productList contenga todos los productos disponibles
+      // Aquí, compruebas si ya se han cargado todos
+      if (newItemsCount >= productList.length) {
+        setHasMoreProducts(false);
+      }
+
       setLoading(false);
     }, 2000);
   };
+
   const titleVariants = {
     expanded: {
       marginBottom: windowWidth > 768 ? "2.5rem" : "1rem", // Ajustar según sea necesario
@@ -250,7 +262,7 @@ const Products: React.FC<{
   }, [productList, itemsCount]);
   useEffect(() => {
     const handleScroll = () => {
-      if (loading) return;
+      if (loading || !hasMoreProducts) return;
 
       const lastProductLoaded = document.querySelector(
         ".product-card:last-child"
@@ -268,7 +280,7 @@ const Products: React.FC<{
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [loading, visibleProducts]);
+  }, [loading, hasMoreProducts, visibleProducts]);
 
   return (
     <motion.div
