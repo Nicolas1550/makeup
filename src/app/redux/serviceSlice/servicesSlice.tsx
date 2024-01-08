@@ -10,7 +10,7 @@ import { SerializedError } from "@reduxjs/toolkit";
 import axios from "axios";
 import moment from "moment";
 
-interface Service {
+export interface Service {
   id: number;
   title: string;
   description: string;
@@ -66,6 +66,7 @@ interface ServicesState {
   reservationsForUser: Reservation[];
   reservationsSummary?: ReservationSummary; // Puede ser opcional si inicialmente no hay datos
   newReservationsCount: number; // Añadir este estado para el contador
+  serviceData: Record<number, Service>; // Almacena los datos de los servicios individualmente
 }
 interface ErrorResponse {
   errorMessage: string;
@@ -110,6 +111,8 @@ const initialState: ServicesState = {
   reservationsForAssistant: [],
   reservationsForUser: [],
   newReservationsCount: 0,
+  serviceData: {}, // Inicializar el objeto que almacenará los datos de cada servicio
+
   reservationsSummary: {
     totalIngresos: 0,
     totalReservasCompletadas: 0,
@@ -663,17 +666,25 @@ export const addAvailability = createAsyncThunk(
 
 export const fetchServices = createAsyncThunk(
   "services/fetchServices",
-  async () => {
-    const response = await axios.get("https://asdasdasd3.onrender.com/api/servicios");
+  async (_, { dispatch }) => {
+    const response = await axios.get(
+      "https://asdasdasd3.onrender.com/api/servicios"
+    );
     const data = response.data as Service[];
 
     const servicesWithCategoryAndIcon = data.map((service) => {
-      return {
-        ...service, // Se conservan todas las propiedades de service
-        icon: service.icon_name || "", // Asignar icon_name directamente
-        category: assignCategory(service.title), // Asignar categoría
+      const enhancedService = {
+        ...service,
+        icon: service.icon_name || "",
+        category: assignCategory(service.title),
       };
+
+      // Almacenar los datos del servicio individual en el estado serviceData
+      dispatch(setServiceData(enhancedService));
+
+      return enhancedService;
     });
+
     return servicesWithCategoryAndIcon;
   }
 );
@@ -747,6 +758,16 @@ const servicesSlice = createSlice({
   name: "services",
   initialState,
   reducers: {
+    setServiceData: (state, action: PayloadAction<Partial<Service>>) => {
+      const serviceData = action.payload;
+      if (serviceData.id !== undefined) {
+        state.serviceData[serviceData.id] = {
+          ...state.serviceData[serviceData.id],
+          ...serviceData,
+        };
+      }
+    },
+
     incrementNewReservationsCount: (state) => {
       state.newReservationsCount += 1;
     },
@@ -773,6 +794,7 @@ const servicesSlice = createSlice({
       }
       console.log("State after:", state.availabilities); // <-- Añade esta línea
     },
+
     setServiceDescription: (
       state,
       action: PayloadAction<{ serviceId: number; newDescription: string }>
@@ -1194,6 +1216,11 @@ const servicesSlice = createSlice({
         (state, action: PayloadAction<Service[]>) => {
           state.loading = false;
           state.services = action.payload;
+
+          // Actualizar serviceData con cada servicio obtenido
+          action.payload.forEach((service) => {
+            state.serviceData[service.id] = service;
+          });
         }
       )
       .addCase(fetchServices.rejected, (state, action) => {
@@ -1214,6 +1241,7 @@ export const {
   setServiceDescription,
   incrementNewReservationsCount,
   resetNewReservationsCount,
+  setServiceData, // Asegúrate de exportar la nueva acción
 } = servicesSlice.actions;
 
 export default servicesSlice.reducer;

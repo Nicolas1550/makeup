@@ -24,6 +24,8 @@ import {
   updateServiceDescription,
   setServiceDescription,
   updateSocialLinks,
+  Service,
+  setServiceData,
 } from "../../../../redux/serviceSlice/servicesSlice";
 import AvailabilityCalendar from "./availabilityCalendar";
 import ConfirmReservationModal from "../confirmReservationModal";
@@ -81,6 +83,9 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
 
     console.log("ServiceModal serviceImages:", serviceImages);
     const [isEditingOptions, setIsEditingOptions] = useState(false);
+    const [loadedServices, setLoadedServices] = useState<
+      Record<number, Service>
+    >({});
 
     const [selectedEvents, setSelectedEvents] = useState<CalendarEvent[]>([]);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -247,16 +252,31 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
 
     useEffect(() => {
       if (isOpen && selectedService && selectedService.id) {
-        console.log("useEffect selectedService start:", selectedService);
+        // Obtener los datos del servicio del estado global
+        const serviceData = useAppSelector(
+          (state) => state.services.serviceData[selectedService.id]
+        );
 
-        // Solo realiza la solicitud si el servicio seleccionado es diferente al último obtenido
-        if (currentFetchedServiceId !== selectedService.id) {
+        // Verificar si los datos del servicio ya están cargados
+        if (!serviceData) {
+          // Si no están cargados, realiza las acciones de carga necesarias
           dispatch(fetchAvailabilities(selectedService.id));
           dispatch(checkIfUserIsAssigned(selectedService.id));
+
+          // Almacena los datos del servicio seleccionado en el estado global
+          dispatch(setServiceData(selectedService));
+        } else {
+          // Si los datos ya están cargados, utiliza esos datos
+          console.log(
+            "Usando datos del servicio cargado desde el estado global:",
+            serviceData
+          );
+
+          // Aquí puedes realizar acciones adicionales basadas en los datos cargados
+          // Por ejemplo, configurar otros estados o propiedades basados en los datos del servicio
         }
       }
-      console.log("useEffect selectedService end");
-    }, [isOpen, selectedService, currentFetchedServiceId, dispatch]);
+    }, [isOpen, selectedService, dispatch]);
 
     const handleDeleteSelected = () => {
       if (
