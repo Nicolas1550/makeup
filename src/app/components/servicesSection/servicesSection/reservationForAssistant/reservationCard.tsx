@@ -174,7 +174,7 @@ function ReservationCard({
               <CardValue>
                 {reservation.comprobante_path ? (
                   <CardLink
-                    href={`http://localhost:3002/${reservation.comprobante_path}`}
+                    href={`https://sofiaportafolio.online/${reservation.comprobante_path}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

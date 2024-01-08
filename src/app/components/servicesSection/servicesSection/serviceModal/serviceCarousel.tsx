@@ -98,7 +98,7 @@ const ServiceCarousel: React.FC<ServiceCarouselProps> = memo(
               <SwiperSlide key={index}>
                 <ImageContainer>
                   <img
-                    src={`http://localhost:3002/${image.replace(
+                    src={`https://sofiaportafolio.online/${image.replace(
                       /\\/g,
                       "/"
                     )}`}

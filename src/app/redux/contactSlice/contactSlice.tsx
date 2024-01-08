@@ -25,7 +25,7 @@ export const sendContactForm = createAsyncThunk(
   "contact/sendContactForm",
   async (formData: ContactFormData, thunkAPI) => {
     try {
-      const response = await fetch("http://localhost:3002/contact", {
+      const response = await fetch("https://sofiaportafolio.online/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

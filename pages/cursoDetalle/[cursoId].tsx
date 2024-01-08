@@ -51,13 +51,13 @@ const CursoDetalle = () => {
   return (
     <>
       <ImagenPrincipal
-        urlImagen={`http://localhost:3002/image/${cursoActual?.imagen_principal}`}
+        urlImagen={`https://sofiaportafolio.online/image/${cursoActual?.imagen_principal}`}
       />
       <CursoDetalleContainer>
         <ContenedorPrincipal>
           <ImageCarousel
             images={cursoActual?.imagenes || []}
-            baseUrl={"http://localhost:3002/"}
+            baseUrl={"https://sofiaportafolio.online/"}
             title={cursoActual?.nombre}
             description={cursoActual?.descripcion}
             cursoId={cursoId}
