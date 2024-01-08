@@ -21,13 +21,14 @@ export const ContenedorPrincipal = styled.div`
     padding: 1px;
     margin-top: 0px;
   }
-  width: 100%; // Asegura que el componente cubra todo el ancho de la página
+  width: 100%;     // Asegura que el componente cubra todo el ancho de la página
 
-  background-image: url("/img/12.webp"); // Ruta a tu imagen
-  background-size: cover; // Asegura que la imagen cubra completamente el área sin deformarse
+  background-image: url('/img/12.webp'); // Ruta a tu imagen
+  background-size: cover;  // Asegura que la imagen cubra completamente el área sin deformarse
   background-position: center; // Centra la imagen en el contenedor
   background-repeat: no-repeat; // Evita que la imagen se repita
-  background-color: #faf3e0;
+  background-color: #FAF3E0;
+
 `;
 
 export const InfoYClasesContainer = styled.div`
@@ -39,8 +40,6 @@ export const InfoYClasesContainer = styled.div`
   margin-top: 50px;
 
   @media (max-width: 1350px) {
-    width: 100%;
-
     flex-direction: column;
     gap: 20px;
   }
@@ -74,22 +73,16 @@ export const ClasesContainer = styled.div`
   overflow-y: auto;
   width: calc(50% - 4rem);
   padding: 2rem;
-  color: #5c5c5c;
+  color: #5C5C5C;
   margin: 2rem;
-  transition: transform 0.3s ease-out, box-shadow 0.3s ease-out,
-    background-color 0.3s ease-out;
+  transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, background-color 0.3s ease-out;
   background-color: rgba(255, 255, 255, 0.3); // Fondo blanco con transparencia
   border-radius: 10px;
 
   &:hover {
     transform: scale(1.03);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-    background-color: rgba(
-      255,
-      255,
-      255,
-      0.4
-    ); // Fondo más opaco al pasar el cursor
+    background-color: rgba(255, 255, 255, 0.4); // Fondo más opaco al pasar el cursor
   }
 
   // Estilos de la barra de desplazamiento
@@ -106,7 +99,7 @@ export const ClasesContainer = styled.div`
   }
 
   @media (max-width: 1350px) {
-    width: 100%;
+    width: 90%;
     max-height: 400px;
     padding: 1rem;
     margin-top: 1rem;
