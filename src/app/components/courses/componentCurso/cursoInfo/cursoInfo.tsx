@@ -170,7 +170,7 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
     if (reservasActuales === undefined) {
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/reservas/verificar/${disponibilidad.id}`
+          `https://asdasdasd3.onrender.com/api/reservas/verificar/${disponibilidad.id}`
         );
         if (!response.ok) throw new Error("Error al verificar las reservas");
         const data = await response.json();

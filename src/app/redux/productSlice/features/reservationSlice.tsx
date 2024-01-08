@@ -68,7 +68,7 @@ export const fetchReservationDetails =
       };
 
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/reservas/details/${reservationId}`,
+        `https://asdasdasd3.onrender.com/api/reservas/details/${reservationId}`,
         config
       );
       if (response.data) {

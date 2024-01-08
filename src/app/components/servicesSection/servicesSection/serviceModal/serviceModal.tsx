@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { motion } from "framer-motion";
 import { io } from "socket.io-client";
-const socket = io(`${process.env.REACT_APP_API_URL}`);
+const socket = io("https://asdasdasd3.onrender.com");
 import { FaFacebook, FaInstagram, FaWhatsapp } from "react-icons/fa";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -79,6 +79,9 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
     const serviceImages = useAppSelector(
       (state) => state.services.serviceImages[selectedService.id] || []
     );
+    const [loadedServices, setLoadedServices] = useState<
+      Record<number, Service>
+    >({});
 
     console.log("ServiceModal serviceImages:", serviceImages);
     const [isEditingOptions, setIsEditingOptions] = useState(false);

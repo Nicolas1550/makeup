@@ -98,7 +98,7 @@ const ServiceCarousel: React.FC<ServiceCarouselProps> = memo(
               <SwiperSlide key={index}>
                 <ImageContainer>
                   <img
-                    src={`${process.env.REACT_APP_API_URL}/${image.replace(
+                    src={`https://asdasdasd3.onrender.com/${image.replace(
                       /\\/g,
                       "/"
                     )}`}
@@ -137,6 +137,6 @@ const ServiceCarousel: React.FC<ServiceCarouselProps> = memo(
     );
   }
 );
-ServiceCarousel.displayName = "ServiceCarousel"; // Asigna un nombre de visualización
+ServiceCarousel.displayName = 'ServiceCarousel'; // Asigna un nombre de visualización
 
 export default ServiceCarousel;

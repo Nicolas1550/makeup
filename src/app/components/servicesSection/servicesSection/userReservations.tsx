@@ -252,7 +252,7 @@ function UserReservations() {
                           <CardValue>
                             {reservation.comprobante_path ? (
                               <CardLink
-                                href={`${process.env.REACT_APP_API_URL}/${reservation.comprobante_path}`}
+                                href={`https://asdasdasd3.onrender.com/${reservation.comprobante_path}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                               >

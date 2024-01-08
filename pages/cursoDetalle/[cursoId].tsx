@@ -51,13 +51,13 @@ const CursoDetalle = () => {
   return (
     <>
       <ImagenPrincipal
-        urlImagen={`${process.env.REACT_APP_API_URL}/image/${cursoActual?.imagen_principal}`}
+        urlImagen={`https://asdasdasd3.onrender.com/image/${cursoActual?.imagen_principal}`}
       />
       <CursoDetalleContainer>
         <ContenedorPrincipal>
           <ImageCarousel
             images={cursoActual?.imagenes || []}
-            baseUrl={`${process.env.REACT_APP_API_URL}/`}
+            baseUrl={"https://asdasdasd3.onrender.com/"}
             title={cursoActual?.nombre}
             description={cursoActual?.descripcion}
             cursoId={cursoId}

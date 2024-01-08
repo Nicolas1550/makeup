@@ -13,7 +13,12 @@ import {
   ImageContainer,
   ProductDetailContainer,
 } from "@/app/components/products/products/styles/stylesTodosLosProductos/productoDetailStyles";
-import { FaTag, FaBox, FaTrademark, FaPalette } from "react-icons/fa";
+import {
+  FaTag,
+  FaBox,
+  FaTrademark,
+  FaPalette,
+} from "react-icons/fa";
 import { useHandleAddToCart } from "@/app/components/products/products/products/cartActions";
 import Image from "next/image";
 import colorName from "color-name-list";
@@ -58,9 +63,9 @@ const ProductDetail: React.FC<ProductProps> = ({ product }) => {
             <Image
               src={
                 currentProduct.imagen_url
-                  ? currentProduct.imagen_url.startsWith("https")
+                  ? currentProduct.imagen_url.startsWith("http")
                     ? currentProduct.imagen_url
-                    : `${process.env.REACT_APP_API_URL}${currentProduct.imagen_url}`
+                    : `https://asdasdasd3.onrender.com${currentProduct.imagen_url}`
                   : "/path_to_default_image.jpg"
               }
               alt={currentProduct.nombre}
@@ -144,7 +149,7 @@ export const getServerSideProps = async (
   let product = {};
   try {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/products/${id}`
+      `https://asdasdasd3.onrender.com/api/products/${id}`
     );
     product = response.data;
   } catch (error) {

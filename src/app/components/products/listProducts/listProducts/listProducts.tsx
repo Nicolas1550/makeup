@@ -27,7 +27,7 @@ const ListProduct: React.FC = () => {
   if (process.env.NODE_ENV === "development" && highlightedProductList) {
   }
   useEffect(() => {
-    const socket = io(`${process.env.REACT_APP_API_URL}`);
+    const socket = io("https://asdasdasd3.onrender.com");
     socket.on("product-updated", () => {
       fetchProducts();
     });
@@ -41,7 +41,7 @@ const ListProduct: React.FC = () => {
 
   const fetchProducts = () => {
     axios
-      .get(`${process.env.REACT_APP_API_URL}/api/products`)
+      .get("https://asdasdasd3.onrender.com/api/products")
       .then((response) => {
         setProductList(response.data);
         setHighlightedProductList(response.data.slice(0, 6));

@@ -30,9 +30,7 @@ const initialState: AssistantState = {
 export const fetchServices = createAsyncThunk(
   "assistant/fetchServices",
   async () => {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/servicios`
-    );
+    const response = await axios.get("https://asdasdasd3.onrender.com/api/servicios");
     return response.data as Service[];
   }
 );
@@ -41,7 +39,7 @@ export const fetchAssistants = createAsyncThunk(
   "assistant/fetchAssistants",
   async () => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/users/role/ayudante`
+      "https://asdasdasd3.onrender.com/api/users/role/ayudante"
     );
     return response.data as Assistant[];
   }
@@ -57,7 +55,7 @@ export const fetchAssignedHelpers = createAsyncThunk(
 
     const userToken = localStorage.getItem("jwt");
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/servicios/${serviceId}/assignedHelpers`,
+      `https://asdasdasd3.onrender.com/api/servicios/${serviceId}/assignedHelpers`,
       {
         headers: {
           "x-auth-token": userToken,
@@ -79,7 +77,7 @@ export const assignAssistant = createAsyncThunk(
   }) => {
     const userToken = localStorage.getItem("jwt");
     await axios.put(
-      `${process.env.REACT_APP_API_URL}/api/servicios/${serviceId}/assign`,
+      `https://asdasdasd3.onrender.com/api/servicios/${serviceId}/assign`,
       { assistantId },
       {
         headers: {
@@ -102,7 +100,7 @@ export const removeAssistant = createAsyncThunk(
   }) => {
     const userToken = localStorage.getItem("jwt");
     await axios.put(
-      `${process.env.REACT_APP_API_URL}/api/servicios/${serviceId}/removeAssistant`,
+      `https://asdasdasd3.onrender.com/api/servicios/${serviceId}/removeAssistant`,
       { assistantId },
       {
         headers: {
