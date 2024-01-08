@@ -147,8 +147,12 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
           }
         }
       })
-      .catch(() => {
-        dispatch(setLoginError("Error al iniciar sesión"));
+      .catch((error) => {
+        if (error.response && error.response.status === 400) {
+          dispatch(setLoginError("Correo o contraseña incorrectos"));
+        } else {
+          dispatch(setLoginError("Error al iniciar sesión"));
+        }
       });
   };
 
