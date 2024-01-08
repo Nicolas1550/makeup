@@ -24,7 +24,6 @@ import {
   updateServiceDescription,
   setServiceDescription,
   updateSocialLinks,
-  Service,
   setServiceData,
 } from "../../../../redux/serviceSlice/servicesSlice";
 import AvailabilityCalendar from "./availabilityCalendar";
@@ -79,9 +78,7 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
     const serviceImages = useAppSelector(
       (state) => state.services.serviceImages[selectedService.id] || []
     );
-    const [loadedServices, setLoadedServices] = useState<
-      Record<number, Service>
-    >({});
+   
 
     console.log("ServiceModal serviceImages:", serviceImages);
     const [isEditingOptions, setIsEditingOptions] = useState(false);

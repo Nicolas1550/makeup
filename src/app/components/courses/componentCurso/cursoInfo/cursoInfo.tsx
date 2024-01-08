@@ -48,7 +48,6 @@ import {
 } from "./stylesDisp";
 import {
   openLoginModal,
-  closeLoginModal,
 } from "../../../../redux/loginModalSlice/loginModalSlice";
 
 interface OptionType {

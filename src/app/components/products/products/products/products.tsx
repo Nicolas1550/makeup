@@ -29,7 +29,7 @@ import { useHandleAddToCart } from "./cartActions";
 import useProductSocket from "../products/useProductSocket";
 import { useAppSelector } from "@/app/redux/store/appHooks";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import BackgroundImageWithTitle from "./backgroundImageWithTitle";
 import LoadingSpinner from "./loadingSpinner";
 
@@ -180,24 +180,18 @@ const Products: React.FC<{
   }, [isSidebarOpenedByButton]);
 
   const { productList } = useProductSocket();
-  const loadMoreProducts = () => {
+  const loadMoreProducts = useCallback(() => {
     if (!hasMoreProducts) return;
-
     setLoading(true);
-    // Aquí iría tu lógica de carga real, por ejemplo, una solicitud a una API
     setTimeout(() => {
       const newItemsCount = itemsCount + 6;
       setItemsCount(newItemsCount);
-
-      // Suponiendo que productList contenga todos los productos disponibles
-      // Aquí, compruebas si ya se han cargado todos
       if (newItemsCount >= productList.length) {
         setHasMoreProducts(false);
       }
-
       setLoading(false);
     }, 2000);
-  };
+  }, [hasMoreProducts, itemsCount, productList.length]);
 
   const titleVariants = {
     expanded: {
@@ -207,40 +201,42 @@ const Products: React.FC<{
       marginTop: windowWidth > 768 ? "2rem" : "2rem", // Ajustar según sea necesario
     },
   };
-  const filterProducts = (products: ProductType[]): ProductType[] => {
-    return products
-      .filter(
-        (product) =>
-          !priceRange ||
-          (product.precio >= priceRange[0] && product.precio <= priceRange[1])
-      )
-      .filter((product) => {
-        if (selectedColor) {
-          if (Array.isArray(product.color)) {
-            return product.color.includes(selectedColor);
+  const filterProducts = useCallback(
+    (products: ProductType[]): ProductType[] => {
+      return products
+        .filter(
+          (product) =>
+            !priceRange ||
+            (product.precio >= priceRange[0] && product.precio <= priceRange[1])
+        )
+        .filter((product) => {
+          if (selectedColor) {
+            if (Array.isArray(product.color)) {
+              return product.color.includes(selectedColor);
+            } else {
+              return product.color === selectedColor;
+            }
           } else {
-            return product.color === selectedColor;
+            return true;
           }
-        } else {
-          return true;
-        }
-      })
-      .filter((product) =>
-        selectedMarca ? product.marca === selectedMarca : true
-      )
-      .filter((product) =>
-        searchTerm
-          ? product.nombre.toLowerCase().includes(searchTerm.toLowerCase())
-          : true
-      )
-      .filter((product) =>
-        selectedCategory && selectedCategory !== "Todos"
-          ? product.categoria === selectedCategory
-          : true
-      );
-  };
+        })
+        .filter((product) =>
+          selectedMarca ? product.marca === selectedMarca : true
+        )
+        .filter((product) =>
+          searchTerm
+            ? product.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+            : true
+        )
+        .filter((product) =>
+          selectedCategory && selectedCategory !== "Todos"
+            ? product.categoria === selectedCategory
+            : true
+        );
+    },
+    [priceRange, selectedColor, selectedMarca, searchTerm, selectedCategory]
+  );
 
-  const displayedProducts = filterProducts(productList);
   const displayedHighlightedProducts = productList.slice(0, 6);
   const isSidebarExpanded = useAppSelector(
     (state: RootState) => state.ui.isSidebarExpanded
@@ -256,14 +252,13 @@ const Products: React.FC<{
     },
   };
   useEffect(() => {
-    // Filtrar y luego establecer los productos visibles
     const newVisibleProducts = filterProducts(productList).slice(0, itemsCount);
     setVisibleProducts(newVisibleProducts);
-  }, [productList, itemsCount]);
+  }, [productList, itemsCount, filterProducts]);
+
   useEffect(() => {
     const handleScroll = () => {
       if (loading || !hasMoreProducts) return;
-
       const lastProductLoaded = document.querySelector(
         ".product-card:last-child"
       ) as HTMLElement;
@@ -271,16 +266,14 @@ const Products: React.FC<{
         const lastProductLoadedOffset =
           lastProductLoaded.offsetTop + lastProductLoaded.clientHeight;
         const pageOffset = window.scrollY + window.innerHeight;
-
         if (pageOffset > lastProductLoadedOffset) {
           loadMoreProducts();
         }
       }
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [loading, hasMoreProducts, visibleProducts]);
+  }, [loading, hasMoreProducts, loadMoreProducts]);
 
   return (
     <motion.div
