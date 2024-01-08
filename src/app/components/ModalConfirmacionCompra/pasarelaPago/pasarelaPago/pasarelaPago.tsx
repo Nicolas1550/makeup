@@ -109,7 +109,7 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
 
     try {
       const response = await axios.post(
-        "https://asdasdasd3.onrender.com/api/mercadopago/create_preference",
+        "http://localhost:3002/api/mercadopago/create_preference",
         paymentData,
         {
           headers: {
@@ -207,7 +207,7 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
                   producto?.imagen_url
                     ? producto.imagen_url.startsWith("http")
                       ? producto.imagen_url
-                      : `https://asdasdasd3.onrender.com${producto.imagen_url}`
+                      : `http://localhost:3002${producto.imagen_url}`
                     : "/path/to/default/image.jpg"
                 }
                 alt={producto.nombre}

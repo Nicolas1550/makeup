@@ -31,6 +31,7 @@ import { useAppSelector } from "@/app/redux/store/appHooks";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import BackgroundImageWithTitle from "./backgroundImageWithTitle";
+import LoadingSpinner from "./loadingSpinner";
 
 const getProductLink = (productId: number) => `/products/${productId}`;
 
@@ -52,12 +53,15 @@ const ProductCard: React.FC<ProductType & { highlighted?: boolean }> = ({
 
   return (
     <Link href={getProductLink(id)} passHref>
-      <CardContainer style={{ textDecoration: "none" }}>
+      <CardContainer
+        className="product-card"
+        style={{ textDecoration: "none" }}
+      >
         <div style={{ cursor: "pointer" }}>
           <ProductImage
             src={
               imagen_url
-                ? `https://asdasdasd3.onrender.com${imagen_url}`
+                ? `http://localhost:3002${imagen_url}`
                 : "/path_to_default_image.jpg"
             }
             alt={nombre}
@@ -137,6 +141,9 @@ const Products: React.FC<{
 }> = ({ displayMode = "highlighted" }) => {
   const searchTerm = useSelector((state: RootState) => state.filter.searchTerm);
   const priceRange = useSelector((state: RootState) => state.filter.priceRange);
+  const [visibleProducts, setVisibleProducts] = useState<ProductType[]>([]);
+  const [itemsCount, setItemsCount] = useState(6);
+  const [loading, setLoading] = useState(false);
   const selectedColor = useSelector(
     (state: RootState) => state.filter.selectedColor
   );
@@ -146,6 +153,7 @@ const Products: React.FC<{
   const selectedCategory = useSelector(
     (state: RootState) => state.filter.selectedCategory
   );
+  // Función para cargar más productos
 
   const [windowWidth, setWindowWidth] = useState<number>(0);
   useEffect(() => {
@@ -169,7 +177,16 @@ const Products: React.FC<{
       document.body.style.overflow = "auto"; // Activa el scroll
     }
   }, [isSidebarOpenedByButton]);
+
   const { productList } = useProductSocket();
+  const loadMoreProducts = () => {
+    setLoading(true);
+    // Simular una carga asincrónica, por ejemplo, obtener datos de una API
+    setTimeout(() => {
+      setItemsCount((prevItemsCount) => prevItemsCount + 6);
+      setLoading(false);
+    }, 2000);
+  };
   const titleVariants = {
     expanded: {
       marginBottom: windowWidth > 768 ? "2.5rem" : "1rem", // Ajustar según sea necesario
@@ -226,6 +243,32 @@ const Products: React.FC<{
       marginTop: "0px",
     },
   };
+  useEffect(() => {
+    // Filtrar y luego establecer los productos visibles
+    const newVisibleProducts = filterProducts(productList).slice(0, itemsCount);
+    setVisibleProducts(newVisibleProducts);
+  }, [productList, itemsCount]);
+  useEffect(() => {
+    const handleScroll = () => {
+      if (loading) return;
+
+      const lastProductLoaded = document.querySelector(
+        ".product-card:last-child"
+      ) as HTMLElement;
+      if (lastProductLoaded) {
+        const lastProductLoadedOffset =
+          lastProductLoaded.offsetTop + lastProductLoaded.clientHeight;
+        const pageOffset = window.pageYOffset + window.innerHeight;
+
+        if (pageOffset > lastProductLoadedOffset) {
+          loadMoreProducts();
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [loading, visibleProducts]);
 
   return (
     <motion.div
@@ -252,9 +295,10 @@ const Products: React.FC<{
 
         {(displayMode === "fullList" || displayMode === "both") && (
           <ProductListContainer>
-            {displayedProducts.map((product) => (
+            {visibleProducts.map((product) => (
               <ProductCard key={product.id} {...product} />
             ))}
+            {loading && <LoadingSpinner />}
           </ProductListContainer>
         )}
       </ProductContainer>

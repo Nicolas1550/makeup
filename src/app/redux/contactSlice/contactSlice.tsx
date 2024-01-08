@@ -25,7 +25,7 @@ export const sendContactForm = createAsyncThunk(
   "contact/sendContactForm",
   async (formData: ContactFormData, thunkAPI) => {
     try {
-      const response = await fetch("https://asdasdasd3.onrender.com/contact", {
+      const response = await fetch("http://localhost:3002/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

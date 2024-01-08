@@ -12,7 +12,7 @@ export const fetchUserDetails = createAsyncThunk(
     thunkAPI.dispatch(fetchUserDetailsStart());
     try {
       const { data } = await axios.get(
-        `https://asdasdasd3.onrender.com/api/users/${userId}`
+        `http://localhost:3002/api/users/${userId}`
       );
       console.log("User details from server:", data);
 

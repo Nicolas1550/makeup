@@ -87,7 +87,7 @@ export const changeOrderStatus = createAsyncThunk<
 
     try {
       const response = await fetch(
-        `https://asdasdasd3.onrender.com/api/orders/update-status/${orderId}`,
+        `http://localhost:3002/api/orders/update-status/${orderId}`,
         {
           method: "PUT",
           headers: {
@@ -129,7 +129,7 @@ export const fetchUserOrders = createAsyncThunk<
 
   try {
     const response = await fetch(
-      "https://asdasdasd3.onrender.com/api/orders/user-orders",
+      "http://localhost:3002/api/orders/user-orders",
       {
         headers: {
           "x-auth-token": userToken,
@@ -172,7 +172,7 @@ export const fetchOrdersByStatus = createAsyncThunk<
       );
     }
 
-    let url = `https://asdasdasd3.onrender.com/api/orders/orders-by-status/${status}`;
+    let url = `http://localhost:3002/api/orders/orders-by-status/${status}`;
     const queryParams = [];
     if (sortByDate) {
       queryParams.push(`sortByDate=${sortByDate}`);
@@ -225,7 +225,7 @@ export const deleteOrderById = createAsyncThunk<
 
   try {
     const response = await fetch(
-      `https://asdasdasd3.onrender.com/api/orders/order/${orderId}`,
+      `http://localhost:3002/api/orders/order/${orderId}`,
       {
         method: "DELETE",
         headers: {

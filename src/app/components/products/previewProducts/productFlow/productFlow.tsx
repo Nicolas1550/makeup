@@ -33,7 +33,7 @@ const ProductFlow: React.FC<ProductFlowProps> = ({ products }) => {
           <StyledProductImage // Usa el componente estilizado
             src={
               product.imagen_url
-                ? `https://asdasdasd3.onrender.com${product.imagen_url}`
+                ? `http://localhost:3002${product.imagen_url}`
                 : "/path/to/default/image.png"
             }
             alt={product.nombre}

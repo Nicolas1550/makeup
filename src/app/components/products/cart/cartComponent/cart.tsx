@@ -52,7 +52,7 @@ export const Cart: React.FC<CartProps> = ({ onClose, onCheckout }) => {
   const cartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const socket = io("https://asdasdasd3.onrender.com");
+    const socket = io("http://localhost:3002");
 
     socket.on("stock-updated", async () => {
       try {
@@ -138,7 +138,7 @@ export const Cart: React.FC<CartProps> = ({ onClose, onCheckout }) => {
                         item.imagen_url
                           ? item.imagen_url.startsWith("http")
                             ? item.imagen_url
-                            : `https://asdasdasd3.onrender.com${item.imagen_url}`
+                            : `http://localhost:3002${item.imagen_url}`
                           : "/path_to_default_image.jpg"
                       }
                       alt={item.nombre}
