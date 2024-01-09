@@ -110,6 +110,8 @@ const CombinedFilterComponent: React.FC = () => {
 
   const [isFilterOpen, setIsFilterOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const [inputFocused, setInputFocused] = useState(false); // Nuevo estado para rastrear si un input tiene el foco
+
   const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
   const toggleSubMenu = () => {
     setIsSubMenuOpen(!isSubMenuOpen);
@@ -143,7 +145,8 @@ const CombinedFilterComponent: React.FC = () => {
   const selectedMarca = useSelector(
     (state: RootState) => state.filter.selectedMarca
   );
-
+  const handleInputFocus = () => setInputFocused(true);
+  const handleInputBlur = () => setInputFocused(false);
   const customStyles: StylesConfig = {
     control: (provided, state) => ({
       ...provided,
@@ -277,11 +280,11 @@ const CombinedFilterComponent: React.FC = () => {
     setScrollY(currentScrollY);
     setIsSticky(currentScrollY > 150);
 
-    // Solo modificar isExpanded en escritorio
-    if (!isMobile) {
+    // Solo modificar isExpanded en escritorio y cuando ningún input está enfocado
+    if (!isMobile && !inputFocused) {
       setIsExpanded(currentScrollY === 0);
     }
-  }, [isMobile]);
+  }, [isMobile, inputFocused]); // Asegúrate de incluir inputFocused en las dependencias del useCallback
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -290,7 +293,7 @@ const CombinedFilterComponent: React.FC = () => {
 
   const updateSidebarState = useCallback(() => {
     const atTop = window.scrollY === 0;
-  
+
     if (isMobile) {
       // En móviles, el estado de apertura se maneja exclusivamente a través del botón.
       setIsFilterOpen(atTop);
@@ -432,6 +435,8 @@ const CombinedFilterComponent: React.FC = () => {
                 value={localSearchTerm}
                 onChange={handleSearchInputChange}
                 placeholder="Buscar productos..."
+                onFocus={handleInputFocus} // Agregar para manejar el foco
+                onBlur={handleInputBlur} // Agregar para manejar la pérdida del foco
               />
             </div>
 
@@ -457,6 +462,8 @@ const CombinedFilterComponent: React.FC = () => {
                     MenuList: CustomMenuList, // Usar el componente personalizado
                     Option: CustomOption, // Opcional, si tienes un componente de opción personalizado
                   }}
+                  onFocus={handleInputFocus} // Agregar para manejar el foco en Select
+                  onBlur={handleInputBlur} // Agregar para manejar la pérdida del foco en Select
                 />
               )}
             </FilterSectionItem>
@@ -483,6 +490,8 @@ const CombinedFilterComponent: React.FC = () => {
                     MenuList: CustomMenuList, // Usar el componente personalizado
                     Option: CustomOption, // Opcional, si tienes un componente de opción personalizado
                   }}
+                  onFocus={handleInputFocus} // Agregar para manejar el foco en Select
+                  onBlur={handleInputBlur} // Agregar para manejar la pérdida del foco en Select
                 />
               )}
             </FilterSectionItem>
