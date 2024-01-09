@@ -9,7 +9,9 @@ const selectCursoById = (
   state: RootState,
   courseId: number
 ): Curso | undefined => {
-  return state.cursos.cursos.find((curso) => curso.id === courseId);
+  const curso = state.cursos.cursos.find((curso) => curso.id === courseId);
+  console.log("Curso seleccionado desde Redux:", curso); // Log para ver el curso obtenido de Redux
+  return curso;
 };
 interface StyledCardProps {
   $imageUrl: string;
@@ -32,7 +34,7 @@ const StyledCard: React.FC<StyledCardProps> = ({
 }) => {
   const curso = useAppSelector((state) => selectCursoById(state, courseId));
   const [precio, setPrecio] = useState("Cargando...");
-  console.log("courseId en StyledCard:", courseId);
+  console.log("courseId en StyledCard:", courseId); // Log para confirmar el ID del curso
   useEffect(() => {
     if (curso) {
       setPrecio(curso.precio?.toString() || "No disponible");
