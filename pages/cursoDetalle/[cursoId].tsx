@@ -51,7 +51,7 @@ const CursoDetalle = () => {
   return (
     <>
       <ImagenPrincipal
-        urlImagen={`https://asdasdasd3.onrender.com/image/${cursoActual?.imagen_principal}`}
+        urlImagen={`https://asdasdasd3.onrender.com/db/image/${cursoActual?.imagen_principal}`}
       />
       <CursoDetalleContainer>
         <ContenedorPrincipal>
