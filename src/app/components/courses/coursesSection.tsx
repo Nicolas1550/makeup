@@ -42,6 +42,7 @@ const CoursesIntroContainer = styled.div`
 
   @media (max-width: 1300px) {
     background-image: url("/img/aa.webp"); // Imagen diferente para móviles
+   
   }
 `;
 
@@ -109,7 +110,7 @@ const CoursesContainer: React.FC = () => {
 
         <CoursesSection style={containerStyles}>
           <StyledCard
-            courseId={1}
+            courseId="1"
             $imageUrl="/img/curso/cursos-de-maquillaje-aprende-2ImagenUrl.webp"
             bgUrl="/img/curso/abstract-pink-background-pink-modern-shapes-background-vectorBgUrl.webp"
             cutUrl="/img/curso/cursos-de-maquillaje-aprende-2-removebg.png"
@@ -118,7 +119,7 @@ const CoursesContainer: React.FC = () => {
             borderStyle="lb"
           />
           <StyledCard
-            courseId={2}
+            courseId="2"
             $imageUrl="/img/curso/cursos-de-maquillaje-aprende-2ImagenUrl.webp"
             bgUrl="/img/curso/abstract-pink-background-pink-modern-shapes-background-vectorBgUrl.webp"
             cutUrl="/img/curso/cursos-de-maquillaje-aprende-2-removebg.png"
@@ -127,7 +128,7 @@ const CoursesContainer: React.FC = () => {
             borderStyle="lb"
           />
           <StyledCard
-            courseId={3}
+            courseId="3"
             $imageUrl="/img/curso/cursos-de-maquillaje-aprende-2ImagenUrl.webp"
             bgUrl="/img/curso/abstract-pink-background-pink-modern-shapes-background-vectorBgUrl.webp"
             cutUrl="/img/curso/cursos-de-maquillaje-aprende-2-removebg.png"
