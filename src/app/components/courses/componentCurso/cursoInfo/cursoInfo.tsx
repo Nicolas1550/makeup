@@ -54,7 +54,7 @@ interface OptionType {
   label: string;
 }
 // Asumiendo que estos tipos ya están definidos en otro lugar
-type Curso = {
+export type Curso = {
   id: number;
   nombre?: string;
   descripcion?: string;

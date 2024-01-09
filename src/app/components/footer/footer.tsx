@@ -18,20 +18,10 @@ const COLORS = {
 
 const FooterContainer = styled.footer`
   padding: 2rem 0;
-  background: linear-gradient(145deg, #FADADD, #FAF3E0);
+  background: linear-gradient(145deg, #fadadd, #faf3e0);
   color: #555555;
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-    display: flex;
+
+  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -117,7 +107,7 @@ const Footer = () => {
       <ContactInfo>
         <p>
           <FaMapMarkerAlt />
-          123 Your Street, Your City
+          Thorne 1145, Rio Grande
         </p>
       </ContactInfo>
 
@@ -129,7 +119,7 @@ const Footer = () => {
       </ContactInfo>
 
       <Copyright>
-        &copy; {new Date().getFullYear()} Created by Your Name or Company. All
+        &copy; {new Date().getFullYear()} Created by Sofia Luciuk. All
         rights reserved.
       </Copyright>
     </FooterContainer>

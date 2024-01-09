@@ -42,7 +42,6 @@ const CoursesIntroContainer = styled.div`
 
   @media (max-width: 1300px) {
     background-image: url("/img/aa.webp"); // Imagen diferente para móviles
-   
   }
 `;
 
@@ -110,33 +109,30 @@ const CoursesContainer: React.FC = () => {
 
         <CoursesSection style={containerStyles}>
           <StyledCard
-            courseId="1"
+            courseId={1}
             $imageUrl="/img/curso/cursos-de-maquillaje-aprende-2ImagenUrl.webp"
             bgUrl="/img/curso/abstract-pink-background-pink-modern-shapes-background-vectorBgUrl.webp"
             cutUrl="/img/curso/cursos-de-maquillaje-aprende-2-removebg.png"
             title="Carrera De Maquillador Profesional Inicial!"
-            description="Lorem, ipsum dolor sit amet consectetur adipisicing elit."
-            price="15000"
+            description="Explora los fundamentos del maquillaje profesional. Ideal para principiantes apasionados por la belleza."
             borderStyle="lb"
           />
           <StyledCard
-            courseId="2"
+            courseId={2}
             $imageUrl="/img/curso/cursos-de-maquillaje-aprende-2ImagenUrl.webp"
             bgUrl="/img/curso/abstract-pink-background-pink-modern-shapes-background-vectorBgUrl.webp"
             cutUrl="/img/curso/cursos-de-maquillaje-aprende-2-removebg.png"
             title="Clases De Automaquillaje Avanzado!"
-            description="Lorem, ipsum dolor sit amet consectetur adipisicing elit."
-            price="15000"
+            description="Perfecciona tus habilidades con técnicas de vanguardia. Para entusiastas del maquillaje con experiencia previa."
             borderStyle="lb"
           />
           <StyledCard
-            courseId="3"
+            courseId={3}
             $imageUrl="/img/curso/cursos-de-maquillaje-aprende-2ImagenUrl.webp"
             bgUrl="/img/curso/abstract-pink-background-pink-modern-shapes-background-vectorBgUrl.webp"
             cutUrl="/img/curso/cursos-de-maquillaje-aprende-2-removebg.png"
             title="Clases De Automaquillaje Inicial!"
-            description="Lorem, ipsum dolor sit amet consectetur adipisicing elit."
-            price="15000"
+            description="Aprende los básicos del automaquillaje. Transforma tu rutina diaria en una expresión de arte."
             borderStyle="lb"
           />
         </CoursesSection>

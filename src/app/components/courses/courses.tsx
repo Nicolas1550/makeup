@@ -1,20 +1,27 @@
 import React, { useRef, useEffect } from "react";
 import "./style.css";
 import Link from "next/link";
+import { useAppSelector } from "../../../../src/app/redux/store/appHooks";
+import { RootState } from "../../../../src/app/redux/store/rootReducer";
+import { Curso } from "./componentCurso/cursoInfo/cursoInfo";
 
+const selectCursoById = (
+  state: RootState,
+  courseId: number
+): Curso | undefined => {
+  return state.cursos.cursos.find((curso) => curso.id === courseId);
+};
 interface StyledCardProps {
   $imageUrl: string;
   bgUrl: string;
   cutUrl: string;
   title: string;
   description: string;
-  price: string;
   borderStyle?: "lb" | "rb" | "bb";
-  courseId: string;
+  courseId: number; // Cambiado a number
 }
 
 const StyledCard: React.FC<StyledCardProps> = ({
-  price,
   $imageUrl,
   bgUrl,
   cutUrl,
@@ -23,6 +30,8 @@ const StyledCard: React.FC<StyledCardProps> = ({
   borderStyle,
   courseId,
 }) => {
+  const curso = useAppSelector((state) => selectCursoById(state, courseId));
+  const precio = curso?.precio || "No disponible";
   console.log("courseId en StyledCard:", courseId);
 
   const cardRef = useRef<HTMLDivElement>(null);
@@ -78,7 +87,7 @@ const StyledCard: React.FC<StyledCardProps> = ({
       <div className="info">
         <h2 className="title">{title}</h2>
         <p className="description">{description}</p>
-        <strong className="price">${price}</strong>
+        <strong className="price">${precio}</strong>
         <Link href={`/cursoDetalle/${courseId}`}>
           <button className="enroll-button">Inscribirse ahora</button>
         </Link>
