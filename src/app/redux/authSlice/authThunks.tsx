@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
-import { setLoginError, setLoading } from "../messagesSlice/messagesSlice";
+import { setLoading } from "../messagesSlice/messagesSlice";
 
 interface DecodedToken {
   roles: string[];
