@@ -153,7 +153,13 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
       })
       .catch((error) => {
         if (typeof error === "string") {
+          // Aquí manejas el error cuando es un string. Puede ser un mensaje general de error.
           dispatch(setLoginError(error));
+        } else if (error && typeof error === "object") {
+          // Aquí manejas los errores específicos si los hubiera (por ejemplo, contraseña incorrecta)
+          dispatch(
+            setLoginError("Credenciales incorrectas o cuenta no encontrada")
+          );
         } else {
           dispatch(setLoginError("Error al iniciar sesión"));
         }
@@ -184,7 +190,20 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
         }
       });
   };
-
+  // Temporizador para borrar mensajes de error
+  useEffect(() => {
+    let timer: number; // Especifica el tipo de la variable timer
+    if (loginError) {
+      timer = window.setTimeout(() => {
+        // Usa window.setTimeout para evitar errores de tipo en TypeScript
+        dispatch(clearMessages());
+      }, 5000); // 5 segundos
+    }
+    return () => clearTimeout(timer);
+  }, [loginError, dispatch]);
+  useEffect(() => {
+    dispatch(clearMessages());
+  }, [isSignUp, dispatch]);
   if (!isLoginModalOpen) return null;
   return (
     <div className="container">
@@ -242,11 +261,12 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
             )}
 
             {/* Muestra error general si loginError es una cadena */}
-            {typeof loginError === "string" && (
+            {loginError && typeof loginError === "string" && (
               <div className="error-message" style={{ color: "red" }}>
                 {loginError}
               </div>
             )}
+
             {loginMessage && (
               <div style={{ color: "green" }}>{loginMessage}</div>
             )}

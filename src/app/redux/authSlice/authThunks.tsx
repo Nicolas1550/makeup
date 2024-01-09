@@ -97,21 +97,25 @@ export const loginUser = createAsyncThunk(
       };
     } catch (error: unknown) {
       thunkAPI.dispatch(setLoading(false));
+
       if (typeof error === "object" && error !== null && "response" in error) {
+        // Verificar si hay errores específicos de validación
         const errors = (error as RegisterErrorResponse).response.data.errors;
         if (errors && errors.length > 0) {
-          // Suponiendo que los errores no tienen un 'param', sino solo un 'msg'
           const errorMessage = errors
             .map((err: { msg: string }) => err.msg)
             .join(". ");
           return thunkAPI.rejectWithValue(errorMessage);
         }
+
+        // Manejar mensaje de error general, como credenciales incorrectas
+        const generalErrorMessage =
+          (error as RegisterErrorResponse).response?.data?.error ||
+          "Error al iniciar sesión";
+        return thunkAPI.rejectWithValue(generalErrorMessage);
       }
 
-      const generalErrorMessage =
-        (error as RegisterErrorResponse).response?.data?.error ||
-        "Error al iniciar sesión";
-      return thunkAPI.rejectWithValue({ general: generalErrorMessage });
+      return thunkAPI.rejectWithValue("Error al iniciar sesión");
     }
   }
 );
