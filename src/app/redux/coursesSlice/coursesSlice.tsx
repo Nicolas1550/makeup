@@ -404,7 +404,7 @@ export const fetchDisponibilidades = createAsyncThunk<
       if (limite !== undefined) {
         params.append("limite", limite.toString());
       }
-
+ 
       const fullUrl = `${url}?${params.toString()}`;
       const response = await fetch(fullUrl);
       if (!response.ok) {
