@@ -225,8 +225,11 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
               )}
             </button>
 
-            {loginError && <div style={{ color: "red" }}>{loginError}</div>}
-            {loginError && <div className="error-message">{loginError}</div>}
+            {loginError && (
+              <div className="error-message" style={{ color: "red" }}>
+                {loginError}
+              </div>
+            )}
 
             {loginMessage && (
               <div style={{ color: "green" }}>{loginMessage}</div>
