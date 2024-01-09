@@ -20,6 +20,7 @@ import {
 import jwt from "jsonwebtoken";
 import ForgotPasswordModal from "./forgotPasswordModal";
 import styled from "styled-components";
+
 const PasswordInputContainer = styled.div`
   position: relative;
   width: 100%;

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { registerUser } from "../authSlice/authThunks";
+import { registerUser, loginUser } from "../authSlice/authThunks";
 
 interface MessagesState {
   loginMessage: string | null;
@@ -10,8 +10,7 @@ interface MessagesState {
 const initialState: MessagesState = {
   loginMessage: null,
   loginError: null,
-  isLoading: false, 
-
+  isLoading: false,
 };
 
 const messagesSlice = createSlice({
@@ -28,7 +27,7 @@ const messagesSlice = createSlice({
       state.loginMessage = null;
       state.loginError = null;
     },
-    setLoading: (state, action: PayloadAction<boolean>) => { 
+    setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
   },
@@ -41,10 +40,19 @@ const messagesSlice = createSlice({
       .addCase(registerUser.rejected, (state, action) => {
         state.loginError = action.payload as string;
         state.loginMessage = null;
+      })
+      // Manejar el estado de éxito de loginUser
+      .addCase(loginUser.fulfilled, (state) => {
+        state.loginMessage = "Inicio de sesión exitoso";
+        state.loginError = null;
+      })
+      // Manejar el estado de error de loginUser
+      .addCase(loginUser.rejected, (state, action) => {
+        state.loginError = action.payload as string;
+        state.loginMessage = null;
       });
   },
 });
-
 
 export const { setLoginMessage, setLoginError, clearMessages, setLoading } =
   messagesSlice.actions;
