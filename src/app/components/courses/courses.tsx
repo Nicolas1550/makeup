@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import "./style.css";
 import Link from "next/link";
 import { useAppSelector } from "../../../../src/app/redux/store/appHooks";
@@ -31,9 +31,13 @@ const StyledCard: React.FC<StyledCardProps> = ({
   courseId,
 }) => {
   const curso = useAppSelector((state) => selectCursoById(state, courseId));
-  const precio = curso?.precio || "No disponible";
+  const [precio, setPrecio] = useState("Cargando...");
   console.log("courseId en StyledCard:", courseId);
-
+  useEffect(() => {
+    if (curso) {
+      setPrecio(curso.precio?.toString() || "No disponible");
+    }
+  }, [curso]);
   const cardRef = useRef<HTMLDivElement>(null);
   const angle = 15;
 
