@@ -231,7 +231,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
             {loginError && typeof loginError === "object" && (
               <div>
                 {loginError.usernameOrEmail && (
-                  <div className="error-message">
+                  <div className="error-message" style={{ color: "red" }}>
                     {loginError.usernameOrEmail}
                   </div>
                 )}
@@ -243,7 +243,9 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
 
             {/* Muestra error general si loginError es una cadena */}
             {typeof loginError === "string" && (
-              <div className="error-message">{loginError}</div>
+              <div className="error-message" style={{ color: "red" }}>
+                {loginError}
+              </div>
             )}
             {loginMessage && (
               <div style={{ color: "green" }}>{loginMessage}</div>
