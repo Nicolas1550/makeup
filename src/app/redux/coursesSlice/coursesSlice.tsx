@@ -396,7 +396,7 @@ export const fetchDisponibilidades = createAsyncThunk<
   async ({ cursoId, estado, limite }, { rejectWithValue }) => {
     try {
       const url = `https://asdasdasd3.onrender.com/api/cursos/${cursoId}/disponibilidades`;
-
+ 
       const params = new URLSearchParams();
       if (estado) {
         params.append("estado", estado);
