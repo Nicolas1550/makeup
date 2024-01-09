@@ -91,17 +91,33 @@ export const loginUser = createAsyncThunk(
       thunkAPI.dispatch(setLoading(false));
 
       return {
-        userRoles: decodedToken.roles, // Devuelve todos los roles
+        userRoles: decodedToken.roles,
         userId: decodedToken.id || decodedToken.usuario_id,
         userName: decodedToken.username,
       };
     } catch (error: unknown) {
       thunkAPI.dispatch(setLoading(false));
-      if (error instanceof Error) {
-        console.error("Login failed:", error.message);
-        thunkAPI.dispatch(setLoginError(error.message || "Login failed"));
+      let errorMessage = "Error al iniciar sesión";
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "response" in error &&
+        (error as RegisterErrorResponse).response.data.errors
+      ) {
+        const validationErrors = (
+          error as RegisterErrorResponse
+        ).response.data.errors.map((err) => err.msg);
+        errorMessage = validationErrors.join(". ");
+      } else if (
+        typeof error === "object" &&
+        error !== null &&
+        "response" in error &&
+        (error as RegisterErrorResponse).response.data.error
+      ) {
+        errorMessage = (error as RegisterErrorResponse).response.data.error;
       }
-      throw error;
+      console.log("Mensaje de error desde thunk:", errorMessage);
+      return thunkAPI.rejectWithValue(errorMessage);
     }
   }
 );
@@ -112,7 +128,10 @@ export const registerUser = createAsyncThunk(
     thunkAPI.dispatch(setLoading(true));
 
     try {
-      await axios.post("https://asdasdasd3.onrender.com/api/users/register", userData);
+      await axios.post(
+        "https://asdasdasd3.onrender.com/api/users/register",
+        userData
+      );
       thunkAPI.dispatch(setLoading(false));
       return "Registro exitoso";
     } catch (error: unknown) {
