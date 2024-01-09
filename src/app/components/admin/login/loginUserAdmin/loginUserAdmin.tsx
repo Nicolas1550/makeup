@@ -20,20 +20,7 @@ import {
 import jwt from "jsonwebtoken";
 import ForgotPasswordModal from "./forgotPasswordModal";
 import styled from "styled-components";
-import { motion } from "framer-motion";
-const modalVariants = {
-  hidden: {
-    opacity: 0,
-    scale: 0.95,
-  },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: {
-      duration: 0.5,
-    },
-  },
-};
+
 const PasswordInputContainer = styled.div`
   position: relative;
   width: 100%;
@@ -219,191 +206,174 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
   }, [isSignUp, dispatch]);
   if (!isLoginModalOpen) return null;
   return (
-    <motion.div
-      initial="hidden"
-      animate="visible"
-      exit="hidden"
-      variants={modalVariants}
-    >
-      <div className="container">
-        <div className={`main ${isSignUp ? "sing-up" : "sing-in"}`}>
-          <div className="sing-in-form form-container">
-            <h1>Iniciar Sesion</h1>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSubmitSignIn(username, password);
-              }}
-            >
+    <div className="container">
+      <div className={`main ${isSignUp ? "sing-up" : "sing-in"}`}>
+        <div className="sing-in-form form-container">
+          <h1>Iniciar Sesion</h1>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmitSignIn(username, password);
+            }}
+          >
+            <input
+              type="text"
+              placeholder="Nombre de usuario o correo"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+            <PasswordInputContainer>
               <input
-                type="text"
-                placeholder="Nombre de usuario o correo"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                type={showPassword ? "text" : "password"}
+                placeholder="Contraseña"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
-              <PasswordInputContainer>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Contraseña"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <button
-                  onClick={(event) => {
-                    event.preventDefault();
-                    togglePasswordVisibility();
-                  }}
-                >
-                  👁️
-                </button>
-              </PasswordInputContainer>
-
               <button
-                type="submit"
-                className="form-button"
-                disabled={isLoading}
+                onClick={(event) => {
+                  event.preventDefault();
+                  togglePasswordVisibility();
+                }}
               >
-                {isLoading ? (
-                  <BeatLoader size={8} color={"#123abc"} />
-                ) : (
-                  "Iniciar sesión"
-                )}
+                👁️
               </button>
+            </PasswordInputContainer>
 
-              {loginError && typeof loginError === "object" && (
-                <div>
-                  {loginError.usernameOrEmail && (
-                    <div className="error-message" style={{ color: "red" }}>
-                      {loginError.usernameOrEmail}
-                    </div>
-                  )}
-                  {loginError.password && (
-                    <div className="error-message">{loginError.password}</div>
-                  )}
-                </div>
+            <button type="submit" className="form-button" disabled={isLoading}>
+              {isLoading ? (
+                <BeatLoader size={8} color={"#123abc"} />
+              ) : (
+                "Iniciar sesión"
               )}
-
-              {/* Muestra error general si loginError es una cadena */}
-              {loginError && typeof loginError === "string" && (
-                <div className="error-message" style={{ color: "red" }}>
-                  {loginError}
-                </div>
-              )}
-
-              {loginMessage && (
-                <div style={{ color: "green" }}>{loginMessage}</div>
-              )}
-
-              {/* Enlace para restablecer contraseña */}
-              <div className="forgot-password-link">
-                <button
-                  onClick={(event) => handleOpenForgotPasswordModal(event)}
-                  className="link-style-button"
-                >
-                  ¿Olvidaste tu contraseña?
-                </button>
-              </div>
-            </form>
-          </div>
-
-          <div className="sing-up-form form-container">
-            <h1>Regístrate</h1>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSubmitSignUp(username, password, email);
-              }}
-            >
-              <input
-                type="text"
-                placeholder="Usuario"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-              <input
-                type="email"
-                placeholder="Correo"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <PasswordInputContainer>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Contraseña"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <button
-                  onClick={(event) => {
-                    event.preventDefault();
-                    togglePasswordVisibility();
-                  }}
-                >
-                  👁️
-                </button>
-              </PasswordInputContainer>
-              <button
-                type="submit"
-                className="form-button"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <BeatLoader size={8} color={"#123abc"} />
-                ) : (
-                  "Registrarse"
-                )}
-              </button>
-              {typeof loginError === "string" && (
-                <div className="error-message" style={{ color: "red" }}>
-                  {loginError}
-                </div>
-              )}{" "}
-              {loginMessage && (
-                <div style={{ color: "green" }}>{loginMessage}</div>
-              )}
-            </form>
-          </div>
-
-          <div className={`sliding-board ${isSignUp ? "" : "sliding"}`}>
-            <div className="wide-board">
-              <div className={`board sing-in ${isSignUp ? "" : "sliding"}`}>
-                <h1>¡Bienvenide de nuevo!</h1>
-                <p className="p">
-                  Para seguir conectade con nosotros, por favor inicia sesión
-                  con tus datos.
-                </p>
-                <button onClick={handleSignInClick} className="board-button">
-                  Iniciar sesión
-                </button>
-              </div>
-              <div className={`board sing-up ${isSignUp ? "sliding" : ""}`}>
-                <h1>¡Hola!</h1>
-                <p>
-                  Ingresa tus datos personales y comienza tu experiencia con
-                  nosotros.
-                </p>
-                <button onClick={handleSignUpClick} className="board-button">
-                  Regístrate
-                </button>
-              </div>
-            </div>
-            <button
-              onClick={handleModalClose}
-              style={{ position: "absolute", top: 10, right: 10 }}
-            >
-              X
             </button>
-          </div>
+
+            {loginError && typeof loginError === "object" && (
+              <div>
+                {loginError.usernameOrEmail && (
+                  <div className="error-message" style={{ color: "red" }}>
+                    {loginError.usernameOrEmail}
+                  </div>
+                )}
+                {loginError.password && (
+                  <div className="error-message">{loginError.password}</div>
+                )}
+              </div>
+            )}
+
+            {/* Muestra error general si loginError es una cadena */}
+            {loginError && typeof loginError === "string" && (
+              <div className="error-message" style={{ color: "red" }}>
+                {loginError}
+              </div>
+            )}
+
+            {loginMessage && (
+              <div style={{ color: "green" }}>{loginMessage}</div>
+            )}
+
+            {/* Enlace para restablecer contraseña */}
+            <div className="forgot-password-link">
+              <button
+                onClick={(event) => handleOpenForgotPasswordModal(event)}
+                className="link-style-button"
+              >
+                ¿Olvidaste tu contraseña?
+              </button>
+            </div>
+          </form>
         </div>
 
-        {/* Componente ForgotPasswordModal */}
-        {isForgotPasswordModalOpen && (
-          <ForgotPasswordModal
-            onRequestClose={handleCloseForgotPasswordModal}
-          />
-        )}
+        <div className="sing-up-form form-container">
+          <h1>Regístrate</h1>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmitSignUp(username, password, email);
+            }}
+          >
+            <input
+              type="text"
+              placeholder="Usuario"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+            <input
+              type="email"
+              placeholder="Correo"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <PasswordInputContainer>
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Contraseña"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button
+                onClick={(event) => {
+                  event.preventDefault();
+                  togglePasswordVisibility();
+                }}
+              >
+                👁️
+              </button>
+            </PasswordInputContainer>
+            <button type="submit" className="form-button" disabled={isLoading}>
+              {isLoading ? (
+                <BeatLoader size={8} color={"#123abc"} />
+              ) : (
+                "Registrarse"
+              )}
+            </button>
+            {typeof loginError === "string" && (
+              <div className="error-message" style={{ color: "red" }}>
+                {loginError}
+              </div>
+            )}{" "}
+            {loginMessage && (
+              <div style={{ color: "green" }}>{loginMessage}</div>
+            )}
+          </form>
+        </div>
+
+        <div className={`sliding-board ${isSignUp ? "" : "sliding"}`}>
+          <div className="wide-board">
+            <div className={`board sing-in ${isSignUp ? "" : "sliding"}`}>
+              <h1>¡Bienvenide de nuevo!</h1>
+              <p className="p">
+                Para seguir conectade con nosotros, por favor inicia sesión con
+                tus datos.
+              </p>
+              <button onClick={handleSignInClick} className="board-button">
+                Iniciar sesión
+              </button>
+            </div>
+            <div className={`board sing-up ${isSignUp ? "sliding" : ""}`}>
+              <h1>¡Hola!</h1>
+              <p>
+                Ingresa tus datos personales y comienza tu experiencia con
+                nosotros.
+              </p>
+              <button onClick={handleSignUpClick} className="board-button">
+                Regístrate
+              </button>
+            </div>
+          </div>
+          <button
+            onClick={handleModalClose}
+            style={{ position: "absolute", top: 10, right: 10 }}
+          >
+            X
+          </button>
+        </div>
       </div>
-    </motion.div>
+
+      {/* Componente ForgotPasswordModal */}
+      {isForgotPasswordModalOpen && (
+        <ForgotPasswordModal onRequestClose={handleCloseForgotPasswordModal} />
+      )}
+    </div>
   );
 };
 
