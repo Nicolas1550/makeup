@@ -46,9 +46,8 @@ import {
   StyledModal,
   StyledSubmitButton,
 } from "./stylesDisp";
-import {
-  openLoginModal,
-} from "../../../../redux/loginModalSlice/loginModalSlice";
+import { openLoginModal } from "../../../../redux/loginModalSlice/loginModalSlice";
+import CircularProgress from "@mui/material/CircularProgress";
 
 interface OptionType {
   value: string;
@@ -88,6 +87,8 @@ type CursoInfoProps = {
 
 const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
   const dispatch = useAppDispatch();
+  const [cargandoDisponibilidades, setCargandoDisponibilidades] =
+    useState(false);
 
   const disponibilidades = useAppSelector(
     (state) => state.cursos.disponibilidades
@@ -251,7 +252,13 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
         .then(() => {
           toast.success("Estado de la disponibilidad actualizado con éxito");
           // Refrescar la lista de disponibilidades
-          dispatch(fetchDisponibilidades(curso.id));
+          dispatch(
+            fetchDisponibilidades({
+              cursoId: curso.id,
+              estado: "activa", // O el estado que necesites filtrar
+              limite: maxInicialDisponibilidades, // O el límite que desees aplicar
+            })
+          );
         })
         .catch((error) => {
           toast.error(
@@ -357,7 +364,13 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
             "Horarios agregados exitosamente: " + JSON.stringify(horariosResult)
           );
 
-          dispatch(fetchDisponibilidades(curso.id));
+          dispatch(
+            fetchDisponibilidades({
+              cursoId: curso.id,
+              estado: "activa", // O el estado que necesites filtrar
+              limite: maxInicialDisponibilidades, // O el límite que desees aplicar
+            })
+          );
         } else {
           toast.error("Error al crear la disponibilidad");
           logs.push("No se pudo obtener el ID de la disponibilidad agregada");
@@ -395,9 +408,31 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
   console.log("Disponibilidadess en componente:", disponibilidades);
   useEffect(() => {
     if (curso?.id) {
-      dispatch(fetchDisponibilidades(curso.id));
+      // Esta llamada inicial carga las disponibilidades con estado 'activa' y limita los resultados
+      dispatch(
+        fetchDisponibilidades({
+          cursoId: curso.id,
+          estado: "activa",
+          limite: maxInicialDisponibilidades,
+        })
+      );
     }
   }, [curso, dispatch]);
+
+  useEffect(() => {
+    if (curso?.id) {
+      setCargandoDisponibilidades(true);
+      // Aquí también se debe ajustar la llamada
+      dispatch(
+        fetchDisponibilidades({
+          cursoId: curso.id,
+          estado: "activa",
+          limite: maxInicialDisponibilidades,
+        })
+      ).finally(() => setCargandoDisponibilidades(false));
+    }
+  }, [curso, dispatch]);
+
   console.log(nuevaDisponibilidad);
   if (!curso) {
     return (
@@ -557,35 +592,42 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
           )}
         </AnimatePresence>
         <ScrollableContainer>
-          {disponibilidadesActivas
-            .filter((d) => d.curso_id === curso.id)
-            .slice(0, cantidadMostrada)
-            .map((disp) => (
-              <DisponibilidadContainer key={disp.id}>
-                <DisponibilidadInfo>
-                  {`Inicio: ${formatFecha(
-                    disp.fecha_inicio
-                  )} - Fin: ${formatFecha(disp.fecha_fin)}`}
-                </DisponibilidadInfo>
+          {cargandoDisponibilidades ? (
+            <CircularProgress /> // Spinner mostrado durante la carga
+          ) : (
+            disponibilidadesActivas
+              .filter((d) => d.curso_id === curso.id)
+              .slice(0, cantidadMostrada)
+              .map((disp) => (
+                <DisponibilidadContainer key={disp.id}>
+                  <DisponibilidadInfo>
+                    {`Inicio: ${formatFecha(
+                      disp.fecha_inicio
+                    )} - Fin: ${formatFecha(disp.fecha_fin)}`}
+                  </DisponibilidadInfo>
 
-                {/* Muestra los horarios para la disponibilidad */}
-                <HorarioInfo>{formatHorarios(disp.horarios || [])}</HorarioInfo>
+                  <HorarioInfo>
+                    {formatHorarios(disp.horarios || [])}
+                  </HorarioInfo>
 
-                {/* Botón de reserva para la disponibilidad completa (sin seleccionar horario individual) */}
-                <ReservarButton onClick={() => handleOpenReservaModal(disp)}>
-                  Reservar
-                </ReservarButton>
-                {isAuthenticated && userRoles?.includes("admin") && (
-                  <StyledButton
-                    onClick={() =>
-                      handleActualizarEstadoDisponibilidad(disp.id, "inactiva")
-                    } // o "finalizada"
-                  >
-                    Finalizar Disponibilidad
-                  </StyledButton>
-                )}
-              </DisponibilidadContainer>
-            ))}
+                  <ReservarButton onClick={() => handleOpenReservaModal(disp)}>
+                    Reservar
+                  </ReservarButton>
+                  {isAuthenticated && userRoles?.includes("admin") && (
+                    <StyledButton
+                      onClick={() =>
+                        handleActualizarEstadoDisponibilidad(
+                          disp.id,
+                          "inactiva"
+                        )
+                      }
+                    >
+                      Finalizar Disponibilidad
+                    </StyledButton>
+                  )}
+                </DisponibilidadContainer>
+              ))
+          )}
           {disponibilidadesActivas.length > maxInicialDisponibilidades && (
             <VerMasButton onClick={mostrarMasDisponibilidades}>
               {mostrarTodas ? "Ocultar fechas" : "Ver más fechas"}

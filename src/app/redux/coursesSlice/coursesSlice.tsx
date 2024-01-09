@@ -220,7 +220,9 @@ export const fetchTodasLasReservas = createAsyncThunk(
   "cursos/fetchTodasLasReservas",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch(`https://asdasdasd3.onrender.com/api/reservas/todas`);
+      const response = await fetch(
+        `https://asdasdasd3.onrender.com/api/reservas/todas`
+      );
       if (!response.ok) {
         throw new Error("Error al obtener todas las reservas");
       }
@@ -387,29 +389,36 @@ export const agregarHorariosDisponibilidad = createAsyncThunk<
 
 export const fetchDisponibilidades = createAsyncThunk<
   Disponibilidad[],
-  number, // Este es el tipo del argumento, que es el ID del curso
+  { cursoId: number; estado?: string; limite?: number },
   { rejectValue: string }
->("cursos/fetchDisponibilidades", async (cursoId, { rejectWithValue }) => {
-  try {
-    const response = await fetch(
-      `https://asdasdasd3.onrender.com/api/cursos/${cursoId}/disponibilidades`
-    );
-    if (!response.ok) {
-      throw new Error("Error al obtener disponibilidades");
-    }
-    const disponibilidades = await response.json();
-    console.log(
-      "Disponibilidades recibidas en acción Redux:",
-      disponibilidades
-    );
+>(
+  "cursos/fetchDisponibilidades",
+  async ({ cursoId, estado, limite }, { rejectWithValue }) => {
+    try {
+      let url = `https://asdasdasd3.onrender.com/api/cursos/${cursoId}/disponibilidades`;
 
-    return disponibilidades as Disponibilidad[];
-  } catch (error) {
-    return rejectWithValue(
-      error instanceof Error ? error.message : "Error desconocido"
-    );
+      const params = new URLSearchParams();
+      if (estado) {
+        params.append("estado", estado);
+      }
+      if (limite !== undefined) {
+        params.append("limite", limite.toString());
+      }
+
+      const fullUrl = `${url}?${params.toString()}`;
+      const response = await fetch(fullUrl);
+      if (!response.ok) {
+        throw new Error("Error al obtener disponibilidades");
+      }
+      const disponibilidades = await response.json();
+      return disponibilidades;
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Error desconocido"
+      );
+    }
   }
-});
+);
 
 // Agregar disponibilidad a un curso
 
@@ -464,13 +473,16 @@ export const agregarReservaConDatos = createAsyncThunk(
   "cursos/agregarReservaConDatos",
   async (datosReserva: ReservaConHorarios, { rejectWithValue }) => {
     try {
-      const response = await fetch(`https://asdasdasd3.onrender.com/api/reservas`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(datosReserva),
-      });
+      const response = await fetch(
+        `https://asdasdasd3.onrender.com/api/reservas`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(datosReserva),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -498,13 +510,16 @@ export const agregarReserva = createAsyncThunk<
   console.log("Enviando datos de reserva:", datosReserva); // Log para depurar
 
   try {
-    const response = await fetch(`https://asdasdasd3.onrender.com/api/reservas`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(datosReserva),
-    });
+    const response = await fetch(
+      `https://asdasdasd3.onrender.com/api/reservas`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(datosReserva),
+      }
+    );
 
     if (!response.ok) {
       const errorData = await response.json();
