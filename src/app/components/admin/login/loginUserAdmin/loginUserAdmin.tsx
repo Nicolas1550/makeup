@@ -63,7 +63,9 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
   const loginError = useAppSelector(
     (state: RootState) => state.messages.loginError
   );
-
+  const loginErrors = useAppSelector(
+    (state: RootState) => state.messages.loginError
+  );
   const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
     useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -172,7 +174,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
       })
       .catch((error) => {
         if (error.response && error.response.status === 400) {
-          dispatch(setLoginError("Error al registrar el usuario"));
+          dispatch(setLoginError(error.message));
         } else {
           dispatch(
             setLoginError(
@@ -226,12 +228,23 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
               )}
             </button>
 
-            {loginError && (
-              <div className="error-message" style={{ color: "red" }}>
-                {loginError}
+            {loginError && typeof loginError === "object" && (
+              <div>
+                {loginError.usernameOrEmail && (
+                  <div className="error-message">
+                    {loginError.usernameOrEmail}
+                  </div>
+                )}
+                {loginError.password && (
+                  <div className="error-message">{loginError.password}</div>
+                )}
               </div>
             )}
 
+            {/* Muestra error general si loginError es una cadena */}
+            {typeof loginError === "string" && (
+              <div className="error-message">{loginError}</div>
+            )}
             {loginMessage && (
               <div style={{ color: "green" }}>{loginMessage}</div>
             )}
@@ -284,7 +297,6 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
                 👁️
               </button>
             </PasswordInputContainer>
-
             <button type="submit" className="form-button" disabled={isLoading}>
               {isLoading ? (
                 <BeatLoader size={8} color={"#123abc"} />
@@ -292,8 +304,11 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
                 "Registrarse"
               )}
             </button>
-
-            {loginError && <div style={{ color: "red" }}>{loginError}</div>}
+            {typeof loginError === "string" && (
+              <div className="error-message" style={{ color: "red" }}>
+                {loginError}
+              </div>
+            )}{" "}
             {loginMessage && (
               <div style={{ color: "green" }}>{loginMessage}</div>
             )}

@@ -3,16 +3,29 @@ import { registerUser, loginUser } from "../authSlice/authThunks";
 
 interface MessagesState {
   loginMessage: string | null;
-  loginError: string | null;
+  loginError: LoginError | string | null; // Actualiza el tipo aquí
   isLoading: boolean;
+  formError: FormError | string | null;
 }
 
 const initialState: MessagesState = {
+  formError: null,
+
   loginMessage: null,
   loginError: null,
   isLoading: false,
 };
-
+export interface LoginError {
+  usernameOrEmail?: string;
+  password?: string;
+  general?: string; // Para otros errores no específicos de un campo
+}
+export interface FormError {
+  usernameOrEmail?: string;
+  password?: string;
+  general?: string;
+  // Agregar otros campos según sea necesario
+}
 const messagesSlice = createSlice({
   name: "messages",
   initialState,

@@ -97,27 +97,21 @@ export const loginUser = createAsyncThunk(
       };
     } catch (error: unknown) {
       thunkAPI.dispatch(setLoading(false));
-      let errorMessage = "Error al iniciar sesión";
-      if (
-        typeof error === "object" &&
-        error !== null &&
-        "response" in error &&
-        (error as RegisterErrorResponse).response.data.errors
-      ) {
-        const validationErrors = (
-          error as RegisterErrorResponse
-        ).response.data.errors.map((err) => err.msg);
-        errorMessage = validationErrors.join(". ");
-      } else if (
-        typeof error === "object" &&
-        error !== null &&
-        "response" in error &&
-        (error as RegisterErrorResponse).response.data.error
-      ) {
-        errorMessage = (error as RegisterErrorResponse).response.data.error;
+      if (typeof error === "object" && error !== null && "response" in error) {
+        const errors = (error as RegisterErrorResponse).response.data.errors;
+        if (errors && errors.length > 0) {
+          // Suponiendo que los errores no tienen un 'param', sino solo un 'msg'
+          const errorMessage = errors
+            .map((err: { msg: string }) => err.msg)
+            .join(". ");
+          return thunkAPI.rejectWithValue(errorMessage);
+        }
       }
-      console.log("Mensaje de error desde thunk:", errorMessage);
-      return thunkAPI.rejectWithValue(errorMessage);
+
+      const generalErrorMessage =
+        (error as RegisterErrorResponse).response?.data?.error ||
+        "Error al iniciar sesión";
+      return thunkAPI.rejectWithValue({ general: generalErrorMessage });
     }
   }
 );
@@ -137,8 +131,6 @@ export const registerUser = createAsyncThunk(
     } catch (error: unknown) {
       thunkAPI.dispatch(setLoading(false));
 
-      let errorMessage = "";
-
       if (
         typeof error === "object" &&
         error !== null &&
@@ -148,30 +140,13 @@ export const registerUser = createAsyncThunk(
         const validationErrors = (
           error as RegisterErrorResponse
         ).response.data.errors.map((err) => err.msg);
-        errorMessage = validationErrors.join(". ");
-      } else if (
-        typeof error === "object" &&
-        error !== null &&
-        "response" in error &&
-        (error as RegisterErrorResponse).response.data.error
-      ) {
-        const serverErrorMessage = (error as RegisterErrorResponse).response
-          .data.error;
-        if (
-          serverErrorMessage.includes("nombre de usuario ya está registrado")
-        ) {
-          errorMessage = "El nombre ingresado ya existe.";
-        } else if (serverErrorMessage.includes("correo electrónico")) {
-          errorMessage = "El email ingresado ya está en uso.";
-        } else {
-          errorMessage = serverErrorMessage;
-        }
-      } else {
-        errorMessage = "Error al registrarse. Por favor, intente nuevamente.";
+        return thunkAPI.rejectWithValue(validationErrors.join(". "));
       }
 
-      console.log("Mensaje de error desde thunk:", errorMessage);
-      return thunkAPI.rejectWithValue(errorMessage);
+      const generalErrorMessage =
+        (error as RegisterErrorResponse).response?.data?.error ||
+        "Error al registrarse. Por favor, intente nuevamente.";
+      return thunkAPI.rejectWithValue(generalErrorMessage);
     }
   }
 );
