@@ -395,7 +395,14 @@ const CombinedFilterComponent: React.FC = () => {
   return (
     <>
       {isMobile && isButtonVisible && (
-        <HamburgerButton onClick={handleHamburgerButtonClick}>
+        <HamburgerButton
+          onClick={() => {
+            const newState = !isFilterOpen;
+            setIsFilterOpen(newState);
+            // No cambiar isExpanded aquí. Dejar que otros eventos lo manejen.
+            dispatch(setSidebarOpenedByButton(newState));
+          }}
+        >
           {isFilterOpen ? "Ocultar Filtros" : "Mostrar Filtros"}
         </HamburgerButton>
       )}
