@@ -411,9 +411,12 @@ const CombinedFilterComponent: React.FC = () => {
     const isMobileView =
       typeof window !== "undefined" ? window.innerWidth <= 768 : false;
     setIsMobile(isMobileView);
+
+    // Iniciar el sidebar contraído en dispositivos móviles
     setIsExpanded(!isMobileView);
     setIsFilterOpen(!isMobileView);
   }, []);
+
   return (
     <>
       {isMobile && isButtonVisible && (
