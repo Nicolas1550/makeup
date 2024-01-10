@@ -145,13 +145,7 @@ const CombinedFilterComponent: React.FC = () => {
   const selectedMarca = useSelector(
     (state: RootState) => state.filter.selectedMarca
   );
-  const handleHamburgerButtonClick = () => {
-    const newState = !isFilterOpen;
-    setIsFilterOpen(newState);
-    setIsExpanded(newState);
-    setIsSidebarControlledByButton(true); // Indica que el cambio de estado fue por el botón
-    dispatch(setSidebarOpenedByButton(newState));
-  };
+
   const customStyles: StylesConfig = {
     control: (provided, state) => ({
       ...provided,
@@ -252,10 +246,15 @@ const CombinedFilterComponent: React.FC = () => {
 
       const isMobileView = window.innerWidth <= 768;
       setIsMobile(isMobileView);
-      if (isMobileView) {
-        // Mantener cerrado el sidebar al cambiar a vista móvil
-        setIsExpanded(false);
-        setIsFilterOpen(false);
+
+      // Verificar si el elemento activo es un input y estamos en vista móvil
+      if (isMobileView && document.activeElement instanceof HTMLInputElement) {
+        // Si el teclado virtual está abierto, mantener el estado actual del sidebar
+        console.log("Keyboard is open - Keeping current sidebar state");
+      } else {
+        // Si no, ajustar el estado del sidebar según si estamos en vista móvil o no
+        setIsExpanded(!isMobileView);
+        setIsFilterOpen(!isMobileView);
       }
     };
 
@@ -410,7 +409,8 @@ const CombinedFilterComponent: React.FC = () => {
           onClick={() => {
             const newState = !isFilterOpen;
             setIsFilterOpen(newState);
-            setIsExpanded(newState); // El botón controla la expansión
+            setIsExpanded(newState);
+            setIsSidebarControlledByButton(true);
             dispatch(setSidebarOpenedByButton(newState));
           }}
         >
