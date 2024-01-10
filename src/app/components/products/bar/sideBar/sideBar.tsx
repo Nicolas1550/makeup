@@ -407,6 +407,13 @@ const CombinedFilterComponent: React.FC = () => {
       setIsExpanded(true);
     }
   }, [isMobile]);
+  useEffect(() => {
+    const isMobileView =
+      typeof window !== "undefined" ? window.innerWidth <= 768 : false;
+    setIsMobile(isMobileView);
+    setIsExpanded(!isMobileView);
+    setIsFilterOpen(!isMobileView);
+  }, []);
   return (
     <>
       {isMobile && isButtonVisible && (
