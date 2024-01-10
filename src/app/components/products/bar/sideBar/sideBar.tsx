@@ -391,10 +391,12 @@ const CombinedFilterComponent: React.FC = () => {
       {isMobile && isButtonVisible && (
         <HamburgerButton
           onClick={() => {
-            const newState = !isFilterOpen;
-            setIsFilterOpen(newState);
-            setIsExpanded(newState); // El botón controla la expansión
-            dispatch(setSidebarOpenedByButton(newState));
+            if (!inputFocused) {
+              const newState = !isFilterOpen;
+              setIsFilterOpen(newState);
+              setIsExpanded(newState); // El botón controla la expansión
+              dispatch(setSidebarOpenedByButton(newState));
+            }
           }}
         >
           {isFilterOpen ? "Ocultar Filtros" : "Mostrar Filtros"}
