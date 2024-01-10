@@ -107,10 +107,13 @@ const CombinedFilterComponent: React.FC = () => {
   const [isSelectMenuOpen, setIsSelectMenuOpen] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [forceShowScrollbar, setForceShowScrollbar] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isSidebarControlledByButton, setIsSidebarControlledByButton] =
     useState(false);
 
-  const [isFilterOpen, setIsFilterOpen] = useState(window.innerWidth > 768);
+  const [isFilterOpen, setIsFilterOpen] = useState(
+    typeof window !== "undefined" ? window.innerWidth > 768 : false
+  );
 
   const [isMobile, setIsMobile] = useState(false);
   const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
@@ -126,8 +129,9 @@ const CombinedFilterComponent: React.FC = () => {
   const searchTerm = useSelector((state: RootState) => state.filter.searchTerm);
   const priceRange = useSelector((state: RootState) => state.filter.priceRange);
   const [isSticky, setIsSticky] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(window.innerWidth > 768);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const [isExpanded, setIsExpanded] = useState(
+    typeof window !== "undefined" ? window.innerWidth > 768 : false
+  );
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [hasScrolled, setHasScrolled] = useState(false);
   const [menuPortalTarget, setMenuPortalTarget] = useState<HTMLElement | null>(
