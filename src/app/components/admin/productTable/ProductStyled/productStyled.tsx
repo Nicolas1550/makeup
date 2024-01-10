@@ -38,6 +38,7 @@ export const StyledSelect = styled.select`
   }
 `;
 
+
 export const ProductContainer = styled.div`
   margin: 2rem;
   font-family: "Georgia", serif;

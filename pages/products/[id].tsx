@@ -13,12 +13,7 @@ import {
   ImageContainer,
   ProductDetailContainer,
 } from "@/app/components/products/products/styles/stylesTodosLosProductos/productoDetailStyles";
-import {
-  FaTag,
-  FaBox,
-  FaTrademark,
-  FaPalette,
-} from "react-icons/fa";
+import { FaTag, FaBox, FaTrademark, FaPalette } from "react-icons/fa";
 import { useHandleAddToCart } from "@/app/components/products/products/products/cartActions";
 import Image from "next/image";
 import colorName from "color-name-list";
@@ -45,14 +40,18 @@ const getColorFromName = (colorNameInput: string) => {
 const ProductDetail: React.FC<ProductProps> = ({ product }) => {
   const { currentProduct } = useProductSocket(product); // Pasando el producto completo
   const handleAddToCart = useHandleAddToCart();
+  console.log("Current Product:", currentProduct);
 
   if (!currentProduct) {
     // Manejar el caso cuando currentProduct es null
     return <div>Loading...</div>;
   }
+  console.log("Product Color:", currentProduct.color);
 
   const backgroundColor =
-    getColorFromName(currentProduct.color) || currentProduct.color;
+    currentProduct.color && currentProduct.color.toLowerCase() !== "white"
+      ? getColorFromName(currentProduct.color) || currentProduct.color
+      : null;
 
   return (
     <ProductPageContainer>
@@ -101,33 +100,33 @@ const ProductDetail: React.FC<ProductProps> = ({ product }) => {
               <FaBox />
               Stock: {currentProduct.stock}
             </IconText>
-
-            <ColorPreview>
-              <FaPalette size={20} />
-              <div
-                style={{
-                  width: "40px",
-                  height: "40px",
-                  backgroundColor: "white",
-                  border: "1px solid rgba(0, 0, 0, 0.2)",
-                  borderRadius: "8px",
-                  backgroundImage: `linear-gradient(45deg, ${backgroundColor} 50%, white 50%)`,
-                  boxShadow: "3px 3px 8px rgba(0, 0, 0, 0.2)",
-                  transition: "box-shadow 0.2s, transform 0.2s",
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.boxShadow =
-                    "5px 5px 12px rgba(0, 0, 0, 0.25)";
-                  e.currentTarget.style.transform = "translateY(-3px)";
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.boxShadow =
-                    "3px 3px 8px rgba(0, 0, 0, 0.2)";
-                  e.currentTarget.style.transform = "translateY(0)";
-                }}
-              ></div>
-            </ColorPreview>
-
+            {backgroundColor && (
+              <ColorPreview>
+                <FaPalette size={20} />
+                <div
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                    backgroundColor: "white",
+                    border: "1px solid rgba(0, 0, 0, 0.2)",
+                    borderRadius: "8px",
+                    backgroundImage: `linear-gradient(45deg, ${backgroundColor} 50%, white 50%)`,
+                    boxShadow: "3px 3px 8px rgba(0, 0, 0, 0.2)",
+                    transition: "box-shadow 0.2s, transform 0.2s",
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.boxShadow =
+                      "5px 5px 12px rgba(0, 0, 0, 0.25)";
+                    e.currentTarget.style.transform = "translateY(-3px)";
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.boxShadow =
+                      "3px 3px 8px rgba(0, 0, 0, 0.2)";
+                    e.currentTarget.style.transform = "translateY(0)";
+                  }}
+                ></div>
+              </ColorPreview>
+            )}
             <DescriptionContainer>
               <DescriptionHeader>Descripción</DescriptionHeader>
               <DescriptionText>{currentProduct.descripcion}</DescriptionText>

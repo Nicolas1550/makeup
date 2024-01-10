@@ -66,18 +66,21 @@ const ProductTable: React.FC<ProductTableProps> = ({}) => {
   };
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
-    if (name === "categoria" && updatedProduct && CATEGORIAS.includes(value)) {
-      setUpdatedProduct({
-        ...updatedProduct,
-        categoria: value,
-      });
-      console.log("Producto actualizado en componente:", updatedProduct);
+    if (updatedProduct) {
+      // Actualiza solo si el valor no está vacío
+      if (value !== "") {
+        setUpdatedProduct({
+          ...updatedProduct,
+          [name]: value,
+        });
+      }
     }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (updatedProduct) {
+      // Asigna el valor directamente, incluso si es una cadena vacía
       setUpdatedProduct({
         ...updatedProduct,
         [name]: value,
@@ -89,12 +92,11 @@ const ProductTable: React.FC<ProductTableProps> = ({}) => {
     if (updatedProduct) {
       const formData = new FormData();
       Object.entries(updatedProduct).forEach(([key, value]) => {
-        if (value !== undefined) {
-          if (key === "imagen_url" && value instanceof File) {
-            formData.append("imagen", value, value.name); // Coincide con 'upload.single('imagen')' en el backend
-          } else {
-            formData.append(key, String(value));
-          }
+        if (value !== undefined && value !== "") {
+          formData.append(key, String(value));
+        } else if (value === "" && key === "color") {
+          // Si el campo 'color' es una cadena vacía, lo convierte en undefined
+          formData.append(key, "undefined");
         }
       });
       console.log("Producto que se enviará al backend:", updatedProduct);
@@ -254,9 +256,8 @@ const ProductTable: React.FC<ProductTableProps> = ({}) => {
                     value={updatedProduct?.categoria || ""}
                     onChange={handleSelectChange}
                   >
-                    <option value="" disabled>
-                      Selecciona una categoría
-                    </option>
+                    <option value="">Sin categoría</option>{" "}
+                    {/* Opción para no seleccionar categoría */}
                     {CATEGORIAS.map((categoria) => (
                       <option key={categoria} value={categoria}>
                         {categoria}
@@ -264,7 +265,7 @@ const ProductTable: React.FC<ProductTableProps> = ({}) => {
                     ))}
                   </StyledSelect>
                 ) : (
-                  product.categoria
+                  product.categoria || "Sin categoría" // Muestra "Sin categoría" si no hay una definida
                 )}
               </td>
               <td>
@@ -282,13 +283,14 @@ const ProductTable: React.FC<ProductTableProps> = ({}) => {
                 {editingId === product.id ? (
                   <StyledInput
                     name="color"
-                    value={updatedProduct?.color}
+                    value={updatedProduct?.color || ""}
                     onChange={handleInputChange}
                   />
                 ) : (
-                  product.color
+                  product.color || "No definido" // Muestra "No definido" si color es undefined
                 )}
               </td>
+
               <td>
                 {editingId === product.id ? (
                   <StyledInput

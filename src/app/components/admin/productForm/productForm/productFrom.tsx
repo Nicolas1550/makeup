@@ -34,7 +34,7 @@ interface FormData {
   imagen_url: string | File; // <-- Modificación aquí
   marca: string;
   color: string;
-  categoria: string;
+  categoria: string | null; // Permitir tanto string como null
 }
 
 const ProductForm: React.FC = () => {
@@ -46,7 +46,7 @@ const ProductForm: React.FC = () => {
     imagen_url: "",
     marca: "",
     color: "",
-    categoria: "",
+    categoria: null, // Cambio de '' a null
   });
 
   const dispatch = useAppDispatch();
@@ -70,18 +70,26 @@ const ProductForm: React.FC = () => {
     }
   }, [error, dispatch]);
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value =
-      e.target.name === "precio" || e.target.name === "stock"
-        ? parseFloat(e.target.value)
-        : e.target.value;
-    setFormData({
-      ...formData,
-      [e.target.name]: value,
-    });
+    const { name, value } = e.target;
+
+    if (name === "precio" || name === "stock") {
+      const numValue = parseFloat(value);
+      setFormData({
+        ...formData,
+        [name]: numValue,
+      });
+    } else {
+      // Solo actualiza formData si el valor no es una cadena vacía
+      if (value.trim() !== "") {
+        setFormData({
+          ...formData,
+          [name]: value,
+        });
+      }
+    }
   };
   const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
-    console.log(`Categoría seleccionada: ${value}`); // Agregar esto
+    const value = e.target.value === "" ? null : e.target.value; // Maneja la no selección
     setFormData({
       ...formData,
       [e.target.name]: value,
@@ -98,12 +106,19 @@ const ProductForm: React.FC = () => {
     }
   };
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    const adaptedFormData = {
+      ...formData,
+      categoria: formData.categoria || undefined, // Convertir null a undefined
+      color: formData.color || undefined, // Convertir cadena vacía a undefined
+    };
+    console.log("Form data before submitting:", adaptedFormData);
+
     e.preventDefault();
     console.log("Form data before submitting:", formData); // Agregar este log
     dispatch(setLoading(true));
     dispatch(setMessage(null));
     dispatch(setError(null));
-    dispatch(apiAddProduct(formData));
+    dispatch(apiAddProduct(adaptedFormData));
   };
 
   return (
@@ -183,7 +198,6 @@ const ProductForm: React.FC = () => {
               name="color"
               placeholder="Ejemplo: Rojo carmesí"
               onChange={handleChange}
-              required
             />
           </StyledDiv>
 
@@ -191,13 +205,11 @@ const ProductForm: React.FC = () => {
             <StyledLabel>Categoría:</StyledLabel>
             <StyledSelect
               name="categoria"
-              value={formData.categoria}
+              value={formData.categoria || ""} // Maneja el valor null
               onChange={handleSelectChange}
-              required
             >
-              <option value="" disabled>
-                -- Selecciona una categoría --
-              </option>
+              <option value="">Sin categoría</option>{" "}
+              {/* Opción para no seleccionar categoría */}
               {CATEGORIAS.map((categoria) => (
                 <option key={categoria} value={categoria}>
                   {categoria}

@@ -248,6 +248,8 @@ const CombinedFilterComponent: React.FC = () => {
 
   useEffect(() => {
     const handleResize = () => {
+      console.log("handleResize called");
+
       const isMobileView = window.innerWidth <= 768;
       setIsMobile(isMobileView);
       if (isMobileView) {
@@ -274,30 +276,35 @@ const CombinedFilterComponent: React.FC = () => {
   }, [isFilterOpen]);
   useEffect(() => {
     const checkIfMobile = () => setIsMobile(window.innerWidth <= 768);
+    console.log("checkIfMobile called");
+
     checkIfMobile();
 
     window.addEventListener("resize", checkIfMobile);
     return () => window.removeEventListener("resize", checkIfMobile);
   }, []);
   const handleScroll = useCallback(() => {
+    console.log("handleScroll called");
+
     const currentScrollY = window.scrollY;
     setIsButtonVisible(currentScrollY > 200);
     setScrollY(currentScrollY);
     setIsSticky(currentScrollY > 150);
 
+    // Solo modificar isExpanded en escritorio
     if (!isMobile) {
       setIsExpanded(currentScrollY === 0);
-    } else if (!isSidebarControlledByButton) {
-      // Si el sidebar no está siendo controlado por el botón, entonces permite su contracción
-      setIsExpanded(currentScrollY === 0);
     }
-  }, [isMobile, isSidebarControlledByButton]);
+  }, [isMobile]);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [handleScroll]);
+  }, [handleScroll, isMobile]);
+
   const updateSidebarState = useCallback(() => {
+    console.log("updateSidebarState called");
+
     const atTop = window.scrollY === 0;
 
     if (isMobile) {
@@ -391,7 +398,11 @@ const CombinedFilterComponent: React.FC = () => {
       }
     }
   };
-
+  useEffect(() => {
+    if (isMobile) {
+      setIsExpanded(true);
+    }
+  }, [isMobile]);
   return (
     <>
       {isMobile && isButtonVisible && (
@@ -399,7 +410,7 @@ const CombinedFilterComponent: React.FC = () => {
           onClick={() => {
             const newState = !isFilterOpen;
             setIsFilterOpen(newState);
-            // No cambiar isExpanded aquí. Dejar que otros eventos lo manejen.
+            setIsExpanded(newState); // El botón controla la expansión
             dispatch(setSidebarOpenedByButton(newState));
           }}
         >

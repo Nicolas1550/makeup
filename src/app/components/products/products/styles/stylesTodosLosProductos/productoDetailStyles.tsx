@@ -8,11 +8,17 @@ const breakpoints = {
 const darkPink = "#c06c84";
 
 export const CenteredContainer = styled.div`
+  position: relative;
   display: flex;
   justify-content: center;
+  margin-top: 5rem;
+  padding: 8rem;
   align-items: center;
-  height: 100vh;
-  background: linear-gradient(to bottom, #fff7e6, #ffdab3, #FFF7E6);
+  height: auto;
+  background: linear-gradient(to bottom, #fff7e6, #ffdab3, #fff7e6);
+  @media only screen and (max-width: ${breakpoints.tablet}) {
+    padding: 2rem;
+  }
 `;
 
 export const ProductDetailContainer = styled.div`
@@ -24,8 +30,8 @@ export const ProductDetailContainer = styled.div`
   padding: 50px;
   border-radius: 20px;
   box-shadow: 0 5px 20px rgba(192, 108, 132, 0.1); // Sombra más sutil
-  max-width: 1000px;
-  width: 90%;
+  max-width: 110%;
+  width: 110%;
 
   @media only screen and (max-width: ${breakpoints.tablet}) {
     flex-direction: column;
