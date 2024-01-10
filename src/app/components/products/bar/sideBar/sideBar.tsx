@@ -146,10 +146,11 @@ const CombinedFilterComponent: React.FC = () => {
     (state: RootState) => state.filter.selectedMarca
   );
   // Estados para almacenar las dimensiones de la ventana
-  const [windowSize, setWindowSize] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  });
+  const [windowSize, setWindowSize] = useState<{
+    width: number | undefined;
+    height: number | undefined;
+  }>({ width: undefined, height: undefined });
+
   const handleInputFocus = () => setInputFocused(true);
   const handleInputBlur = () => setInputFocused(false);
   const customStyles: StylesConfig = {
@@ -247,29 +248,32 @@ const CombinedFilterComponent: React.FC = () => {
   };
 
   useEffect(() => {
+    // Esta función solo se ejecutará en el cliente
     const handleResize = () => {
-      // Obtener las nuevas dimensiones de la ventana
-      const newWidth = window.innerWidth;
-      const newHeight = window.innerHeight;
+      if (typeof window !== "undefined") {
+        const newWidth = window.innerWidth;
+        const newHeight = window.innerHeight;
 
-      // Verificar si el cambio es principalmente en la altura (probablemente teclado)
-      if (newWidth === windowSize.width && newHeight !== windowSize.height) {
-        // Probablemente es el teclado, no ajustar el estado del sidebar
-      } else {
-        // Otro tipo de cambio de tamaño (como cambio de orientación), ajustar el estado
-        const isMobileView = newWidth <= 768;
-        setIsMobile(isMobileView);
-        if (isMobileView) {
-          setIsExpanded(false);
-          setIsFilterOpen(false);
+        // Verificar si el cambio es principalmente en la altura (probablemente teclado)
+        if (newWidth === windowSize.width && newHeight !== windowSize.height) {
+          // Probablemente es el teclado, no ajustar el estado del sidebar
+        } else {
+          // Otro tipo de cambio de tamaño (como cambio de orientación), ajustar el estado
+          const isMobileView = newWidth <= 768;
+          setIsMobile(isMobileView);
+          if (isMobileView) {
+            setIsExpanded(false);
+            setIsFilterOpen(false);
+          }
         }
-      }
 
-      // Actualizar el estado con las nuevas dimensiones
-      setWindowSize({ width: newWidth, height: newHeight });
+        // Actualizar el estado con las nuevas dimensiones
+        setWindowSize({ width: newWidth, height: newHeight });
+      }
     };
 
     window.addEventListener("resize", handleResize);
+    handleResize(); // Establecer tamaño inicial
     return () => window.removeEventListener("resize", handleResize);
   }, [windowSize]);
 
