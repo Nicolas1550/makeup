@@ -145,6 +145,11 @@ const CombinedFilterComponent: React.FC = () => {
   const selectedMarca = useSelector(
     (state: RootState) => state.filter.selectedMarca
   );
+  // Estados para almacenar las dimensiones de la ventana
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
   const handleInputFocus = () => setInputFocused(true);
   const handleInputBlur = () => setInputFocused(false);
   const customStyles: StylesConfig = {
@@ -243,18 +248,30 @@ const CombinedFilterComponent: React.FC = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      const isMobileView = window.innerWidth <= 768;
-      setIsMobile(isMobileView);
-      if (isMobileView) {
-        // Mantener cerrado el sidebar al cambiar a vista móvil
-        setIsExpanded(false);
-        setIsFilterOpen(false);
+      // Obtener las nuevas dimensiones de la ventana
+      const newWidth = window.innerWidth;
+      const newHeight = window.innerHeight;
+
+      // Verificar si el cambio es principalmente en la altura (probablemente teclado)
+      if (newWidth === windowSize.width && newHeight !== windowSize.height) {
+        // Probablemente es el teclado, no ajustar el estado del sidebar
+      } else {
+        // Otro tipo de cambio de tamaño (como cambio de orientación), ajustar el estado
+        const isMobileView = newWidth <= 768;
+        setIsMobile(isMobileView);
+        if (isMobileView) {
+          setIsExpanded(false);
+          setIsFilterOpen(false);
+        }
       }
+
+      // Actualizar el estado con las nuevas dimensiones
+      setWindowSize({ width: newWidth, height: newHeight });
     };
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [windowSize]);
 
   useEffect(() => {
     if (isFilterOpen) {
