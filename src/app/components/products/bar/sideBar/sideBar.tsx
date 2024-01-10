@@ -107,11 +107,11 @@ const CombinedFilterComponent: React.FC = () => {
   const [isSelectMenuOpen, setIsSelectMenuOpen] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [forceShowScrollbar, setForceShowScrollbar] = useState(false);
+  const [isSidebarControlledByButton, setIsSidebarControlledByButton] =
+    useState(false);
 
   const [isFilterOpen, setIsFilterOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
-  const [inputFocused, setInputFocused] = useState(false); // Nuevo estado para rastrear si un input tiene el foco
-
   const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
   const toggleSubMenu = () => {
     setIsSubMenuOpen(!isSubMenuOpen);
@@ -145,14 +145,13 @@ const CombinedFilterComponent: React.FC = () => {
   const selectedMarca = useSelector(
     (state: RootState) => state.filter.selectedMarca
   );
-  // Estados para almacenar las dimensiones de la ventana
-  const [windowSize, setWindowSize] = useState<{
-    width: number | undefined;
-    height: number | undefined;
-  }>({ width: undefined, height: undefined });
-
-  const handleInputFocus = () => setInputFocused(true);
-  const handleInputBlur = () => setInputFocused(false);
+  const handleHamburgerButtonClick = () => {
+    const newState = !isFilterOpen;
+    setIsFilterOpen(newState);
+    setIsExpanded(newState);
+    setIsSidebarControlledByButton(true); // Indica que el cambio de estado fue por el botón
+    dispatch(setSidebarOpenedByButton(newState));
+  };
   const customStyles: StylesConfig = {
     control: (provided, state) => ({
       ...provided,
@@ -248,34 +247,19 @@ const CombinedFilterComponent: React.FC = () => {
   };
 
   useEffect(() => {
-    // Esta función solo se ejecutará en el cliente
     const handleResize = () => {
-      if (typeof window !== "undefined") {
-        const newWidth = window.innerWidth;
-        const newHeight = window.innerHeight;
-
-        // Verificar si el cambio es principalmente en la altura (probablemente teclado)
-        if (newWidth === windowSize.width && newHeight !== windowSize.height) {
-          // Probablemente es el teclado, no ajustar el estado del sidebar
-        } else {
-          // Otro tipo de cambio de tamaño (como cambio de orientación), ajustar el estado
-          const isMobileView = newWidth <= 768;
-          setIsMobile(isMobileView);
-          if (isMobileView) {
-            setIsExpanded(false);
-            setIsFilterOpen(false);
-          }
-        }
-
-        // Actualizar el estado con las nuevas dimensiones
-        setWindowSize({ width: newWidth, height: newHeight });
+      const isMobileView = window.innerWidth <= 768;
+      setIsMobile(isMobileView);
+      if (isMobileView) {
+        // Mantener cerrado el sidebar al cambiar a vista móvil
+        setIsExpanded(false);
+        setIsFilterOpen(false);
       }
     };
 
     window.addEventListener("resize", handleResize);
-    handleResize(); // Establecer tamaño inicial
     return () => window.removeEventListener("resize", handleResize);
-  }, [windowSize]);
+  }, []);
 
   useEffect(() => {
     if (isFilterOpen) {
@@ -301,17 +285,18 @@ const CombinedFilterComponent: React.FC = () => {
     setScrollY(currentScrollY);
     setIsSticky(currentScrollY > 150);
 
-    // Solo modificar isExpanded en escritorio y cuando ningún input está enfocado
-    if (!isMobile && !inputFocused) {
+    if (!isMobile) {
+      setIsExpanded(currentScrollY === 0);
+    } else if (!isSidebarControlledByButton) {
+      // Si el sidebar no está siendo controlado por el botón, entonces permite su contracción
       setIsExpanded(currentScrollY === 0);
     }
-  }, [isMobile, inputFocused]); // Asegúrate de incluir inputFocused en las dependencias del useCallback
+  }, [isMobile, isSidebarControlledByButton]);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [handleScroll, isMobile]);
-
+  }, [handleScroll]);
   const updateSidebarState = useCallback(() => {
     const atTop = window.scrollY === 0;
 
@@ -410,16 +395,7 @@ const CombinedFilterComponent: React.FC = () => {
   return (
     <>
       {isMobile && isButtonVisible && (
-        <HamburgerButton
-          onClick={() => {
-            if (!inputFocused) {
-              const newState = !isFilterOpen;
-              setIsFilterOpen(newState);
-              setIsExpanded(newState); // El botón controla la expansión
-              dispatch(setSidebarOpenedByButton(newState));
-            }
-          }}
-        >
+        <HamburgerButton onClick={handleHamburgerButtonClick}>
           {isFilterOpen ? "Ocultar Filtros" : "Mostrar Filtros"}
         </HamburgerButton>
       )}
@@ -458,8 +434,6 @@ const CombinedFilterComponent: React.FC = () => {
                 value={localSearchTerm}
                 onChange={handleSearchInputChange}
                 placeholder="Buscar productos..."
-                onFocus={handleInputFocus} // Agregar para manejar el foco
-                onBlur={handleInputBlur} // Agregar para manejar la pérdida del foco
               />
             </div>
 
@@ -485,8 +459,6 @@ const CombinedFilterComponent: React.FC = () => {
                     MenuList: CustomMenuList, // Usar el componente personalizado
                     Option: CustomOption, // Opcional, si tienes un componente de opción personalizado
                   }}
-                  onFocus={handleInputFocus} // Agregar para manejar el foco en Select
-                  onBlur={handleInputBlur} // Agregar para manejar la pérdida del foco en Select
                 />
               )}
             </FilterSectionItem>
@@ -513,8 +485,6 @@ const CombinedFilterComponent: React.FC = () => {
                     MenuList: CustomMenuList, // Usar el componente personalizado
                     Option: CustomOption, // Opcional, si tienes un componente de opción personalizado
                   }}
-                  onFocus={handleInputFocus} // Agregar para manejar el foco en Select
-                  onBlur={handleInputBlur} // Agregar para manejar la pérdida del foco en Select
                 />
               )}
             </FilterSectionItem>
