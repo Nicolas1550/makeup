@@ -129,9 +129,7 @@ const CombinedFilterComponent: React.FC = () => {
   const searchTerm = useSelector((state: RootState) => state.filter.searchTerm);
   const priceRange = useSelector((state: RootState) => state.filter.priceRange);
   const [isSticky, setIsSticky] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(
-    typeof window !== "undefined" ? window.innerWidth > 768 : false
-  );
+  const [isExpanded, setIsExpanded] = useState(typeof window !== 'undefined' ? window.innerWidth > 768 : false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [hasScrolled, setHasScrolled] = useState(false);
   const [menuPortalTarget, setMenuPortalTarget] = useState<HTMLElement | null>(
@@ -256,8 +254,6 @@ const CombinedFilterComponent: React.FC = () => {
         console.log("Keyboard is open - Keeping current sidebar state");
       } else {
         // Ajustar el estado basado en si estamos en vista móvil o no
-        setIsMobile(isMobileView);
-
         setIsExpanded(!isMobileView);
         setIsFilterOpen(!isMobileView);
       }
@@ -409,16 +405,6 @@ const CombinedFilterComponent: React.FC = () => {
       setIsExpanded(true);
     }
   }, [isMobile]);
-  useEffect(() => {
-    const isMobileView =
-      typeof window !== "undefined" ? window.innerWidth <= 768 : false;
-    setIsMobile(isMobileView);
-
-    // Iniciar el sidebar contraído en dispositivos móviles
-    setIsExpanded(!isMobileView);
-    setIsFilterOpen(!isMobileView);
-  }, []);
-
   return (
     <>
       {isMobile && isButtonVisible && (
