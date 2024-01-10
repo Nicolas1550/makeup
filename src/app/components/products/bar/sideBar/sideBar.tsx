@@ -256,6 +256,8 @@ const CombinedFilterComponent: React.FC = () => {
         console.log("Keyboard is open - Keeping current sidebar state");
       } else {
         // Ajustar el estado basado en si estamos en vista móvil o no
+        setIsMobile(isMobileView);
+
         setIsExpanded(!isMobileView);
         setIsFilterOpen(!isMobileView);
       }
