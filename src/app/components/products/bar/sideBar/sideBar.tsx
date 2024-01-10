@@ -110,7 +110,8 @@ const CombinedFilterComponent: React.FC = () => {
   const [isSidebarControlledByButton, setIsSidebarControlledByButton] =
     useState(false);
 
-  const [isFilterOpen, setIsFilterOpen] = useState(true);
+  const [isFilterOpen, setIsFilterOpen] = useState(window.innerWidth > 768);
+
   const [isMobile, setIsMobile] = useState(false);
   const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
   const toggleSubMenu = () => {
@@ -125,7 +126,7 @@ const CombinedFilterComponent: React.FC = () => {
   const searchTerm = useSelector((state: RootState) => state.filter.searchTerm);
   const priceRange = useSelector((state: RootState) => state.filter.priceRange);
   const [isSticky, setIsSticky] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(true); // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [isExpanded, setIsExpanded] = useState(window.innerWidth > 768);
   const [lastScrollY, setLastScrollY] = useState(0);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [hasScrolled, setHasScrolled] = useState(false);
@@ -243,21 +244,21 @@ const CombinedFilterComponent: React.FC = () => {
   useEffect(() => {
     const handleResize = () => {
       console.log("handleResize called");
-
       const isMobileView = window.innerWidth <= 768;
       setIsMobile(isMobileView);
 
-      // Verificar si el elemento activo es un input y estamos en vista móvil
+      // Si estamos en vista móvil y el teclado virtual está abierto, mantener el estado
       if (isMobileView && document.activeElement instanceof HTMLInputElement) {
-        // Si el teclado virtual está abierto, mantener el estado actual del sidebar
         console.log("Keyboard is open - Keeping current sidebar state");
       } else {
-        // Si no, ajustar el estado del sidebar según si estamos en vista móvil o no
+        // Ajustar el estado basado en si estamos en vista móvil o no
         setIsExpanded(!isMobileView);
         setIsFilterOpen(!isMobileView);
       }
     };
 
+    // Ejecutar inmediatamente para establecer el estado inicial basado en el ancho de la ventana
+    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
