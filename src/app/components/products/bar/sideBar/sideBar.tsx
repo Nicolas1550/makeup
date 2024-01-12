@@ -186,11 +186,15 @@ const CombinedFilterComponent: React.FC = () => {
       maxHeight: "150px",
       overflowY: "auto",
       zIndex: 9999,
+      borderRadius: "25px",
+
     }),
     menuPortal: (base) => ({
       ...base,
       zIndex: 9999,
       marginTop: "0px", // Ajustar si es necesario para cerrar la brecha
+      borderRadius: "25px",
+
     }),
     option: (provided, state) => ({
       ...provided,
@@ -199,15 +203,19 @@ const CombinedFilterComponent: React.FC = () => {
       borderRadius: "20px",
       backgroundColor: state.isFocused ? "rgba(255, 105, 180, 0.2)" : "rosa", // 'rosa' debería ser un color en formato válido
       color: state.isFocused ? "white" : "black", // Cambia el color del texto al pasar el ratón
+      
       "&:hover": {
         backgroundColor: "#FFC1DC",
         color: "white",
+
       },
     }),
     menuList: (provided) => ({
       ...provided,
       maxHeight: "150px", // Elimina cualquier límite en la altura
       overflowY: "visible", // Oculta el scroll vertical
+      borderRadius: "25px",
+
     }),
   };
 
