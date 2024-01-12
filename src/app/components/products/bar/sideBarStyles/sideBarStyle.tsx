@@ -362,10 +362,6 @@ const breakpoints = {
 import { createGlobalStyle } from "styled-components";
 export const GlobalRangeStyles = createGlobalStyle`
 
-/* .css-1n6sfyn-MenuList {
-  max-height: none; /* Elimina cualquier límite en la altura */
-  overflow-y: hidden; /* Oculta el scroll vertical */
-} */
 
 
 .hamburger-icon {

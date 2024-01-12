@@ -177,24 +177,24 @@ const CombinedFilterComponent: React.FC = () => {
       "&:hover": {
         borderColor: state.isFocused ? "#FF59B4" : provided.borderColor,
       },
-      marginTop: 5, // Ajustar el margen superior del menú para reducir el espacio
+      marginTop: 0, // Ajustar el margen superior del menú para reducir el espacio
     }),
     menu: (provided) => ({
       ...provided,
       position: "absolute",
       width: "100%",
-      maxHeight: "200px",
+      maxHeight: "150px",
       overflowY: "auto",
       zIndex: 9999,
     }),
     menuPortal: (base) => ({
       ...base,
       zIndex: 9999,
-      marginTop: "-7px", // Ajustar si es necesario para cerrar la brecha
+      marginTop: "0px", // Ajustar si es necesario para cerrar la brecha
     }),
     option: (provided, state) => ({
       ...provided,
-      maxHeight: "350px",
+      maxHeight: "150px",
       overflowY: "auto",
       borderRadius: "20px",
       backgroundColor: state.isFocused ? "rgba(255, 105, 180, 0.2)" : "rosa", // 'rosa' debería ser un color en formato válido
@@ -206,8 +206,8 @@ const CombinedFilterComponent: React.FC = () => {
     }),
     menuList: (provided) => ({
       ...provided,
-      maxHeight: "none", // Elimina cualquier límite en la altura
-      overflowY: "hidden", // Oculta el scroll vertical
+      maxHeight: "150px", // Elimina cualquier límite en la altura
+      overflowY: "visible", // Oculta el scroll vertical
     }),
   };
 
@@ -506,7 +506,9 @@ const CombinedFilterComponent: React.FC = () => {
                   menuPortalTarget={menuPortalTarget}
                   placeholder="Selecciona un color"
                   components={{
+                    MenuList: CustomMenuList, // Usar el componente personalizado
                     Option: CustomOption, // Opcional, si tienes un componente de opción personalizado
+                    
                   }}
                 />
               )}
