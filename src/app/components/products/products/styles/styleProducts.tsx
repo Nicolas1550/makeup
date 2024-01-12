@@ -21,7 +21,7 @@ export const ProductName = styled.h3`
     color: ${colors.secondary};
   }
 
-  @media only screen and (max-width: ${breakpoints.tablet}) {
+  @media only screen and (max-width: 1300px) {
     font-size: 1.3em;
   }
 
@@ -48,7 +48,7 @@ export const ProductImage = styled.img`
     box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.1);
   }
 
-  @media only screen and (max-width: ${breakpoints.tablet}) {
+  @media only screen and {
     width: 130px;
     height: 130px;
   }
@@ -89,7 +89,7 @@ export const ProductDescription = styled.p`
   max-width: 100%; // Esto garantizará que los puntos suspensivos se muestren si el texto es demasiado largo
   margin: 0.5rem 0 1rem 0; // Ajustar márgenes para un espaciado uniforme
 
-  @media only screen and (max-width: ${breakpoints.tablet}) {
+  @media only screen and {
     font-size: 0.85em;
   }
 
@@ -109,7 +109,7 @@ export const ProductColor = styled.p`
     color: ${colors.primary};
   }
 
-  @media only screen and (max-width: ${breakpoints.tablet}) {
+  @media only screen and {
     font-size: 0.9em;
   }
 `;
@@ -122,7 +122,7 @@ export const ProductBrand = styled.p`
   letter-spacing: 1.2px;
   transition: transform 0.3s ease-in-out;
 
-  @media only screen and (max-width: ${breakpoints.tablet}) {
+  @media only screen and (max-width: 1300px) {
     font-size: 0.8em;
   }
 `;
@@ -172,7 +172,7 @@ export const ProductCardContainer = styled(motion.div)`
   justify-content: space-between;
   cursor: pointer;
   overflow: hidden; // Para mantener cualquier efecto interno
-  @media only screen and (max-width: ${breakpoints.tablet}) {
+  @media only screen and (max-width: 1300px) {
     width: 240px;
     min-height: 380px;
   }
@@ -225,7 +225,7 @@ export const AddToCartButton = styled.button`
       ${colors.secondary},
       ${colors.primary}
     ); // Invertir gradiente
-    transform: translateY(-15px) scale(1.10) rotate(2deg); // Efecto hover con rotación
+    transform: translateY(-15px) scale(1.1) rotate(2deg); // Efecto hover con rotación
     box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
   }
   @media only screen and (max-width: ${breakpoints.mobile}) {
