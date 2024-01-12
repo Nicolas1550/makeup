@@ -32,7 +32,7 @@ const BackgroundImage = styled(motion.img)`
 const Title = styled(motion.h1)`
   position: absolute;
   color: #fff0f5 !important; // Color del texto para contraste con la imagen
-  font-size: 2.5rem; // Tamaño del título
+  font-size: 3.5rem; // Tamaño del título
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6); // Sombra para mejorar legibilidad
   text-align: center; // Alineación del texto
   padding: 0 20px; // Espaciado para evitar que el texto toque los bordes en pantallas pequeñas

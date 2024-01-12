@@ -21,7 +21,7 @@ const ProductContainerBase = styled.div`
   align-items: center;
   gap: 20px;
   padding: 20px;
-  margin: 0 auto;
+  margin: 20px auto;
   max-width: 1200px;
   border-radius: 10px;
   width: 100%;
