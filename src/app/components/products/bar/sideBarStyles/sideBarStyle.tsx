@@ -86,7 +86,7 @@ export const FilterSection = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin: 0 15px;
+    margin: 0 105px;
 
     label {
       margin-bottom: 10px;
@@ -362,9 +362,11 @@ const breakpoints = {
 import { createGlobalStyle } from "styled-components";
 export const GlobalRangeStyles = createGlobalStyle`
 
-.css-1n6sfyn-MenuList {
-  overflow: hidden !important; /* Oculta la barra de desplazamiento */
-}
+/* .css-1n6sfyn-MenuList {
+  max-height: none; /* Elimina cualquier límite en la altura */
+  overflow-y: hidden; /* Oculta el scroll vertical */
+} */
+
 
 .hamburger-icon {
   position: fixed;

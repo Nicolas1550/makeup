@@ -258,7 +258,7 @@ const Products: React.FC<{
 
   useEffect(() => {
     const handleScroll = () => {
-      if (loading || !hasMoreProducts) return;
+      if (loading || !hasMoreProducts) return; // Evita cargar más productos si ya se cargaron todos o si está cargando
       const lastProductLoaded = document.querySelector(
         ".product-card:last-child"
       ) as HTMLElement;

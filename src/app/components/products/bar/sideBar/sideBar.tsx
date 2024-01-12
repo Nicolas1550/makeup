@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  CSSProperties,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaRegSmile, FaRegEye } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
@@ -51,16 +57,24 @@ const CustomMenuList = <
 >(
   props: MenuListProps<Option, IsMulti, Group>
 ) => {
+  // Definir estilos con el tipo CSSProperties
+  const menuListContainerStyles: CSSProperties = {
+    maxHeight: "190px",
+    overflowY: "auto" as const, // 'as const' ayuda a TypeScript a inferir el valor literal correcto
+  };
+
   return (
-    <motion.div
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      variants={menuAnimation}
-      transition={{ duration: 0.3 }}
-    >
-      <components.MenuList {...props} />
-    </motion.div>
+    <div style={menuListContainerStyles}>
+      <motion.div
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        variants={menuAnimation}
+        transition={{ duration: 0.3 }}
+      >
+        <components.MenuList {...props} />
+      </motion.div>
+    </div>
   );
 };
 
@@ -129,7 +143,9 @@ const CombinedFilterComponent: React.FC = () => {
   const searchTerm = useSelector((state: RootState) => state.filter.searchTerm);
   const priceRange = useSelector((state: RootState) => state.filter.priceRange);
   const [isSticky, setIsSticky] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(typeof window !== 'undefined' ? window.innerWidth > 768 : false);
+  const [isExpanded, setIsExpanded] = useState(
+    typeof window !== "undefined" ? window.innerWidth > 768 : false
+  );
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [hasScrolled, setHasScrolled] = useState(false);
   const [menuPortalTarget, setMenuPortalTarget] = useState<HTMLElement | null>(
@@ -161,13 +177,13 @@ const CombinedFilterComponent: React.FC = () => {
       "&:hover": {
         borderColor: state.isFocused ? "#FF59B4" : provided.borderColor,
       },
-      marginTop: 0, // Ajustar el margen superior del menú para reducir el espacio
+      marginTop: 5, // Ajustar el margen superior del menú para reducir el espacio
     }),
     menu: (provided) => ({
       ...provided,
       position: "absolute",
       width: "100%",
-      maxHeight: "350px",
+      maxHeight: "200px",
       overflowY: "auto",
       zIndex: 9999,
     }),
@@ -178,6 +194,8 @@ const CombinedFilterComponent: React.FC = () => {
     }),
     option: (provided, state) => ({
       ...provided,
+      maxHeight: "350px",
+      overflowY: "auto",
       borderRadius: "20px",
       backgroundColor: state.isFocused ? "rgba(255, 105, 180, 0.2)" : "rosa", // 'rosa' debería ser un color en formato válido
       color: state.isFocused ? "white" : "black", // Cambia el color del texto al pasar el ratón
@@ -185,6 +203,11 @@ const CombinedFilterComponent: React.FC = () => {
         backgroundColor: "#FFC1DC",
         color: "white",
       },
+    }),
+    menuList: (provided) => ({
+      ...provided,
+      maxHeight: "none", // Elimina cualquier límite en la altura
+      overflowY: "hidden", // Oculta el scroll vertical
     }),
   };
 
@@ -277,14 +300,24 @@ const CombinedFilterComponent: React.FC = () => {
     };
   }, [isFilterOpen]);
   useEffect(() => {
-    const checkIfMobile = () => setIsMobile(window.innerWidth <= 768);
-    console.log("checkIfMobile called");
+    const checkIfMobile = () => {
+      const isMobileView = window.innerWidth <= 768;
+      setIsMobile(isMobileView);
+      // Actualizar isExpanded y isFilterOpen solo en el montaje del componente
+      if (isMobileView) {
+        setIsExpanded(false);
+        setIsFilterOpen(false);
+      } else {
+        setIsExpanded(true);
+        setIsFilterOpen(true);
+      }
+    };
 
     checkIfMobile();
-
     window.addEventListener("resize", checkIfMobile);
     return () => window.removeEventListener("resize", checkIfMobile);
   }, []);
+
   const handleScroll = useCallback(() => {
     console.log("handleScroll called");
 
@@ -400,11 +433,7 @@ const CombinedFilterComponent: React.FC = () => {
       }
     }
   };
-  useEffect(() => {
-    if (isMobile) {
-      setIsExpanded(true);
-    }
-  }, [isMobile]);
+
   return (
     <>
       {isMobile && isButtonVisible && (
@@ -477,7 +506,6 @@ const CombinedFilterComponent: React.FC = () => {
                   menuPortalTarget={menuPortalTarget}
                   placeholder="Selecciona un color"
                   components={{
-                    MenuList: CustomMenuList, // Usar el componente personalizado
                     Option: CustomOption, // Opcional, si tienes un componente de opción personalizado
                   }}
                 />
