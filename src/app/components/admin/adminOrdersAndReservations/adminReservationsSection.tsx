@@ -79,7 +79,6 @@ const ReservationsSummary: React.FC<ReservationsSummaryProps> = ({
   const [selectedService, setSelectedService] = useState("");
   const servicesList = useAppSelector((state) => state.services.services);
   const [filteredData, setFilteredData] = useState<LineChartData[]>([]);
-  // Usa las propiedades con los nombres correctos que vienen del backend
   const completedReservations = useMemo(
     () => reservationsSummary?.detallesCompletadas ?? [],
     [reservationsSummary]
@@ -102,24 +101,23 @@ const ReservationsSummary: React.FC<ReservationsSummaryProps> = ({
   const handlePrint = useReactToPrint({
     content: () => summaryRef.current,
   });
-  console.log("Servicios disponibles:", servicesList);
   // Función para imprimir todo el contenido
   const printAll = useReactToPrint({
     content: () => componentRef.current,
   });
   const printCompleted = useReactToPrint({
-    content: () => completedRef.current, // Usas la referencia para las reservas completadas
+    content: () => completedRef.current,
   });
   const printPending = useReactToPrint({
-    content: () => pendingRef.current, // Usas la referencia para las reservas pendientes
+    content: () => pendingRef.current,
   });
   // Función para exportar una sección como PDF
   const exportPDF = async (ref: React.RefObject<HTMLDivElement>) => {
     if (ref.current) {
       const canvas = await html2canvas(ref.current, {
-        scale: 2, // Aumenta la resolución de la imagen
-        useCORS: true, // Intenta cargar imágenes externas si las hay
-        scrollY: -window.scrollY, // Asegúrate de capturar desde el principio del contenido
+        scale: 2,
+        useCORS: true,
+        scrollY: -window.scrollY,
       });
       const data = canvas.toDataURL("image/png");
       const pdf = new jsPDF({
@@ -149,7 +147,7 @@ const ReservationsSummary: React.FC<ReservationsSummaryProps> = ({
   };
   const handleClose = () => {
     resetState();
-    onClose(); // Asumiendo que onClose es la función que cierra el modal
+    onClose();
   };
   const handleFetchReservations = async () => {
     const actionResult = await dispatch(
@@ -157,14 +155,8 @@ const ReservationsSummary: React.FC<ReservationsSummaryProps> = ({
     );
     if (fetchReservationsSummary.fulfilled.match(actionResult)) {
       setIsSummaryFetched(true);
-      console.log(
-        "Reservas después de la acción fetch: ",
-        actionResult.payload
-      );
     }
   };
-  console.log("Completed Reservations: ", completedReservations);
-  console.log("Pending Reservations: ", pendingReservations);
   const formatDate = (startDateString: string, endDateString: string) => {
     const startDate = new Date(startDateString);
     const endDate = new Date(endDateString);
@@ -182,36 +174,16 @@ const ReservationsSummary: React.FC<ReservationsSummaryProps> = ({
   const calculateDailyIncomes = useCallback(
     (reservations: Reservation[]): LineChartData[] => {
       const incomesByDate: Record<string, LineChartData> = {};
-      console.log("Selected Service for Filtering:", selectedService);
-      console.log("Reservations for comparison:", reservations);
-      console.log(
-        "Iniciando el filtrado para el servicio seleccionado:",
-        selectedService
-      );
-      reservations.forEach((reservation) => {
-        console.log(
-          `Reserva ID: ${reservation.id}, Título del servicio: ${reservation.servicio_nombre}`
-        );
-      });
+
+      reservations.forEach((reservation) => {});
       // Filtrar las reservas basándose en el servicio seleccionado
       const filteredReservations = reservations.filter((reservation) => {
-        console.log(
-          "Service title in reservation:",
-          reservation.servicio_nombre
-        );
         return (
           selectedService === "" ||
           reservation.servicio_nombre === selectedService
         );
       });
-      console.log("Filtered Reservations:", filteredReservations);
       filteredReservations.forEach((reservation) => {
-        console.log(
-          "Comparing:",
-          reservation.servicio_nombre,
-          "with",
-          selectedService
-        );
         const date = reservation.fecha_reserva.split("T")[0];
         if (!incomesByDate[date]) {
           incomesByDate[date] = {
@@ -229,7 +201,6 @@ const ReservationsSummary: React.FC<ReservationsSummaryProps> = ({
         }
       });
       // Registrar los datos finales que se van a devolver
-      console.log("Incomes By Date:", Object.values(incomesByDate));
       return Object.values(incomesByDate);
     },
     [selectedService]
@@ -279,7 +250,6 @@ const ReservationsSummary: React.FC<ReservationsSummaryProps> = ({
       <select
         value={selectedService}
         onChange={(e) => {
-          console.log("Service Selected:", e.target.value);
           setSelectedService(e.target.value);
         }}
       >
@@ -373,7 +343,7 @@ const ReservationsSummary: React.FC<ReservationsSummaryProps> = ({
                   <th>Fecha Reserva</th>
                   <th>Precio</th>
                   <th>Servicio</th>
-                  <th>Comprobante</th> {/* Agregar esta línea */}
+                  <th>Comprobante</th>
                 </tr>
               </TableHead>
               <TableBody>
@@ -445,7 +415,7 @@ const ReservationsSummary: React.FC<ReservationsSummaryProps> = ({
                     <td>
                       {reserva.comprobante_path ? (
                         <a
-                          href={reserva.comprobante_path} // Asegúrate de que reserva.comprobante_path ya tiene la URL completa
+                          href={reserva.comprobante_path}
                           target="_blank"
                           rel="noopener noreferrer"
                         >

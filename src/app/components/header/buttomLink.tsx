@@ -4,7 +4,6 @@ import React from "react";
 interface ButtonLinkProps {
   href: string;
   children: React.ReactNode;
-  // Agrega aquí cualquier otra prop que necesites
 }
 
 const ButtonLink: React.FC<ButtonLinkProps> = ({ href, children }) => {

@@ -8,7 +8,7 @@ const colors = {
   darkerGray: "#5C5C5C",
   gradientPink: "linear-gradient(45deg, #FFB6C1, #FF69B4)",
   gold: "#FFD700",
-  backgroundImage: "url('/img/aaa.webp')", // Asegúrate de que la ruta es accesible desde la ubicación donde se utiliza
+  backgroundImage: "url('/img/aaa.webp')", 
 
   backgroundColor:
     "linear-gradient(to right, #f4e4d7, #f8e2cf, #fde0c8, #fff1e1)",

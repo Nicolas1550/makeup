@@ -158,10 +158,9 @@ const Navbar: React.FC = () => {
   const [userClicked, setUserClicked] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [windowWidth, windowHeight] = useWindowSize();
-  // Dentro de Navbar
   const dropdownContainerRef = useRef<HTMLDivElement>(null);
 
-  const isMobile = windowWidth < 768; // Define un umbral para la versión móvil
+  const isMobile = windowWidth < 768;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleDropdown = () => {
     setIsDropdownOpen((prevState) => !prevState);
@@ -192,8 +191,8 @@ const Navbar: React.FC = () => {
       transition: {
         rotate: {
           type: "spring",
-          stiffness: 100, // Menor rigidez para una transición más suave
-          damping: 20, // Mayor amortiguación para una transición más fluida
+          stiffness: 100,
+          damping: 20,
         },
         backgroundColor: {
           duration: 0.3,
@@ -258,7 +257,7 @@ const Navbar: React.FC = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isReservationsModalOpen, isHistoryModalOpen]); // Incluye ambos estados en las dependencias
+  }, [isReservationsModalOpen, isHistoryModalOpen]);
 
   ``;
 
@@ -270,7 +269,6 @@ const Navbar: React.FC = () => {
       }
     };
 
-    // Añadir listener para el scroll
     window.addEventListener("scroll", handleScroll, { passive: true });
 
     // Limpiar el listener para el scroll
@@ -289,24 +287,18 @@ const Navbar: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    console.log("isDropdownOpen changed to:", isDropdownOpen);
-  }, [isDropdownOpen]);
-  useEffect(() => {
-    console.log("useEffect - verifyToken, isDropdownOpen:", isDropdownOpen);
-  }, [isDropdownOpen, dispatch]);
+  useEffect(() => {}, [isDropdownOpen]);
+  useEffect(() => {}, [isDropdownOpen, dispatch]);
   useEffect(() => {
     if (isDropdownOpen && isMobile) {
-      // Asegúrate de que este tiempo de espera sea suficiente para la animación
       setTimeout(() => {
         if (dropdownContainerRef.current) {
-          // Cambia 'block' a 'start' o 'end' según sea necesario
           dropdownContainerRef.current.scrollIntoView({
             behavior: "smooth",
             block: "start",
           });
         }
-      }, 100); // Ajusta este tiempo según sea necesario
+      }, 100);
     }
   }, [isDropdownOpen, isMobile]);
   /* useEffect(() => {
@@ -327,7 +319,6 @@ const Navbar: React.FC = () => {
       try {
         await dispatch(verifyToken()).unwrap();
       } catch (error) {
-        console.log("Token verification failed. Logging out.");
         dispatch(logout());
         if (isDropdownOpen) {
           setIsDropdownOpen(false);
@@ -367,7 +358,7 @@ const Navbar: React.FC = () => {
               whileTap={{ scale: 0.95 }}
               animate={isMenuOpen ? "opened" : "closed"}
               variants={menuButtonVariants}
-              onClick={handleMobileMenuToggle} // Utiliza la nueva función aquí
+              onClick={handleMobileMenuToggle}
             >
               <MenuIcon fontSize="large" />
             </MotionMenuButton>
@@ -468,7 +459,7 @@ const Navbar: React.FC = () => {
                                       closeDropdown={() =>
                                         setIsDropdownOpen(false)
                                       }
-                                      buttonRef={buttonRef} // Si lo estás utilizando en DropdownMenu
+                                      buttonRef={buttonRef}
                                     />
                                   </motion.div>
                                 )}
@@ -527,7 +518,7 @@ const Navbar: React.FC = () => {
                         onViewHistory={() => setIsHistoryModalOpen(true)}
                         toggleDropdown={toggleDropdown}
                         closeDropdown={() => setIsDropdownOpen(false)}
-                        ref={dropdownRef} // Aquí pasas la referencia al contenedor principal del menú
+                        ref={dropdownRef}
                         buttonRef={buttonRef}
                       />
                     </motion.div>
@@ -569,7 +560,7 @@ const Navbar: React.FC = () => {
           onClose={closeConfirmationModal}
           onContinuar={closeConfirmationModal}
           loadedComprobante={comprobanteCargado?.comprobante}
-          closeModal={handleCloseConfirmationModal} // Nueva prop
+          closeModal={handleCloseConfirmationModal}
         />
       </Fragment>
     </NavbarContainer>

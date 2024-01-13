@@ -49,7 +49,7 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
   const dispatch = useAppDispatch();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const depositPaymentRef = useRef<HTMLDivElement>(null);
-  const notificationsRef = useRef<HTMLDivElement>(null); // Referencia para el contenedor de notificaciones
+  const notificationsRef = useRef<HTMLDivElement>(null);
 
   const [showUploadOption, setShowUploadOption] = useState(false);
   const [uploadSuccessMessage, setUploadSuccessMessage] = useState<
@@ -63,14 +63,12 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
   const showPaymentMethod = () => {
     setShowUploadOption(true);
 
-    // Asegúrate de que el elemento está en el DOM antes de intentar desplazarte
     setTimeout(() => {
       depositPaymentRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, 0); // El timeout puede ser necesario si el contenido se carga dinámicamente
+    }, 0);
   };
 
   const handleUploadSuccess = (data: { estado: string; comprobante: File }) => {
-    console.log("Comprobante subido con éxito:", data);
     setUploadSuccessMessage("Comprobante cargado con éxito");
     setLoadedComprobante(data.comprobante);
 
@@ -78,25 +76,20 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
       dispatch(incrementNewOrdersCount());
     }
 
-    // Llamada a la función callback proporcionada por ModalConfirmacionCompra
-    setLoadedComprobante(data.comprobante); // Usar directamente aquí
+    setLoadedComprobante(data.comprobante);
     setUploadSuccessMessage("Comprobante cargado con éxito");
     notificationsRef.current?.scrollIntoView({ behavior: "smooth" });
 
     setTimeout(() => {
       setUploadSuccessMessage(null);
-      setShowUploadOption(false); // Puedes usar esta función para cerrar el método de pago
+      setShowUploadOption(false);
     }, 3000);
     dispatch(clearCart());
   };
 
-  const handleUploadError = (error: Error) => {
-    console.error("Error al cargar el comprobante:", error);
-  };
+  const handleUploadError = (error: Error) => {};
 
   const handlePayment = async () => {
-    console.log("Iniciando proceso de pago");
-
     const paymentData = {
       orden_id: ordenId,
       total,
@@ -109,7 +102,7 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
 
     try {
       const response = await axios.post(
-        "https://asdasdasd3.onrender.com/api/mercadopago/create_preference",
+        "https://sofiaportafolio.online/api/mercadopago/create_preference",
         paymentData,
         {
           headers: {
@@ -121,12 +114,10 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
       if (response.data && response.data.init_point) {
         window.location.href = response.data.init_point;
       } else {
-        console.error("No se recibió la URL de MercadoPago.");
         onPaymentFailure();
       }
       dispatch(clearCart());
     } catch (error) {
-      console.error("Error procesando el pago:", error);
       setErrorMessage(
         "Hubo un problema procesando tu pago. Por favor, inténtalo de nuevo."
       );
@@ -147,11 +138,11 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
   };
   const renderShippingDetails = () => {
     if (datosEnvio.metodo_envio === "recoger") {
-      // Mostrar "Buscar en tienda (direccion)" cuando el método de envío es "Recoger en Tienda"
       return (
         <p>
           <strong>
-            Buscar en tienda: <br />Direccion: Thorne 1145 <br /> Horarios: De Luenes a Viernes
+            Buscar en tienda: <br />
+            Direccion: Thorne 1145 <br /> Horarios: De Luenes a Viernes
             14hs a 20hs
           </strong>
         </p>
@@ -207,7 +198,7 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
                   producto?.imagen_url
                     ? producto.imagen_url.startsWith("http")
                       ? producto.imagen_url
-                      : `https://asdasdasd3.onrender.com${producto.imagen_url}`
+                      : `https://sofiaportafolio.online${producto.imagen_url}`
                     : "/path/to/default/image.jpg"
                 }
                 alt={producto.nombre}

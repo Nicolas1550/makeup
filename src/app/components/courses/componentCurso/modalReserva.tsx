@@ -41,10 +41,9 @@ const ReservasModal: React.FC<ReservasModalProps> = ({
       <Box>
         <Typography variant="h6">Reservas del Curso</Typography>
         <ul>
-        {reservas.map((reserva: ReservaConHorarios) => (
+          {reservas.map((reserva: ReservaConHorarios) => (
             <li key={reserva.id}>
               Reserva ID: {reserva.id}, Estado: {reserva.estado}
-              {/* Aquí puedes agregar más información de la reserva si lo necesitas */}
             </li>
           ))}
         </ul>

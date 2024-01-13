@@ -26,7 +26,7 @@ import {
 import { RootState } from "@/app/redux/store/rootReducer";
 import AdminLogin from "../../admin/login/loginUserAdmin/loginUserAdmin";
 import { openLoginModal } from "@/app/redux/loginModalSlice/loginModalSlice";
-import ServiceModal from "./serviceModal/serviceModal"; // Importación del nuevo componente modal
+import ServiceModal from "./serviceModal/serviceModal"; 
 import LoadingComponent from "./loading";
 
 const ServicesSection: React.FC = () => {

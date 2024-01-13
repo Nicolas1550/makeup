@@ -31,10 +31,10 @@ interface FormData {
   descripcion: string;
   precio: number;
   stock: number;
-  imagen_url: string | File; // <-- Modificación aquí
+  imagen_url: string | File;
   marca: string;
   color: string;
-  categoria: string | null; // Permitir tanto string como null
+  categoria: string | null;
 }
 
 const ProductForm: React.FC = () => {
@@ -46,7 +46,7 @@ const ProductForm: React.FC = () => {
     imagen_url: "",
     marca: "",
     color: "",
-    categoria: null, // Cambio de '' a null
+    categoria: null,
   });
 
   const dispatch = useAppDispatch();
@@ -111,10 +111,8 @@ const ProductForm: React.FC = () => {
       categoria: formData.categoria || undefined, // Convertir null a undefined
       color: formData.color || undefined, // Convertir cadena vacía a undefined
     };
-    console.log("Form data before submitting:", adaptedFormData);
 
     e.preventDefault();
-    console.log("Form data before submitting:", formData); // Agregar este log
     dispatch(setLoading(true));
     dispatch(setMessage(null));
     dispatch(setError(null));
@@ -141,9 +139,9 @@ const ProductForm: React.FC = () => {
             <StyledLabel>Imagen:</StyledLabel>{" "}
             {/* Cambio de "URL de la imagen" a "Imagen" */}
             <StyledInput
-              type="file" // <-- Cambio aquí
+              type="file"
               name="imagen_url"
-              onChange={handleFileChange} // <-- Cambio aquí
+              onChange={handleFileChange}
               required
             />
           </StyledDiv>

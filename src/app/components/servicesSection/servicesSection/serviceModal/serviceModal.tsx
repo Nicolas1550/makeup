@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { motion } from "framer-motion";
 import { io } from "socket.io-client";
-const socket = io("https://asdasdasd3.onrender.com");
+const socket = io("https://sofiaportafolio.online");
 import { FaFacebook, FaInstagram, FaWhatsapp } from "react-icons/fa";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -67,9 +67,9 @@ interface ServiceModalProps {
     image_url?: string;
     image_path?: string;
     modal_description?: string;
-    facebook_url?: string; // Añade esta línea
-    whatsapp_url?: string; // Añade esta línea
-    instagram_url?: string; // Añade esta línea
+    facebook_url?: string; 
+    whatsapp_url?: string; 
+    instagram_url?: string; 
   };
 }
 
@@ -80,7 +80,6 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
     );
    
 
-    console.log("ServiceModal serviceImages:", serviceImages);
     const [isEditingOptions, setIsEditingOptions] = useState(false);
 
     const [selectedEvents, setSelectedEvents] = useState<CalendarEvent[]>([]);
@@ -106,13 +105,13 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
     );
     const [selectedAvailabilityId, setSelectedAvailabilityId] = useState<
       number | null
-    >(null); // Nuevo estado
+    >(null); 
     const [
       confirmReservationForHelperOpen,
       setConfirmReservationForHelperOpen,
     ] = useState(false);
 
-    const [showCalendar, setShowCalendar] = useState(false); // Nuevo estado para mostrar/ocultar el calendario
+    const [showCalendar, setShowCalendar] = useState(false); 
     const [isEditingDescription, setIsEditingDescription] = useState(false);
     const [editedDescription, setEditedDescription] = useState<string>("");
     const [isEditingCarousel, setIsEditingCarousel] = useState(false);
@@ -132,12 +131,10 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
 
     const handleSelectAvailability = useCallback(
       (availabilityId: number) => {
-        // Log the selected availability details to the console
         const selectedAvailability = availabilities.find(
           (availability) => availability.id === availabilityId
         );
         if (selectedAvailability) {
-          console.log("Selected Availability:", selectedAvailability);
         }
 
         setSelectedAvailabilityId(availabilityId);
@@ -199,8 +196,6 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
       ];
     }, [availabilities, selectedEvents]);
 
-    console.log("Disponibilidades:", availabilities);
-    console.log("Eventos del calendario:", calendarEvents);
     const handleAddAvailability = async () => {
       if (selectedService) {
         for (const event of selectedEvents) {
@@ -219,7 +214,6 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
 
         setLastAddedTimestamp(Date.now());
         setSelectedEvents([]); // Limpiamos el arreglo después de agregar las disponibilidades
-        console.log("SelectedEvents reset");
       }
     };
 
@@ -227,19 +221,15 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
       (state) => state.services.lastFetchedServiceId
     );
     const handleCloseModal = () => {
-      console.log("handleCloseModal called");
 
       setSelectedEvents([]); // Limpiamos las disponibilidades seleccionadas
       setShowCalendar(false); // Reiniciar el estado del calendario
-      console.log("ShowCalendar set to false");
 
       onRequestClose(); // Notifica al componente padre para cerrar el modal
     };
 
     const handleConfirmModalClose = () => {
       setConfirmModalOpen(false);
-      // Si necesitas reabrir el modal principal en el futuro, tendrías que hacerlo aquí.
-      // Pero, como mencioné, esto requeriría una nueva prop para notificar al componente padre.
     };
 
     const selectedAvailabilityDetails = availabilities.find(
@@ -257,10 +247,7 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
           dispatch(checkIfUserIsAssigned(selectedService.id));
           dispatch(setServiceData(selectedService));
         } else {
-          console.log(
-            "Usando datos del servicio cargado desde el estado global:",
-            serviceData
-          );
+         
         }
       }
     }, [isOpen, selectedService, dispatch, serviceData]);
@@ -275,7 +262,6 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
           if (event.id) {
             dispatch(deleteAvailability(event.id))
               .then(() => {
-                // Puedes actualizar la lista de disponibilidades o manejar respuestas exitosas si lo deseas.
               })
               .catch(() => {
                 alert(
@@ -315,10 +301,9 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
         availabilityId: string;
         newStatus: string;
       }) => {
-        console.log("Data from socket:", data);
 
         const payload = {
-          availabilityId: parseInt(data.availabilityId, 10), // Convertir la ID a un número
+          availabilityId: parseInt(data.availabilityId, 10), 
           newStatus: data.newStatus,
         };
         dispatch(updateAvailabilityStatus(payload));
@@ -330,7 +315,6 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
         socket.off("availabilityChanged", handleAvailabilityChanged);
       };
     }, [dispatch]);
-    console.log("Selected Service in Modal:", selectedService);
     const saveDescriptionChanges = async () => {
       try {
         await dispatch(
@@ -339,7 +323,6 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
             newDescription: editedDescription,
           })
         );
-        // Actualiza el estado local aquí
         setLocalSelectedService((prevService) => ({
           ...prevService,
           modal_description: editedDescription,
@@ -367,7 +350,6 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
         serviceId: number;
         newDescription: string;
       }) => {
-        console.log("Data from socket:", data);
         dispatch(setServiceDescription(data));
 
         // Si el evento del socket es para el servicio actualmente seleccionado, actualiza el estado local
@@ -377,7 +359,7 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
             modal_description: data.newDescription,
           }));
 
-          setForceRender((prev) => !prev); // Esto forzará la re-renderización del componente
+          setForceRender((prev) => !prev); 
         }
       };
 
@@ -390,27 +372,19 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
       };
     }, [dispatch, selectedService]);
     useEffect(() => {
-      console.log("serviceImages ha cambiado:", serviceImages);
     }, [serviceImages]);
     // Controla la renderización del modal
     useEffect(() => {
-      console.log("useEffect isOpen start:", isOpen);
 
       if (isOpen) {
-        console.log("Modal is opening");
       } else {
-        console.log("Modal is closing");
         setSelectedEvents([]); // Limpieza cuando el modal se cierra
         setShowCalendar(false); // Reiniciar el estado del calendario cuando el modal se cierra
       }
-      console.log("useEffect isOpen end");
     }, [isOpen]);
     if (!isOpen) {
-      console.log("Not rendering modal: isOpen is false");
       return null; // No renderiza el modal si no está abierto
     }
-    console.log("Rendering modal");
-    console.log("Rendering modal");
 
     if (!selectedService) return null;
     return (
@@ -622,15 +596,13 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
                       }}
                       onSelectEvent={(event) => {
                         if (event.estado === "reservado") {
-                          return; // Si está reservado, no hagas nada
+                          return; 
                         }
                         if (isUserAssigned) {
-                          // Asegúrate de que event.id esté definido antes de asignarlo
                           if (typeof event.id === "number") {
                             setSelectedAvailabilityId(event.id);
                           }
                         } else {
-                          // Si el usuario no es un ayudante y event.id está definido, abre el modal
                           if (typeof event.id === "number") {
                             handleSelectAvailability(event.id);
                           }

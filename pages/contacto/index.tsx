@@ -1,6 +1,6 @@
 // pages/contact.tsx
-import React from 'react';
-import ContactPage from '../../src/app/components/contactPage/contactPage'; // Asegúrate de importar tu componente ContactPage
+import React from "react";
+import ContactPage from "../../src/app/components/contactPage/contactPage";
 
 const Contact = () => {
   return <ContactPage />;

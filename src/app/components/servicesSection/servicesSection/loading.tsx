@@ -1,5 +1,5 @@
 import styled, { keyframes } from "styled-components";
-import { FaPalette } from "react-icons/fa"; // Un icono más temático
+import { FaPalette } from "react-icons/fa"; 
 import { motion } from "framer-motion";
 
 const spin = keyframes`

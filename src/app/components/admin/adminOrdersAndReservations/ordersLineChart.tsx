@@ -33,9 +33,6 @@ ChartJS.register(
 );
 
 const OrdersLineChart: React.FC<OrdersLineChartProps> = ({ data }) => {
-  console.log("Datos del gráfico:", data); // Agrega esto para depurar
-  console.log("Datos del gráfico en componente:", data); // Agrega para depurar
-
   const chartData = {
     labels: data.map((d) => d.date),
     datasets: [

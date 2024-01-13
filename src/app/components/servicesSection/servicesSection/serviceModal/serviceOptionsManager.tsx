@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import {
   useAppDispatch,
   useAppSelector,
-} from "../../../../redux/store/appHooks"; // Actualiza la ruta al archivo appHooks
+} from "../../../../redux/store/appHooks"; 
 import {
   addServiceOption,
   editServiceOption,
   deleteServiceOption,
   fetchServiceOptions,
-} from "../../../../redux/serviceSlice/servicesSlice"; // Actualiza la ruta al archivo de tu slice de servicios
+} from "../../../../redux/serviceSlice/servicesSlice"; 
 import styled from "styled-components";
 
 const ServiceOptionsContainer = styled.div`

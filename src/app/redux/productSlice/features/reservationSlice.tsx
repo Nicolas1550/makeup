@@ -49,13 +49,11 @@ const reservationSlice = createSlice({
 export const fetchReservationDetails =
   (reservationId: number): AppThunk =>
   async (dispatch) => {
-    console.log("fetchReservationDetails llamado con ID:", reservationId);
 
     const token =
       typeof window !== "undefined" ? localStorage.getItem("jwt") : null;
 
     if (!token) {
-      console.error("Token no encontrado. Por favor, autentíquese.");
       dispatch(setError("Token no encontrado. Por favor, autentíquese."));
       return;
     }
@@ -68,14 +66,13 @@ export const fetchReservationDetails =
       };
 
       const response = await axios.get(
-        `https://asdasdasd3.onrender.com/api/reservas/details/${reservationId}`,
+        `https://sofiaportafolio.online/api/reservas/details/${reservationId}`,
         config
       );
       if (response.data) {
         dispatch(addNewReservation(response.data));
       }
     } catch (error) {
-      console.error("Error fetching reservation details:", error);
       dispatch(setError("Error al obtener detalles de la reserva."));
     }
   };

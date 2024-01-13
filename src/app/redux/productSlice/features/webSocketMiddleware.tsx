@@ -16,7 +16,6 @@ import { fetchServiceImages } from "../../serviceSlice/servicesSlice";
 type DecodedToken = {
   id: string;
   role: string;
-  // Add any other fields from the decoded token if necessary
 };
 
 type ErrorType = { message?: string };
@@ -34,7 +33,7 @@ const websocketMiddleware = (storeAPI: MiddlewareAPI) => {
 
     if (token) {
       axios
-        .post("https://asdasdasd3.onrender.com/api/validateToken", { token })
+        .post("https://sofiaportafolio.online/api/validateToken", { token })
         .then((response) => {
           if (response.data.isValid) {
             const decodedToken: DecodedToken = jwt_decode(token);
@@ -50,43 +49,33 @@ const websocketMiddleware = (storeAPI: MiddlewareAPI) => {
           }
         })
         .catch((error) => {
-          console.error("Error during token validation:", error);
           localStorage.removeItem("jwt");
         });
     }
   }
 
   // Websocket events
-  const socket = io("https://asdasdasd3.onrender.com");
-  console.log("Configurando escuchador de evento new-reservation...");
+  const socket = io("https://sofiaportafolio.online");
 
   socket.on("new-reservation", (data) => {
-    console.log("Evento new-reservation recibido:", data);
     thunkDispatch(fetchReservationDetails(data.reservationId));
   });
-  console.log("Evento new-reservation configurado.");
 
   socket.on("stock-updated", () => {
-    console.log("Evento stock-updated recibido.");
     thunkDispatch(fetchUpdatedProducts())
       .then((action: AnyAction) => {
         if (fetchUpdatedProducts.fulfilled.match(action)) {
           const updatedProducts = action.payload;
-          console.log(
-            "Productos actualizados después de fetchUpdatedProducts:",
-            updatedProducts
-          );
+         
           updatedProducts.forEach((product) => {
             storeAPI.dispatch(syncCartWithUpdatedStock(product));
           });
         }
       })
       .catch((error: ErrorType) => {
-        console.error("Error obteniendo productos actualizados:", error);
       });
   });
   socket.on("serviceImagesChanged", (data) => {
-    console.log("Evento serviceImagesChanged recibido:", data);
     thunkDispatch(fetchServiceImages(data.serviceId));
   });
   return (next: Dispatch<AnyAction>) => (action: AnyAction) => {

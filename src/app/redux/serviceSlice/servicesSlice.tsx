@@ -4,7 +4,7 @@ import {
   createAsyncThunk,
   createAction,
 } from "@reduxjs/toolkit";
-import { RootState } from "../../redux/store/rootReducer"; // Ajusta la ruta según corresponda
+import { RootState } from "../../redux/store/rootReducer"; 
 import { SerializedError } from "@reduxjs/toolkit";
 
 import axios from "axios";
@@ -61,13 +61,13 @@ interface ServicesState {
   error: null | string;
   isUserAssigned: boolean | null;
   uploadProofOfPaymentStatus: "idle" | "loading" | "fulfilled" | "failed";
-  fetchedServiceIds: number[]; // <-- Añade esta línea
+  fetchedServiceIds: number[]; 
   serviceImages: Record<number, string[]>; // Un objeto que mapea IDs de servicios a arrays de URLs de imágenes
   serviceOptions: ServiceOptions;
   reservationsForAssistant: Reservation[];
   reservationsForUser: Reservation[];
   reservationsSummary?: ReservationSummary; // Puede ser opcional si inicialmente no hay datos
-  newReservationsCount: number; // Añadir este estado para el contador
+  newReservationsCount: number; 
   serviceData: Record<number, Service>; // Almacena los datos de los servicios individualmente
 }
 interface ErrorResponse {
@@ -88,15 +88,15 @@ export interface Reservation {
   opciones_seleccionadas: string;
   usuario_nombre: string;
   serviceTitle: string;
-  servicio_nombre: string; // Agrega esta línea si la API devuelve esta propiedad
+  servicio_nombre: string; 
 }
 interface ReservationSummary {
   totalIngresos: number;
   totalReservasCompletadas: number;
   totalIngresosPendientes: number;
   totalReservasPendientes: number;
-  detallesCompletadas: Reservation[]; // Nombre actualizado
-  detallesPendientes: Reservation[]; // Nombre actualizado
+  detallesCompletadas: Reservation[]; 
+  detallesPendientes: Reservation[];
 }
 
 const initialState: ServicesState = {
@@ -120,8 +120,8 @@ const initialState: ServicesState = {
     totalReservasCompletadas: 0,
     totalIngresosPendientes: 0,
     totalReservasPendientes: 0,
-    detallesCompletadas: [], // Nombre actualizado
-    detallesPendientes: [], // Nombre actualizado
+    detallesCompletadas: [], 
+    detallesPendientes: [], 
   },
 };
 
@@ -169,7 +169,7 @@ export const fetchReservationsSummary = createAsyncThunk(
 
     try {
       const response = await axios.get(
-        `https://asdasdasd3.onrender.com/api/servicios/reservas/cierreCaja`,
+        `https://sofiaportafolio.online/api/servicios/reservas/cierreCaja`,
         {
           params: { fechaInicio: args.fechaInicio, fechaFin: args.fechaFin },
           headers: {
@@ -177,7 +177,6 @@ export const fetchReservationsSummary = createAsyncThunk(
           },
         }
       );
-      console.log("Reservas obtenidas del backend:", response.data);
 
       // Verifica si la respuesta no contiene reservas
       if (
@@ -210,7 +209,7 @@ export const markReservationAsPending = createAsyncThunk<
 >("services/markReservationAsPending", async (reservationId, thunkAPI) => {
   try {
     const response = await axios.put(
-      `https://asdasdasd3.onrender.com/api/servicios/reservas/${reservationId}/pendiente`
+      `https://sofiaportafolio.online/api/servicios/reservas/${reservationId}/pendiente`
     );
     return response.data.message;
   } catch (error) {
@@ -223,7 +222,7 @@ export const deleteReservation = createAsyncThunk(
   async (reservationId: number, thunkAPI) => {
     try {
       const response = await axios.delete(
-        `https://asdasdasd3.onrender.com/api/servicios/reservas/${reservationId}`
+        `https://sofiaportafolio.online/api/servicios/reservas/${reservationId}`
       );
       return response.data;
     } catch (error) {
@@ -240,7 +239,7 @@ export const markReservationAsCompleted = createAsyncThunk<
 >("services/markReservationAsCompleted", async (reservationId, thunkAPI) => {
   try {
     const response = await axios.put(
-      `https://asdasdasd3.onrender.com/api/servicios/reservas/${reservationId}/completar`
+      `https://sofiaportafolio.online/api/servicios/reservas/${reservationId}/completar`
     );
     return response.data.message;
   } catch (error) {
@@ -252,13 +251,11 @@ export const fetchReservationsForUser = createAsyncThunk<
   Reservation[],
   string | number
 >("services/fetchReservationsForUser", async (userId) => {
-  console.log("Dentro del thunk fetchReservationsForUser con userId:", userId);
 
   const response = await axios.get(
-    `https://asdasdasd3.onrender.com/api/servicios/reservasPorUsuario/${userId}`
+    `https://sofiaportafolio.online/api/servicios/reservasPorUsuario/${userId}`
   );
 
-  console.log("Respuesta obtenida dentro del thunk:", response.data);
   return response.data;
 });
 
@@ -274,7 +271,7 @@ export const fetchReservationsForAssistant = createAsyncThunk<
   for (const service of services) {
     const serviceId = service.id;
     const response = await axios.get(
-      `https://asdasdasd3.onrender.com/api/servicios/${serviceId}/reservasPorAyudante/${params.ayudanteId}`
+      `https://sofiaportafolio.online/api/servicios/${serviceId}/reservasPorAyudante/${params.ayudanteId}`
     );
     if (response.data.length > 0) {
       allReservations.push({
@@ -295,7 +292,7 @@ export const deleteServiceOption = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     await axios.delete(
-      `https://asdasdasd3.onrender.com/api/servicios/options/${optionId}`,
+      `https://sofiaportafolio.online/api/servicios/options/${optionId}`,
       {
         headers: {
           "x-auth-token": userToken,
@@ -315,7 +312,7 @@ export const editServiceOption = createAsyncThunk(
     }
 
     const response = await axios.put(
-      `https://asdasdasd3.onrender.com/api/servicios/options/${data.optionId}`,
+      `https://sofiaportafolio.online/api/servicios/options/${data.optionId}`,
       {
         nombre: data.name,
         precio: data.price,
@@ -347,19 +344,15 @@ export const fetchServiceOptions = createAsyncThunk(
   async (serviceId: number, thunkAPI) => {
     try {
       const response = await axios.get(
-        `https://asdasdasd3.onrender.com/api/servicios/${serviceId}/options`
+        `https://sofiaportafolio.online/api/servicios/${serviceId}/options`
       );
-      console.log("Opciones obtenidas del backend:", response.data);
       return { serviceId, options: response.data };
     } catch (error) {
       let errorMessage = "Ha ocurrido un error desconocido";
       if (error instanceof Error) {
         errorMessage = error.message;
       }
-      console.error(
-        "Error al obtener las opciones del servicio:",
-        errorMessage
-      );
+     
       return thunkAPI.rejectWithValue(errorMessage);
     }
   }
@@ -372,7 +365,7 @@ export const addServiceOption = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     const response = await axios.post(
-      `https://asdasdasd3.onrender.com/api/servicios/${data.serviceId}/options`,
+      `https://sofiaportafolio.online/api/servicios/${data.serviceId}/options`,
       {
         nombre: data.name,
         precio: data.price,
@@ -399,7 +392,7 @@ export const uploadServiceImages = createAsyncThunk(
 
     try {
       const response = await axios.post(
-        `https://asdasdasd3.onrender.com/api/servicios/${data.serviceId}/uploadImages`,
+        `https://sofiaportafolio.online/api/servicios/${data.serviceId}/uploadImages`,
         formData,
         {
           headers: {
@@ -408,15 +401,13 @@ export const uploadServiceImages = createAsyncThunk(
           },
         }
       );
-      console.log("Respuesta completa de uploadServiceImages:", response);
-      console.log("Data de respuesta de uploadServiceImages:", response.data);
+
 
       // Extraer solo las rutas de las imágenes de la respuesta
       const uploadedImagePaths = response.data.imagePaths;
 
       return { serviceId: data.serviceId, imagePaths: uploadedImagePaths };
     } catch (error) {
-      console.error("Error al subir imágenes:", error);
       throw error;
     }
   }
@@ -432,7 +423,7 @@ export const deleteServiceImage = createAsyncThunk(
 
     try {
       const response = await axios.delete(
-        `https://asdasdasd3.onrender.com/api/servicios/${data.serviceId}/deleteImage`,
+        `https://sofiaportafolio.online/api/servicios/${data.serviceId}/deleteImage`,
         {
           headers: {
             "x-auth-token": userToken,
@@ -441,11 +432,9 @@ export const deleteServiceImage = createAsyncThunk(
           data: { imagePath: data.imagePath },
         }
       );
-      console.log("Respuesta completa al eliminar imagen:", response);
 
       return { serviceId: data.serviceId, imagePath: data.imagePath };
     } catch (error) {
-      console.error("Error al eliminar imagen:", error);
       throw error;
     }
   }
@@ -461,19 +450,17 @@ export const fetchServiceImages = createAsyncThunk(
 
     try {
       const response = await axios.get(
-        `https://asdasdasd3.onrender.com/api/servicios/${serviceId}/images`,
+        `https://sofiaportafolio.online/api/servicios/${serviceId}/images`,
         {
           headers: {
             "x-auth-token": userToken,
           },
         }
       );
-      console.log("Respuesta completa de fetchServiceImages:", response);
-      console.log("Data de respuesta de fetchServiceImages:", response.data);
+
 
       return { serviceId, images: response.data };
     } catch (error) {
-      console.error("Error al obtener imágenes:", error);
       throw error;
     }
   }
@@ -492,7 +479,7 @@ export const updateSocialLinks = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     await axios.put(
-      `https://asdasdasd3.onrender.com/api/servicios/${data.serviceId}/socialLinks`,
+      `https://sofiaportafolio.online/api/servicios/${data.serviceId}/socialLinks`,
       {
         facebook_url: data.facebook_url,
         whatsapp_url: data.whatsapp_url,
@@ -522,7 +509,7 @@ export const updateServiceDescription = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     await axios.put(
-      `https://asdasdasd3.onrender.com/api/servicios/${data.serviceId}`,
+      `https://sofiaportafolio.online/api/servicios/${data.serviceId}`,
       { modal_description: data.newDescription },
       {
         headers: {
@@ -543,7 +530,6 @@ export const uploadProofOfPayment = createAsyncThunk(
     file: File;
     selectedOptions: ServiceOption[];
   }) => {
-    console.log("Data en thunk:", data); // <-- Añade este log
 
     const userToken = localStorage.getItem("jwt");
     if (!userToken) {
@@ -564,7 +550,7 @@ export const uploadProofOfPayment = createAsyncThunk(
     );
 
     const response = await axios.post(
-      `https://asdasdasd3.onrender.com/api/servicios/${data.serviceId}/availabilities/${data.disponibilidadId}/uploadProof`,
+      `https://sofiaportafolio.online/api/servicios/${data.serviceId}/availabilities/${data.disponibilidadId}/uploadProof`,
       formData,
       {
         headers: {
@@ -586,7 +572,7 @@ export const checkIfUserIsAssigned = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     const response = await axios.get(
-      `https://asdasdasd3.onrender.com/api/servicios/${serviceId}/isUserAssigned`,
+      `https://sofiaportafolio.online/api/servicios/${serviceId}/isUserAssigned`,
       {
         headers: {
           "x-auth-token": userToken,
@@ -604,7 +590,7 @@ export const deleteAvailability = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     await axios.delete(
-      `https://asdasdasd3.onrender.com/api/servicios/availability/${availabilityId}`,
+      `https://sofiaportafolio.online/api/servicios/availability/${availabilityId}`,
       {
         headers: {
           "x-auth-token": userToken,
@@ -623,14 +609,13 @@ export const fetchAvailabilities = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     const response = await axios.get(
-      `https://asdasdasd3.onrender.com/api/servicios/${serviceId}/availabilities`,
+      `https://sofiaportafolio.online/api/servicios/${serviceId}/availabilities`,
       {
         headers: {
           "x-auth-token": userToken,
         },
       }
     );
-    console.log("Recibido del servidor:", response.data);
 
     return response.data as Availability[];
   }
@@ -648,11 +633,11 @@ export const addAvailability = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     await axios.post(
-      `https://asdasdasd3.onrender.com/api/servicios/${data.serviceId}/addAvailability`,
+      `https://sofiaportafolio.online/api/servicios/${data.serviceId}/addAvailability`,
       {
         fechaInicio: data.fechaInicio,
         fechaFin: data.fechaFin,
-        estado: "disponible", // por defecto
+        estado: "disponible", 
       },
       {
         headers: {
@@ -670,7 +655,7 @@ export const fetchServices = createAsyncThunk(
   "services/fetchServices",
   async (_, { dispatch }) => {
     const response = await axios.get(
-      "https://asdasdasd3.onrender.com/api/servicios"
+      "https://sofiaportafolio.online/api/servicios"
     );
     const data = response.data as Service[];
 
@@ -699,7 +684,7 @@ export const reserveAvailability = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     const response = await axios.post(
-      `https://asdasdasd3.onrender.com/api/servicios/${data.serviceId}/reserve/${data.availabilityId}`,
+      `https://sofiaportafolio.online/api/servicios/${data.serviceId}/reserve/${data.availabilityId}`,
       {},
       {
         headers: {
@@ -724,7 +709,7 @@ export const completeReservation = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     await axios.post(
-      `https://asdasdasd3.onrender.com/api/servicios/reservations/${reservaId}/complete`,
+      `https://sofiaportafolio.online/api/servicios/reservations/${reservaId}/complete`,
       {},
       {
         headers: {
@@ -744,7 +729,7 @@ export const toggleServiceColor = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     const response = await axios.put(
-      `https://asdasdasd3.onrender.com/api/servicios/${serviceId}/toggleColor`,
+      `https://sofiaportafolio.online/api/servicios/${serviceId}/toggleColor`,
       {},
       {
         headers: {
@@ -780,13 +765,8 @@ const servicesSlice = createSlice({
       state,
       action: PayloadAction<{ availabilityId: number; newStatus: string }>
     ) => {
-      console.log("Action payload:", action.payload); // <-- Añade esta línea
-      console.log(
-        "availabilityId en updateAvailabilityStatus:",
-        action.payload.availabilityId
-      ); // <-- Añade esta línea
+     
 
-      console.log("State before:", state.availabilities); // <-- Añade esta línea
       const { availabilityId, newStatus } = action.payload;
       const availability = state.availabilities.find(
         (a) => a.id === availabilityId
@@ -794,7 +774,6 @@ const servicesSlice = createSlice({
       if (availability) {
         availability.estado = newStatus;
       }
-      console.log("State after:", state.availabilities); // <-- Añade esta línea
     },
 
     setServiceDescription: (
@@ -851,10 +830,7 @@ const servicesSlice = createSlice({
         }
       })
       .addCase(markReservationAsPending.rejected, (state, action) => {
-        console.error(
-          "Error al marcar la reserva como pendiente:",
-          action.payload?.errorMessage
-        );
+       
       })
 
       .addCase(deleteReservation.pending, (state) => {
@@ -889,10 +865,7 @@ const servicesSlice = createSlice({
         }
       })
       .addCase(markReservationAsCompleted.rejected, (state, action) => {
-        console.error(
-          "Error al marcar la reserva como completada:",
-          action.payload?.errorMessage
-        );
+       
       })
 
       .addCase(fetchReservationsForUser.fulfilled, (state, action) => {
@@ -912,11 +885,7 @@ const servicesSlice = createSlice({
         state.loading = false;
 
         for (const payload of action.payload) {
-          console.log(
-            "Reservas recibidas en el reducer:",
-            payload.reservations
-          );
-          console.log("Service ID recibido en el reducer:", payload.serviceId);
+          
 
           const newReservations = payload.reservations
             .filter(
@@ -953,10 +922,7 @@ const servicesSlice = createSlice({
 
         // Asegurarse de que state.serviceOptions[serviceId] exista antes de continuar.
         if (!state.serviceOptions[serviceId]) {
-          console.warn(
-            `No options found for serviceId: ${serviceId}. Action payload:`,
-            action.payload
-          );
+       
           return;
         }
 
@@ -979,10 +945,7 @@ const servicesSlice = createSlice({
       })
 
       .addCase(uploadServiceImages.fulfilled, (state, action) => {
-        console.log(
-          "Payload recibido en uploadServiceImages.fulfilled:",
-          action.payload
-        );
+      
 
         const serviceToUpdate = state.services.find(
           (s) => s.id === action.payload.serviceId
@@ -998,7 +961,6 @@ const servicesSlice = createSlice({
           } else {
             serviceToUpdate.images = [...action.payload.imagePaths];
           }
-          console.log("Imagenes después de subirlas:", serviceToUpdate.images);
 
           // Actualizar el objeto serviceImages
           if (!state.serviceImages[action.payload.serviceId]) {
@@ -1016,7 +978,6 @@ const servicesSlice = createSlice({
           (s) => s.id === action.payload.serviceId
         );
         if (serviceToUpdate) {
-          // Asegúrate de que "images" no sea undefined antes de llamar a filter
           const updatedImages = serviceToUpdate.images
             ? serviceToUpdate.images.filter(
                 (path) => path !== action.payload.imagePath
@@ -1025,7 +986,6 @@ const servicesSlice = createSlice({
 
           serviceToUpdate.images = updatedImages;
           state.serviceImages[action.payload.serviceId] = updatedImages;
-          console.log("Imagenes después de eliminar:", updatedImages);
         }
       })
 
@@ -1096,15 +1056,14 @@ const servicesSlice = createSlice({
           action.error.message || "Error updating service description";
       })
       .addCase(uploadProofOfPayment.pending, (state) => {
-        state.uploadProofOfPaymentStatus = "loading"; // <-- Añade esta línea
+        state.uploadProofOfPaymentStatus = "loading"; 
       })
       .addCase(
         uploadProofOfPayment.fulfilled,
         (state, action: PayloadAction<{ availabilityId: number }>) => {
-          state.uploadProofOfPaymentStatus = "fulfilled"; // <-- Añade esta línea
+          state.uploadProofOfPaymentStatus = "fulfilled"; 
           state.loading = false;
 
-          // Asumiendo que recibimos availabilityId del backend
           const availabilityId = action.payload.availabilityId;
 
           // Encuentra y actualiza la disponibilidad en el estado
@@ -1117,8 +1076,7 @@ const servicesSlice = createSlice({
         }
       )
       .addCase(uploadProofOfPayment.rejected, (state) => {
-        state.uploadProofOfPaymentStatus = "failed"; // <-- Añade esta línea
-        // Aquí puedes manejar el error si lo deseas
+        state.uploadProofOfPaymentStatus = "failed"; 
       })
 
       .addCase(reserveAvailability.pending, (state) => {
@@ -1151,7 +1109,6 @@ const servicesSlice = createSlice({
       })
       .addCase(completeReservation.fulfilled, (state) => {
         state.loading = false;
-        // Aquí puedes realizar cambios adicionales si es necesario, como marcar una reserva como 'completada'.
       })
       .addCase(completeReservation.rejected, (state, action) => {
         state.loading = false;
@@ -1184,10 +1141,7 @@ const servicesSlice = createSlice({
           action.error.message || "Error al verificar la asignación";
       })
       .addCase(addAvailability.fulfilled, () => {
-        // Aquí puedes manejar cualquier cambio en el estado que desees hacer después de que una disponibilidad se ha agregado con éxito
-        // Por ahora, no haremos ningún cambio.
-        // Luego de agregar una disponibilidad, es importante refrescar las disponibilidades del servidor
-        // Así que invocamos la thunk para obtener las disponibilidades nuevamente
+      
       })
       .addCase(fetchAvailabilities.pending, (state) => {
         state.loading = true;
@@ -1202,7 +1156,6 @@ const servicesSlice = createSlice({
           state.availabilities = action.payload;
           state.lastFetchedServiceId = action.meta.arg;
 
-          console.log("Estado actualizado:", state.availabilities);
         }
       )
 
@@ -1247,7 +1200,7 @@ export const {
   setServiceDescription,
   incrementNewReservationsCount,
   resetNewReservationsCount,
-  setServiceData, // Asegúrate de exportar la nueva acción
+  setServiceData, 
 } = servicesSlice.actions;
 
 export default servicesSlice.reducer;

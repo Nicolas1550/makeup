@@ -5,7 +5,7 @@ import {
   ProductFlowContainer,
 } from "../preview-flow-productStyles/previewProductsStyle";
 import { Product } from "@/app/components/admin/productAction-reducer-types/types/types";
-import { ProductImage as StyledProductImage } from "../../products/styles/styleProducts"; // Importa el componente estilizado
+import { ProductImage as StyledProductImage } from "../../products/styles/styleProducts"; 
 
 type ProductFlowProps = {
   products: Product[];
@@ -24,16 +24,16 @@ const AnimatedProductDetailsContainer = styled(ProductDetailsContainer)`
 `;
 
 const ProductFlow: React.FC<ProductFlowProps> = ({ products }) => {
-  const loopedProducts = [...products, ...products]; // Duplica los productos para el bucle
+  const loopedProducts = [...products, ...products]; 
 
   return (
     <ProductFlowContainer>
       {loopedProducts.map((product, index) => (
         <AnimatedProductDetailsContainer key={`product-${index}`}>
-          <StyledProductImage // Usa el componente estilizado
+          <StyledProductImage 
             src={
               product.imagen_url
-                ? `https://asdasdasd3.onrender.com${product.imagen_url}`
+                ? `https://sofiaportafolio.online${product.imagen_url}`
                 : "/path/to/default/image.png"
             }
             alt={product.nombre}

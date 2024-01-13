@@ -77,7 +77,6 @@ function ReservationsForAssistant() {
     dispatch(
       actualizarEstadoReservaCurso({ reservaId, estado: "completada" })
     ).then(() => {
-      console.log(`Reserva ${reservaId} actualizada a completada`);
       dispatch(fetchTodasLasReservas());
     });
   };
@@ -130,14 +129,12 @@ function ReservationsForAssistant() {
         backgroundColor: "#f2e0e4",
       },
     }),
-    // Puedes seguir personalizando otras partes del componente Select aquí...
   };
   const ayudanteName = useAppSelector((state) => state.auth.userName);
   const [selectedStatus, setSelectedStatus] = React.useState<
     "pendiente" | "completada"
   >("pendiente");
   const filteredCourseReservations = useMemo(() => {
-    console.log("Reservas de cursos antes de filtrar", courseReservations);
     return courseReservations.filter(
       (reservation) => reservation.estado === selectedStatus
     );
@@ -149,7 +146,6 @@ function ReservationsForAssistant() {
   const [orderedServiceReservations, setOrderedServiceReservations] = useState<
     Reservation[]
   >([]);
-  console.log("Reservas filtradas", filteredCourseReservations);
   const sortReservations = useCallback(
     <T extends { fecha_reserva?: string }>(reservations: T[]) => {
       return reservations.slice().sort((a, b) => {
@@ -187,29 +183,28 @@ function ReservationsForAssistant() {
         fetchReservationsForAssistant({ ayudanteId: Number(ayudanteId) })
       );
     }
-  }, [ayudanteId, dispatch]); // dependencias de useCallback
+  }, [ayudanteId, dispatch]); 
 
   useEffect(() => {
     dispatch(fetchServices());
     fetchReservations();
-  }, [dispatch, ayudanteId, fetchReservations]); // Añadir fetchReservations aquí
+  }, [dispatch, ayudanteId, fetchReservations]); 
 
   useEffect(() => {
     fetchReservations();
-  }, [services, fetchReservations]); // Añadir fetchReservations aquí
+  }, [services, fetchReservations]); 
   useEffect(() => {
     if (selectedOption?.value === "cursos") {
       dispatch(fetchTodasLasReservas()).then((response) =>
         console.log(
           "Reservas de cursos actualizadas después de fetch",
-          response
+          
         )
       );
     }
   }, [dispatch, selectedOption]);
   useEffect(() => {
     if (selectedOption?.value === "servicios") {
-      console.log("Estado seleccionado para filtrar:", selectedStatus);
       const filtered = reservations.filter((reservation) =>
         selectedStatus === "completada"
           ? reservation.estado === "completada" ||
@@ -221,10 +216,8 @@ function ReservationsForAssistant() {
     }
   }, [reservations, selectedStatus, selectedOption, sortReservations]);
 
-  console.log("Reservas de servicios a mostrar:", orderedServiceReservations);
 
   useEffect(() => {
-    console.log("Reservas filtradas con fechas", filteredCourseReservations);
   }, [filteredCourseReservations]);
   useEffect(() => {
     // Ordena las reservas de cursos cada vez que cambien las reservas filtradas, el orden de clasificación o la función de clasificación.
@@ -261,7 +254,6 @@ function ReservationsForAssistant() {
             />
         
           </div>
-          {/* ... resto de tu JSX */}
         </>
       )}
       {selectedOption?.value === "servicios" && (

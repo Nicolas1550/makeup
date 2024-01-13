@@ -32,7 +32,7 @@ export const apiUpdateAllPrices = createAsyncThunk(
   "productManagement/updateAllPrices",
   async (percentage: number, { dispatch }) => {
     const response = await axios.put(
-      `https://asdasdasd3.onrender.com/api/products/update-prices`,
+      `https://sofiaportafolio.online/api/products/update-prices`,
       { percentage }
     );
     dispatch(setMessage(`Precios actualizados exitosamente.`));
@@ -45,7 +45,7 @@ export const apiRevertLastPercentage = createAsyncThunk(
   "productManagement/revertLastPercentage",
   async (_, { dispatch }) => {
     const response = await axios.put(
-      `https://asdasdasd3.onrender.com/api/products/revert-last-percentage`
+      `https://sofiaportafolio.online/api/products/revert-last-percentage`
     );
     dispatch(setMessage(`Precios revertidos al último porcentaje aplicado.`));
     return response.data;
@@ -57,7 +57,7 @@ export const apiAdjustPricesToPreviousPercentage = createAsyncThunk(
   "productManagement/adjustPricesToPreviousPercentage",
   async (previousPercentage: number, { dispatch }) => {
     const response = await axios.put(
-      `https://asdasdasd3.onrender.com/api/products/adjust-prices`,
+      `https://sofiaportafolio.online/api/products/adjust-prices`,
       { previousPercentage }
     );
     dispatch(setMessage(`Precios ajustados al porcentaje anterior.`));
@@ -70,7 +70,7 @@ export const apiRevertAndApplyNewPercentage = createAsyncThunk(
   "productManagement/revertAndApplyNewPercentage",
   async (newPercentage: number, { dispatch }) => {
     const response = await axios.put(
-      `https://asdasdasd3.onrender.com/api/products/revert-and-apply-percentage`,
+      `https://sofiaportafolio.online/api/products/revert-and-apply-percentage`,
       { newPercentage }
     );
     dispatch(
@@ -100,7 +100,7 @@ export const apiAddProduct = createAsyncThunk(
 
     try {
       const response = await axios.post(
-        `https://asdasdasd3.onrender.com/api/products`,
+        `https://sofiaportafolio.online/api/products`,
         formData,
         {
           headers: {
@@ -111,7 +111,6 @@ export const apiAddProduct = createAsyncThunk(
       dispatch(setMessage(`Producto creado con éxito.`));
       return response.data;
     } catch (error) {
-      console.error("Error al crear el producto:", error);
       dispatch(
         setError("Error al crear el producto. Por favor, inténtalo de nuevo.")
       );
@@ -124,7 +123,7 @@ export const apiAddProduct = createAsyncThunk(
 export const apiDeleteProduct = createAsyncThunk(
   "productManagement/deleteProduct",
   async (id: number) => {
-    await axios.delete(`https://asdasdasd3.onrender.com/api/products/${id}`);
+    await axios.delete(`https://sofiaportafolio.online/api/products/${id}`);
     return id;
   }
 );
@@ -136,7 +135,7 @@ export const apiEditProduct = createAsyncThunk(
     { dispatch }
   ) => {
     const response = await axios.put(
-      `https://asdasdasd3.onrender.com/api/products/${id}`,
+      `https://sofiaportafolio.online/api/products/${id}`,
       formData,
       {
         headers: {
@@ -153,7 +152,7 @@ export const apiEditProduct = createAsyncThunk(
 export const apiGetAllProducts = createAsyncThunk(
   "productManagement/getAllProducts",
   async () => {
-    const response = await axios.get(`https://asdasdasd3.onrender.com/api/products`);
+    const response = await axios.get(`https://sofiaportafolio.online/api/products`);
     return response.data;
   }
 );
@@ -208,25 +207,17 @@ const productManagementSlice = createSlice({
       })
       .addCase(apiDeleteProduct.rejected, (state, action) => {
         state.error = action.error.message || "Error al eliminar el producto";
-        console.log(action.error);
       })
       .addCase(apiEditProduct.fulfilled, (state, action) => {
         const index = state.allProducts.findIndex(
           (product) => product.id === action.payload.id
         );
-        console.log("Estado actual de todos los productos:", state.allProducts);
 
         if (index !== -1) {
           state.allProducts[index] = action.payload;
           state.message = "Producto editado con éxito";
           state.error = null;
-          console.log(
-            "Producto actualizado en estado:",
-            state.allProducts[index]
-          );
-          console.log("Estado completo después de editar:", state.allProducts);
         } else {
-          console.log("Producto no encontrado en el estado.");
         }
       })
 

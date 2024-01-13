@@ -26,7 +26,7 @@ import {
 } from "../../../../redux/productManagementSlice/productManagementSlice";
 import { io } from "socket.io-client";
 interface ProductTableProps {
-  products: Product[]; // Utiliza el tipo 'Product' en lugar de 'any[]'
+  products: Product[];
 }
 const CATEGORIAS = ["Ojos", "Rostro", "Labios", "Uñas"];
 
@@ -48,7 +48,7 @@ const ProductTable: React.FC<ProductTableProps> = ({}) => {
   }, [dispatch]);
 
   useEffect(() => {
-    const socket = io("https://asdasdasd3.onrender.com");
+    const socket = io("https://sofiaportafolio.online");
 
     socket.on("prices-updated", () => {
       dispatch(apiGetAllProducts());
@@ -99,29 +99,23 @@ const ProductTable: React.FC<ProductTableProps> = ({}) => {
           formData.append(key, "undefined");
         }
       });
-      console.log("Producto que se enviará al backend:", updatedProduct);
 
       try {
         const resultAction = await dispatch(
           apiEditProduct({ id: updatedProduct.id, formData })
         ).unwrap();
 
-        // Suponiendo que el servidor devuelve el producto actualizado con una nueva ruta de imagen
         // Actualizamos el estado local con el producto actualizado
         setUpdatedProduct(resultAction); // actualiza el producto actual con los datos de respuesta
         setEditingId(null);
-      } catch (error) {
-        console.error("Error updating product:", error);
-      }
+      } catch (error) {}
     }
   };
 
   const handleDelete = async (id: number) => {
     try {
       await dispatch(apiDeleteProduct(id)).unwrap();
-    } catch (error) {
-      console.error("Error deleting product:", error);
-    }
+    } catch (error) {}
   };
   const handleImageChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -139,8 +133,7 @@ const ProductTable: React.FC<ProductTableProps> = ({}) => {
     if (image instanceof File) {
       return URL.createObjectURL(image);
     } else if (typeof image === "string" && image.startsWith("/")) {
-      // Asegúrate de que `image` comienza con `/`
-      return `https://asdasdasd3.onrender.com${image}`;
+      return `https://sofiaportafolio.online${image}`;
     }
     // Retornar una imagen por defecto o un placeholder si no hay imagen
     return "/path_to_default_image.jpg";
@@ -265,7 +258,7 @@ const ProductTable: React.FC<ProductTableProps> = ({}) => {
                     ))}
                   </StyledSelect>
                 ) : (
-                  product.categoria || "Sin categoría" // Muestra "Sin categoría" si no hay una definida
+                  product.categoria || "Sin categoría"
                 )}
               </td>
               <td>
@@ -287,7 +280,7 @@ const ProductTable: React.FC<ProductTableProps> = ({}) => {
                     onChange={handleInputChange}
                   />
                 ) : (
-                  product.color || "No definido" // Muestra "No definido" si color es undefined
+                  product.color || "No definido"
                 )}
               </td>
 

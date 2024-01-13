@@ -5,7 +5,6 @@ import {
   addImageToCurso,
   deleteImageFromCurso,
 } from "@/app/redux/coursesSlice/coursesSlice";
-// Importa deleteImageFromCurso si aún no lo has hecho
 import {
   CarouselContainer,
   CarouselImage,
@@ -19,7 +18,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import DoneIcon from "@mui/icons-material/Done";
 type ImageCarouselProps = {
-  images: Array<{ id: number; url_imagen: string }>; // Asegúrate de que 'id' esté disponible
+  images: Array<{ id: number; url_imagen: string }>;
   baseUrl: string;
   title?: string;
   description?: string;
@@ -97,7 +96,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
           >
             {images.map((image) => (
               <CarouselImage
-                key={image.id} // Usa el id único de la imagen como clave
+                key={image.id}
                 src={`${baseUrl}image/cursos/${image.url_imagen}`}
                 alt={`Imagen del Curso ${image.id}`}
               />

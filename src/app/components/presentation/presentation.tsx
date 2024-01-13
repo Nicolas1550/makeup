@@ -52,14 +52,14 @@ const SLIDER_SETTINGS = {
   autoplaySpeed: 2000,
   responsive: [
     {
-      breakpoint: 1024, // Punto de interrupción para tablets y laptops pequeñas
+      breakpoint: 1024, 
       settings: {
         slidesToShow: 2,
         slidesToScroll: 1,
       },
     },
     {
-      breakpoint: 768, // Punto de interrupción para tablets en modo retrato y móviles en modo paisaje
+      breakpoint: 768, 
       settings: {
         slidesToShow: 1,
         slidesToScroll: 1,

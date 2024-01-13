@@ -48,7 +48,7 @@ const ProductPreview: React.FC<ProductPreviewProps> = ({ productList }) => {
               alt="Product Image"
               width={1500}
               height={500}
-              quality={100} // Máxima calidad de imagen
+              quality={100} 
             />
           </ProductSlide>
         ))}

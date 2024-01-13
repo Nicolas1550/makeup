@@ -10,11 +10,9 @@ const reservationsModalSlice = createSlice({
   initialState,
   reducers: {
     openModal: (state) => {
-      console.log("openModal action called in Redux");
       state.isReservationsModalOpen = true;
     },
     closeModal: (state) => {
-      console.log("closeModal action called in Redux");
       state.isReservationsModalOpen = false;
     },
   },

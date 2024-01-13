@@ -40,13 +40,11 @@ const getColorFromName = (colorNameInput: string) => {
 const ProductDetail: React.FC<ProductProps> = ({ product }) => {
   const { currentProduct } = useProductSocket(product); // Pasando el producto completo
   const handleAddToCart = useHandleAddToCart();
-  console.log("Current Product:", currentProduct);
 
   if (!currentProduct) {
     // Manejar el caso cuando currentProduct es null
     return <div>Loading...</div>;
   }
-  console.log("Product Color:", currentProduct.color);
 
   const backgroundColor =
     currentProduct.color && currentProduct.color.toLowerCase() !== "white"
@@ -64,7 +62,7 @@ const ProductDetail: React.FC<ProductProps> = ({ product }) => {
                 currentProduct.imagen_url
                   ? currentProduct.imagen_url.startsWith("http")
                     ? currentProduct.imagen_url
-                    : `https://asdasdasd3.onrender.com${currentProduct.imagen_url}`
+                    : `https://sofiaportafolio.online${currentProduct.imagen_url}`
                   : "/path_to_default_image.jpg"
               }
               alt={currentProduct.nombre}
@@ -148,12 +146,10 @@ export const getServerSideProps = async (
   let product = {};
   try {
     const response = await axios.get(
-      `https://asdasdasd3.onrender.com/api/products/${id}`
+      `https://sofiaportafolio.online/api/products/${id}`
     );
     product = response.data;
-  } catch (error) {
-    console.error("Error fetching product:", error);
-  }
+  } catch (error) {}
   return {
     props: {
       product,

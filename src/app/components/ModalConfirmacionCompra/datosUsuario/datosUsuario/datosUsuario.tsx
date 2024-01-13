@@ -17,7 +17,7 @@ export interface Datos {
 }
 
 interface DatosProps {
-  datosExistentes?: Datos; // Usar 'Datos' aquí
+  datosExistentes?: Datos;
   onContinue: (datos: Datos) => void;
   onBack: () => void;
 }
@@ -81,7 +81,7 @@ const DatosUsuario: React.FC<DatosProps> = ({
 
     try {
       const response = await axios.post(
-        "https://asdasdasd3.onrender.com/api/orders/create",
+        "https://sofiaportafolio.online/api/orders/create",
         {
           total: 100,
           userId,
@@ -105,22 +105,13 @@ const DatosUsuario: React.FC<DatosProps> = ({
           orderId: response.data.orderId,
         });
       } else {
-        console.error(
-          "Error al crear la orden o no se recibió un orderId válido"
-        );
       }
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
       if (axiosError.response) {
-        console.error("Data:", axiosError.response.data);
-        console.error("Status:", axiosError.response.status);
-        console.error("Headers:", axiosError.response.headers);
       } else if (axiosError.request) {
-        console.error("No response received:", axiosError.request);
       } else {
-        console.error("Error setting up the request:", axiosError.message);
       }
-      console.error("Config:", axiosError.config);
     }
   };
 

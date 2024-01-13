@@ -67,17 +67,16 @@ const ResetPasswordPage = () => {
     }
 
     try {
-      await axios.post("https://asdasdasd3.onrender.com/api/users/reset-password", {
+      await axios.post("https://sofiaportafolio.online/api/users/reset-password", {
         token,
         newPassword: password,
       });
       setMessage("Contraseña actualizada con éxito.");
       // Redirigir al usuario después de un corto retraso
       setTimeout(() => {
-        router.push("/"); // Cambia esto a la URL de inicio que prefieras
+        router.push("/");
       }, 2000); // Redirige después de 2 segundos
     } catch (error) {
-      console.error("Error al restablecer contraseña:", error);
       setMessage("Error al restablecer la contraseña. Intente de nuevo.");
     }
   };

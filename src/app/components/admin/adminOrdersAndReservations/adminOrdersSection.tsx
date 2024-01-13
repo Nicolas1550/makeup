@@ -3,7 +3,6 @@ import { useAppDispatch, useAppSelector } from "../../../redux/store/appHooks";
 import {
   fetchOrdersByStatus,
   resetOrders,
-  // Otros actions que necesites
 } from "../../../redux/orderSlice/orderSlice";
 import {
   SummaryContainer,
@@ -20,7 +19,7 @@ import {
   InputContainer,
   DateInputContainer,
   ButtonContainer,
-} from "./stylesAdminReservation"; // Asegúrate de adaptar los estilos
+} from "./stylesAdminReservation";
 import PrintIcon from "@mui/icons-material/Print";
 
 import { format, isSameYear, parseISO } from "date-fns";
@@ -39,7 +38,7 @@ interface AdminOrdersSectionProps {
 interface OrderChartData {
   date: string;
   income: number;
-  totalOrders: number; // Ahora usando totalOrders en lugar de totalCompletadas
+  totalOrders: number;
 }
 interface Order {
   id: number;
@@ -48,7 +47,6 @@ interface Order {
   nombre: string;
   email: string;
   telefono: string;
-  // Agrega cualquier otra propiedad que necesites de la orden
 }
 const formatDate = (startDateString: string, endDateString: string) => {
   const startDate = new Date(startDateString);
@@ -69,9 +67,7 @@ const calculateChartData = (orders: Order[]): OrderChartData[] => {
   const dataMap = new Map<string, { total: number; count: number }>();
 
   orders.forEach((order) => {
-    console.log("Procesando orden:", order); // Verifica los datos de cada orden
     const date = format(parseISO(order.fecha), "yyyy-MM-dd");
-    console.log("Fecha formateada:", date); // Verifica la fecha formateada
 
     if (!dataMap.has(date)) {
       dataMap.set(date, { total: 0, count: 0 });
@@ -88,7 +84,6 @@ const calculateChartData = (orders: Order[]): OrderChartData[] => {
     totalOrders: count,
   }));
 
-  console.log("Processed Chart Data:", result); // Verifica los datos procesados
   return result;
 };
 const AdminOrdersSection: React.FC<AdminOrdersSectionProps> = ({}) => {
@@ -124,7 +119,7 @@ const AdminOrdersSection: React.FC<AdminOrdersSectionProps> = ({}) => {
       const canvas = await html2canvas(ref.current, {
         scale: 2, // Aumenta la resolución de la imagen
         useCORS: true, // Intenta cargar imágenes externas si las hay
-        scrollY: -window.scrollY, // Asegúrate de capturar desde el principio del contenido
+        scrollY: -window.scrollY, // capturar desde el principio del contenido
       });
       const data = canvas.toDataURL("image/png");
       const pdf = new jsPDF({
@@ -199,37 +194,27 @@ const AdminOrdersSection: React.FC<AdminOrdersSectionProps> = ({}) => {
   useEffect(() => {
     if (orders && orders.length > 0) {
       const newChartData = calculateChartData(orders);
-      console.log("New Chart Data:", newChartData);
       setChartData(newChartData);
     }
   }, [orders]);
   useEffect(() => {
     if (orders && orders.length > 0) {
-      console.log("Órdenes actuales:", orders); // Para depurar
       const ordenesCompletadas = orders.filter(
         (order) => order.estado === "Completado"
       );
-      console.log("Órdenes Completadas:", ordenesCompletadas); // Para depurar
 
       const ingresos = ordenesCompletadas.reduce(
         (acc, order) => acc + order.total,
         0
       );
-      console.log("Ingresos Calculados:", ingresos); // Para depurar
 
       setTotalIngresos(ingresos);
       setTotalOrdenesCompletadas(ordenesCompletadas.length);
     }
   }, [orders]);
 
-  useEffect(() => {
-    console.log("ChartData updated:", chartData); // Esto mostrará el estado actualizado de chartData
-  }, [chartData]);
-  useEffect(() => {
-    console.log("Orders from Redux after fetch:", orders);
-  }, [orders]);
-
-  // Funciones para exportar/imprimir (similar a como lo hiciste en ReservationsSummary)
+  useEffect(() => {}, [chartData]);
+  useEffect(() => {}, [orders]);
 
   return (
     <SummaryContainer ref={componentRef}>
@@ -331,7 +316,6 @@ const AdminOrdersSection: React.FC<AdminOrdersSectionProps> = ({}) => {
                     "Pagado con Mercado Pago"
                   )}
                 </td>
-                {/* Agrega cualquier otro detalle de la orden que desees mostrar */}
               </tr>
             ))}
           </TableBody>

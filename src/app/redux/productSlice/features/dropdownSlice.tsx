@@ -1,6 +1,6 @@
 // En src/redux/slices/dropdownSlice.js
 import { createSlice } from "@reduxjs/toolkit";
-import { RootState } from "@/app/redux/store/rootReducer"; // Asegúrate de usar la ruta correcta a tu rootReducer
+import { RootState } from "@/app/redux/store/rootReducer";
 
 export const dropdownSlice = createSlice({
   name: "dropdown",
@@ -9,20 +9,9 @@ export const dropdownSlice = createSlice({
   },
   reducers: {
     toggle: (state) => {
-      console.log(
-        "toggleDropdownMenu action called. Current state:",
-        state.isOpen
-      );
       state.isOpen = !state.isOpen;
-      console.log("New state after toggle:", state.isOpen);
     },
     setOpen: (state, action) => {
-      console.log(
-        "setOpen action called. Current state:",
-        state.isOpen,
-        "New state:",
-        action.payload
-      );
       state.isOpen = action.payload;
     },
   },

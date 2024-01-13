@@ -21,11 +21,11 @@ const useProductSocket = (initialProduct?: ProductType) => {
   );
 
   useEffect(() => {
-    const socket = io("https://asdasdasd3.onrender.com");
+    const socket = io("https://sofiaportafolio.online");
 
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("https://asdasdasd3.onrender.com/api/products");
+        const response = await axios.get("https://sofiaportafolio.online/api/products");
         setProductList(response.data);
         if (currentProduct) {
           const updatedProduct = response.data.find(
@@ -40,7 +40,6 @@ const useProductSocket = (initialProduct?: ProductType) => {
           }
         }
       } catch (error) {
-        console.error("Error fetching products:", error);
       }
     };
 
@@ -51,7 +50,7 @@ const useProductSocket = (initialProduct?: ProductType) => {
       "product-added",
       "product-edited",
       "product-deleted",
-      "prices-updated", // Asegúrate de incluir este evento
+      "prices-updated", 
     ];
     events.forEach((event) => socket.on(event, fetchProducts));
 

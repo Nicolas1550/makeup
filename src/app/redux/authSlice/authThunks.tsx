@@ -7,12 +7,12 @@ interface DecodedToken {
   roles: string[];
   id: string | number | null;
   usuario_id: string | number | null;
-  username: string; // <-- Usa 'username' en lugar de 'name'
+  username: string; 
   [key: string]: unknown;
 }
 
 interface AuthThunkResponse {
-  userRoles: string[]; // ¡Nota el plural aquí!
+  userRoles: string[]; 
   userId: string | number | null;
   userName: string;
 }
@@ -41,20 +41,19 @@ interface RegisterErrorResponse {
 export const verifyToken = createAsyncThunk<AuthThunkResponse, void>(
   "auth/verifyToken",
   async (_, thunkAPI) => {
-    // Añade "thunkAPI" aquí
     const token = localStorage.getItem("jwt");
-    if (!token) return thunkAPI.rejectWithValue("No token found"); // ¡Usa rejectWithValue!
+    if (!token) return thunkAPI.rejectWithValue("No token found"); 
 
     try {
       const decodedToken = jwt_decode(token) as DecodedToken;
       const response = await axios.post(
-        "https://asdasdasd3.onrender.com/api/validateToken",
+        "https://sofiaportafolio.online/api/validateToken",
         { token }
       );
 
       if (!response.data.isValid) {
         localStorage.removeItem("jwt");
-        return thunkAPI.rejectWithValue("Invalid token"); // ¡Usa rejectWithValue!
+        return thunkAPI.rejectWithValue("Invalid token"); 
       }
 
       return {
@@ -63,8 +62,7 @@ export const verifyToken = createAsyncThunk<AuthThunkResponse, void>(
         userName: decodedToken.username,
       };
     } catch (error) {
-      console.error("Token verification failed:", error);
-      return thunkAPI.rejectWithValue("Token verification failed"); // ¡Usa rejectWithValue!
+      return thunkAPI.rejectWithValue("Token verification failed"); 
     }
   }
 );
@@ -79,7 +77,7 @@ export const loginUser = createAsyncThunk(
 
     try {
       const response = await axios.post<LoginResponse>(
-        "https://asdasdasd3.onrender.com/api/login",
+        "https://sofiaportafolio.online/api/login",
         credentials
       );
       const token = response.data.token;
@@ -127,7 +125,7 @@ export const registerUser = createAsyncThunk(
 
     try {
       await axios.post(
-        "https://asdasdasd3.onrender.com/api/users/register",
+        "https://sofiaportafolio.online/api/users/register",
         userData
       );
       thunkAPI.dispatch(setLoading(false));

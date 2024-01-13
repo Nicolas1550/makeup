@@ -19,13 +19,13 @@ import modalReducer from "../sliceModal/modalSlice";
 import filterReducer from "../ProductsFilterSlice/filterSlice";
 import orderReducer from "../orderSlice/orderSlice";
 import reservationReducer from "../productSlice/features/reservationSlice";
-import servicesReducer from "../serviceSlice/servicesSlice"; // Asegúrate de usar la ruta correcta a tu slice de servicios
-import userReducer from "../usersSlice/usersSlice"; //  Importa el userSlice
-import assistantReducer from "../assistantSlice/assistantSlice"; // Importa el nuevo slice
+import servicesReducer from "../serviceSlice/servicesSlice"; 
+import userReducer from "../usersSlice/usersSlice"; 
+import assistantReducer from "../assistantSlice/assistantSlice"; 
 import uiReducer from "../uiSlice/uiSlice";
 import reservationsModalReducer from "../productSlice/features/reservationsModalSlice";
 import dropdownReducer from "../productSlice/features/dropdownSlice";
-import desktopDropdownReducer from "../productSlice/features/desktopDropdownSlice"; // Asegúrate de que la ruta sea correcta
+import desktopDropdownReducer from "../productSlice/features/desktopDropdownSlice"; 
 import contactReducer from "../contactSlice/contactSlice";
 
 // Combina todos tus reducers en un rootReducer

@@ -97,8 +97,6 @@ const CargarComprobante: React.FC<CargarComprobanteProps> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const handleUpload = async (e: ChangeEvent<HTMLInputElement>) => {
-    console.log("Intentando subir archivo");
-
     if (e.target.files) {
       const file = e.target.files[0];
 
@@ -110,15 +108,12 @@ const CargarComprobante: React.FC<CargarComprobanteProps> = ({
       setIsLoading(true);
       try {
         const response = await axios.post<UploadSuccessResponse>(
-          `https://asdasdasd3.onrender.com/api/orders/upload-comprobante/${orderId}`,
+          `https://sofiaportafolio.online/api/orders/upload-comprobante/${orderId}`,
           formData
         );
-        onUploadSuccess({ estado: 'Aprobado', comprobante: file });
-        setIsLoading(false); // Indicador de carga desactivado
-        console.log("Comprobante subido:", response.data);
+        onUploadSuccess({ estado: "Aprobado", comprobante: file });
+        setIsLoading(false);
       } catch (error) {
-        console.error("Error al subir comprobante:", error);
-
         const axiosError = error as AxiosError<ErrorResponse>;
         onUploadError(axiosError);
         setIsLoading(false);
@@ -152,7 +147,7 @@ const CargarComprobante: React.FC<CargarComprobanteProps> = ({
           Archivo cargado: {loadedComprobante.name}
         </LoadedComprobante>
       )}
-      {isLoading && <div>Cargando...</div>} {/* Indicador de carga */}
+      {isLoading && <div>Cargando...</div>}
     </CargarComprobanteContainer>
   );
 };

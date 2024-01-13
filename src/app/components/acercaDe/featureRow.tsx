@@ -137,7 +137,7 @@ const FeatureRow: React.FC<FeatureRowProps> = ({
         />
       </ImageContainer>
       <TextContainer
-        reverse={reverse} // Pasa la prop reverse a TextContainer
+        reverse={reverse}
         variants={textHoverVariants}
         initial="rest"
         whileHover="hover"

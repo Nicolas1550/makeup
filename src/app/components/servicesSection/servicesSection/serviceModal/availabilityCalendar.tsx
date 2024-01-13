@@ -43,7 +43,6 @@ const messages = {
   week: "Semana",
   day: "Día",
   agenda: "Agenda",
-  // ... otros textos que desees personalizar
 };
 
 const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
@@ -53,7 +52,7 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
   onSelectEvent,
   currentView,
   onCurrentViewChange,
-  eventPropGetter, // Añadir esto
+  eventPropGetter, 
 
 }) => {
  
@@ -88,7 +87,7 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
   return (
     <CalendarWrapper>
       <Calendar
-        eventPropGetter={eventPropGetter} // Usar la prop aquí
+        eventPropGetter={eventPropGetter} 
         localizer={localizer}
         events={events}
         startAccessor="start"

@@ -57,10 +57,9 @@ const CustomMenuList = <
 >(
   props: MenuListProps<Option, IsMulti, Group>
 ) => {
-  // Definir estilos con el tipo CSSProperties
   const menuListContainerStyles: CSSProperties = {
     maxHeight: "190px",
-    overflowY: "auto" as const, // 'as const' ayuda a TypeScript a inferir el valor literal correcto
+    overflowY: "auto" as const,
   };
 
   return (
@@ -103,12 +102,11 @@ const useStyles = makeStyles({
     },
     "& .MuiSlider-track": {
       backgroundColor: colors.pinkLight,
-      border: "none", // Añadir esta línea para quitar el borde
+      border: "none",
     },
     "& .MuiSlider-valueLabel": {
       color: colors.pinkDark,
     },
-    // Añadir esta regla para eliminar el borde alrededor del thumb
     "& .MuiSlider-thumb.Mui-focusVisible, & .MuiSlider-thumb:hover": {
       boxShadow: "none",
     },
@@ -137,8 +135,8 @@ const CombinedFilterComponent: React.FC = () => {
   const dispatch = useDispatch();
   const sidebarRef = useRef<HTMLDivElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [scrollY, setScrollY] = useState(0); // Nuevo estado para rastrear la posición del scroll
-  const [isButtonVisible, setIsButtonVisible] = useState(false); // Nuevo estado para la visibilidad del botón
+  const [scrollY, setScrollY] = useState(0);
+  const [isButtonVisible, setIsButtonVisible] = useState(false);
 
   const searchTerm = useSelector((state: RootState) => state.filter.searchTerm);
   const priceRange = useSelector((state: RootState) => state.filter.priceRange);
@@ -169,15 +167,15 @@ const CombinedFilterComponent: React.FC = () => {
     control: (provided, state) => ({
       ...provided,
       minWidth: "200px",
-      margin: 0, // Eliminar cualquier margen
-      padding: 0, // Eliminar cualquier padding
-      borderRadius: "30px", // Más redondeado
+      margin: 0,
+      padding: 0,
+      borderRadius: "30px",
       borderColor: state.isFocused ? "#FF59B4" : provided.borderColor,
       boxShadow: state.isFocused ? "0 0 0 1px #FF59B4" : provided.boxShadow,
       "&:hover": {
         borderColor: state.isFocused ? "#FF59B4" : provided.borderColor,
       },
-      marginTop: 0, // Ajustar el margen superior del menú para reducir el espacio
+      marginTop: 0,
     }),
     menu: (provided) => ({
       ...provided,
@@ -187,35 +185,31 @@ const CombinedFilterComponent: React.FC = () => {
       overflowY: "auto",
       zIndex: 9999,
       borderRadius: "25px",
-
     }),
     menuPortal: (base) => ({
       ...base,
       zIndex: 9999,
-      marginTop: "0px", // Ajustar si es necesario para cerrar la brecha
+      marginTop: "0px",
       borderRadius: "25px",
-
     }),
     option: (provided, state) => ({
       ...provided,
       maxHeight: "150px",
       overflowY: "auto",
       borderRadius: "20px",
-      backgroundColor: state.isFocused ? "rgba(255, 105, 180, 0.2)" : "rosa", // 'rosa' debería ser un color en formato válido
-      color: state.isFocused ? "white" : "black", // Cambia el color del texto al pasar el ratón
-      
+      backgroundColor: state.isFocused ? "rgba(255, 105, 180, 0.2)" : "rosa",
+      color: state.isFocused ? "white" : "black",
+
       "&:hover": {
         backgroundColor: "#FFC1DC",
         color: "white",
-
       },
     }),
     menuList: (provided) => ({
       ...provided,
-      maxHeight: "150px", // Elimina cualquier límite en la altura
-      overflowY: "visible", // Oculta el scroll vertical
+      maxHeight: "150px",
+      overflowY: "visible",
       borderRadius: "25px",
-
     }),
   };
 
@@ -276,13 +270,11 @@ const CombinedFilterComponent: React.FC = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      console.log("handleResize called");
       const isMobileView = window.innerWidth <= 768;
       setIsMobile(isMobileView);
 
       // Si estamos en vista móvil y el teclado virtual está abierto, mantener el estado
       if (isMobileView && document.activeElement instanceof HTMLInputElement) {
-        console.log("Keyboard is open - Keeping current sidebar state");
       } else {
         // Ajustar el estado basado en si estamos en vista móvil o no
         setIsExpanded(!isMobileView);
@@ -327,8 +319,6 @@ const CombinedFilterComponent: React.FC = () => {
   }, []);
 
   const handleScroll = useCallback(() => {
-    console.log("handleScroll called");
-
     const currentScrollY = window.scrollY;
     setIsButtonVisible(currentScrollY > 200);
     setScrollY(currentScrollY);
@@ -346,8 +336,6 @@ const CombinedFilterComponent: React.FC = () => {
   }, [handleScroll, isMobile]);
 
   const updateSidebarState = useCallback(() => {
-    console.log("updateSidebarState called");
-
     const atTop = window.scrollY === 0;
 
     if (isMobile) {
@@ -362,7 +350,7 @@ const CombinedFilterComponent: React.FC = () => {
   useEffect(() => {
     window.addEventListener("scroll", updateSidebarState);
     return () => window.removeEventListener("scroll", updateSidebarState);
-  }, [updateSidebarState, isMobile]); // Añadir 'updateSidebarState' aquí
+  }, [updateSidebarState, isMobile]);
 
   useEffect(() => {
     if (isMobile && isExpanded) {
@@ -373,7 +361,6 @@ const CombinedFilterComponent: React.FC = () => {
     }
   }, [isMobile, isExpanded]);
 
-  // Asegúrate de que isMobile esté definido y actualizado correctamente en tus dependencias de useEffect.
   const handleMouseEnter = () => {
     if (!isMobile && !isColorMenuOpen && !isMarcaMenuOpen) {
       setIsExpanded(true);
@@ -391,7 +378,6 @@ const CombinedFilterComponent: React.FC = () => {
     }
   };
   useEffect(() => {
-    // Cuando se cierra el filtro, también asegúrate de que no esté expandido.
     if (!isFilterOpen) {
       setIsExpanded(false);
       setIsSubMenuOpen(false);
@@ -409,13 +395,13 @@ const CombinedFilterComponent: React.FC = () => {
 
     window.addEventListener("scroll", updateScrollPosition);
     return () => window.removeEventListener("scroll", updateScrollPosition);
-  }, [isMobile]); // Asegurarse de que isMobile esté en la lista de dependencias
+  }, [isMobile]);
 
   useEffect(() => {
     if (!isExpanded) {
       setIsSelectMenuOpen(false);
-      setIsColorMenuOpen(false); // Añadir esto
-      setIsMarcaMenuOpen(false); // Añadir esto
+      setIsColorMenuOpen(false);
+      setIsMarcaMenuOpen(false);
     }
   }, [isExpanded]);
   useEffect(() => {
@@ -435,7 +421,7 @@ const CombinedFilterComponent: React.FC = () => {
       if (submenuElement) {
         const submenuTop = submenuElement.offsetTop;
         sidebarRef.current.scrollTo({
-          top: submenuTop - 20, // ajusta este valor según necesites
+          top: submenuTop - 20,
           behavior: "smooth",
         });
       }
@@ -514,9 +500,8 @@ const CombinedFilterComponent: React.FC = () => {
                   menuPortalTarget={menuPortalTarget}
                   placeholder="Selecciona un color"
                   components={{
-                    MenuList: CustomMenuList, // Usar el componente personalizado
-                    Option: CustomOption, // Opcional, si tienes un componente de opción personalizado
-                    
+                    MenuList: CustomMenuList,
+                    Option: CustomOption,
                   }}
                 />
               )}
@@ -541,8 +526,8 @@ const CombinedFilterComponent: React.FC = () => {
                   menuPortalTarget={menuPortalTarget}
                   placeholder="Selecciona una marca"
                   components={{
-                    MenuList: CustomMenuList, // Usar el componente personalizado
-                    Option: CustomOption, // Opcional, si tienes un componente de opción personalizado
+                    MenuList: CustomMenuList,
+                    Option: CustomOption,
                   }}
                 />
               )}

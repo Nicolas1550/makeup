@@ -16,8 +16,8 @@ import {
   fetchAssignedHelpers,
   assignAssistant,
   removeAssistant,
-} from "../../../redux/assistantSlice/assistantSlice"; // Reemplaza 'pathToYourSlice' con la ruta correcta
-import { useAppDispatch, useAppSelector } from "../../../redux/store/appHooks"; // Asegúrate de usar la ruta correcta a tus hooks
+} from "../../../redux/assistantSlice/assistantSlice";
+import { useAppDispatch, useAppSelector } from "../../../redux/store/appHooks";
 import Select, { StylesConfig } from "react-select";
 interface OptionType {
   value: string;
@@ -95,7 +95,6 @@ const AssignAssistantToService: React.FC<Props> = ({ onClose }) => {
       .then(() => alert("Asignación exitosa!"))
       .catch((error) => {
         alert("Hubo un error en la asignación");
-        console.error(error);
       });
   };
 
@@ -105,7 +104,6 @@ const AssignAssistantToService: React.FC<Props> = ({ onClose }) => {
       .then(() => alert("Ayudante desasignado con éxito!"))
       .catch((error) => {
         alert("Hubo un error al desasignar el ayudante");
-        console.error(error);
       });
   };
   const serviceOptions = services.map((service) => ({

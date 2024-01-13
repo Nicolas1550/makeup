@@ -97,7 +97,6 @@ const AssignRoleToUser: React.FC<Props> = ({ onClose }) => {
   };
   const handleUserChange = (
     newValue: SingleValue<OptionType> | MultiValue<OptionType>
-    // Se eliminó actionMeta ya que no se está usando
   ) => {
     if (newValue && !Array.isArray(newValue) && "value" in newValue) {
       setSelectedUser(newValue.value);
@@ -108,7 +107,6 @@ const AssignRoleToUser: React.FC<Props> = ({ onClose }) => {
 
   const handleHelperChange = (
     newValue: SingleValue<OptionType> | MultiValue<OptionType>
-    // Se eliminó actionMeta ya que no se está usando
   ) => {
     if (newValue && !Array.isArray(newValue) && "value" in newValue) {
       setSelectedHelper(newValue.value);

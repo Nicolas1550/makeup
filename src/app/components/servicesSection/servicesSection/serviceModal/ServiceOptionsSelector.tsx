@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ServiceOption } from "../../../../redux/serviceSlice/servicesSlice"; // Asegúrate de usar la ruta correcta
+import { ServiceOption } from "../../../../redux/serviceSlice/servicesSlice";
 import styled from "styled-components";
 const OptionsContainer = styled.div`
   display: flex;
@@ -48,13 +48,13 @@ const TotalPriceText = styled.div`
 `;
 interface Props {
   options: ServiceOption[];
-  selectedOptions: ServiceOption[]; // Añade esto
+  selectedOptions: ServiceOption[]; 
   onOptionsSelected: (selectedOptions: ServiceOption[]) => void;
 }
 
 const ServiceOptionsSelector: React.FC<Props> = ({
   options,
-  selectedOptions: initialSelectedOptions, // Usa un nombre diferente para evitar confusiones
+  selectedOptions: initialSelectedOptions, 
   onOptionsSelected,
 }) => {
   const [selectedOptions, setSelectedOptions] = useState<ServiceOption[]>(

@@ -21,8 +21,6 @@ const StyledCard: React.FC<StyledCardProps> = ({
   borderStyle,
   courseId,
 }) => {
-  console.log("courseId en StyledCard:", courseId);
-
   const cardRef = useRef<HTMLDivElement>(null);
   const angle = 15;
 

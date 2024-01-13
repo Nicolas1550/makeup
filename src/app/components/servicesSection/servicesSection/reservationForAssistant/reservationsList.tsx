@@ -14,7 +14,6 @@ interface ReservationsListProps {
   format: (date: Date, format: string) => string;
 }
 
-// ReservationsList.tsx
 const ReservationsList: React.FC<ReservationsListProps> = ({
   reservations,
   status,

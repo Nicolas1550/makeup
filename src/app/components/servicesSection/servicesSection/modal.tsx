@@ -13,7 +13,7 @@ interface ModalProps {
   isOpen: boolean;
   title?: string;
   children: React.ReactNode;
-  onCloseCallback?: () => void; // Nuevo callback para cuando el modal se cierra
+  onCloseCallback?: () => void; 
 }
 const Modal: React.FC<ModalProps> = ({
   isOpen,
@@ -28,7 +28,7 @@ const Modal: React.FC<ModalProps> = ({
   const closeButtonContainerStyle: React.CSSProperties = {
     position: "sticky", // Contenedor con position sticky
     top: 0, // Alineado a la parte superior
-    zIndex: 1000, // Asegúrate de que esté sobre otros elementos
+    zIndex: 1000, // sobre otros elementos
     textAlign: "right", // Alinea el botón a la derecha
     paddingTop: "20px", // Espaciado en la parte superior
     paddingRight: "20px", // Espaciado en el lado derecho
@@ -42,7 +42,6 @@ const Modal: React.FC<ModalProps> = ({
   };
 
   const handleBackdropClick = (event: React.MouseEvent<HTMLElement>) => {
-    // Asegúrate de que event.target es un Node antes de llamar a contains
     if (
       modalContentRef.current &&
       !modalContentRef.current.contains(event.target as Node)
@@ -72,9 +71,9 @@ const Modal: React.FC<ModalProps> = ({
               borderRadius: "12px",
               boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
               padding: "1rem",
-              maxWidth: "100%", // Asegúrate de que pueda expandirse al máximo en el contenedor del diálogo
+              maxWidth: "100%", 
               width: "auto",
-              maxHeight: "80vh", // Altura máxima como porcentaje de la ventana gráfica
+              maxHeight: "80vh", 
               overflow: "auto",
             }}
             onClick={(e) => e.stopPropagation()}

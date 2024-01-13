@@ -72,9 +72,7 @@ const Historial: React.FC = () => {
       link.setAttribute("download", fileName);
       document.body.appendChild(link);
       link.click();
-    } catch (error) {
-      console.error("Error descargando el archivo:", error);
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -130,9 +128,7 @@ const Historial: React.FC = () => {
           dispatch(fetchUserOrders());
         }
       })
-      .catch((error) => {
-        console.error("Error al actualizar la orden:", error);
-      });
+      .catch((error) => {});
   };
 
   if (orderError) {
@@ -226,9 +222,7 @@ const Historial: React.FC = () => {
                           }
                         }
                       })
-                      .catch((error) => {
-                        console.error("Error al eliminar la orden:", error);
-                      });
+                      .catch((error) => {});
                   }
                 }}
               >
@@ -253,7 +247,7 @@ const Historial: React.FC = () => {
                 animate={{ opacity: 1, scaleY: 1 }}
                 exit={{ opacity: 0, scaleY: 0 }}
                 transition={{ duration: 0.3 }}
-                style={{ originY: 0, overflow: "hidden" }} // Asegúrate de que se origine desde arriba y de ocultar el overflow
+                style={{ originY: 0, overflow: "hidden" }}
               >
                 <OrderSection>
                   <SectionTitle>
@@ -276,7 +270,7 @@ const Historial: React.FC = () => {
                               detail?.imagen_url
                                 ? detail.imagen_url.startsWith("http")
                                   ? detail.imagen_url
-                                  : `https://asdasdasd3.onrender.com${detail.imagen_url}`
+                                  : `https://sofiaportafolio.online${detail.imagen_url}`
                                 : "/path_to_default_image.jpg"
                             }
                             alt={`Producto ${detail.nombre}`}

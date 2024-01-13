@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import io from "socket.io-client";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store/rootReducer"; // Ajusta la ruta según tu estructura de proyecto
+import { RootState } from "../../../../redux/store/rootReducer";
 import { logout } from "../../../../redux/authSlice/authSlice";
 
 export const useSocket = () => {
@@ -10,7 +10,7 @@ export const useSocket = () => {
   const userId = useSelector((state: RootState) => state.auth.userId);
 
   useEffect(() => {
-    const socket = io("https://asdasdasd3.onrender.com"); // Ajusta esto a tu URL del servidor
+    const socket = io("https://sofiaportafolio.online");
 
     socket.on("connect", () => {
       console.log("Conectado al servidor WebSocket");
@@ -30,6 +30,4 @@ export const useSocket = () => {
       socket.disconnect();
     };
   }, [userId, dispatch]);
-
-  // No retorna nada, ya que su única función es conectar y escuchar
 };

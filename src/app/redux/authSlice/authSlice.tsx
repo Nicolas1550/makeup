@@ -3,20 +3,20 @@ import { loginUser, verifyToken } from "./authThunks";
 
 export interface AuthState {
   isAuthenticated: boolean;
-  userRoles: string[]; // Cambia esto a un array
+  userRoles: string[]; 
   userId: string | number | null;
   isLoading: boolean;
   userName: string | null;
 }
 interface AuthThunkResponse {
-  userRoles: string[]; // Cambia esto a un array
+  userRoles: string[]; 
   userId: string | number | null;
   userName: string;
 }
 
 const initialState: AuthState = {
   isAuthenticated: false,
-  userRoles: [], // Inicializa como un array vacío
+  userRoles: [], 
   userId: null,
   isLoading: false,
   userName: null,
@@ -32,7 +32,7 @@ const authSlice = createSlice({
     loginSuccess(
       state,
       action: PayloadAction<{
-        userRoles: string[]; // Cambia a array
+        userRoles: string[]; 
         userId: string | number | null;
       }>
     ) {
@@ -46,7 +46,7 @@ const authSlice = createSlice({
     },
     logout(state) {
       state.isAuthenticated = false;
-      state.userRoles = []; // Resetea a un array vacío
+      state.userRoles = []; 
       state.userId = null;
       localStorage.removeItem("jwt");
     },

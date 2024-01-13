@@ -100,7 +100,7 @@ const AdminPanel: React.FC<Props> = ({ products }) => {
         <AnimatePresence>
           {isAssignModalOpen && (
             <motion.div
-              key="assignAssistantModal" // Clave única
+              key="assignAssistantModal"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
@@ -114,7 +114,7 @@ const AdminPanel: React.FC<Props> = ({ products }) => {
           )}
           {isAssignRoleModalOpen && (
             <motion.div
-              key="assignRoleModal" // Clave única
+              key="assignRoleModal"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
@@ -130,7 +130,7 @@ const AdminPanel: React.FC<Props> = ({ products }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const response = await axios.get(`https://asdasdasd3.onrender.com/api/products`);
+  const response = await axios.get(`https://sofiaportafolio.online/api/products`);
   const products = response.data;
 
   return {

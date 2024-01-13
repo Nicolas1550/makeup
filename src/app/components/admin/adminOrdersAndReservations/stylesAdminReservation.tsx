@@ -50,8 +50,6 @@ export const Heading = styled.h2`
   margin-bottom: 2rem;
 `;
 
-// ... Resto de componentes estilizados
-
 // Ajustamos la tabla para mejorar la legibilidad y el estilo moderno
 export const Table = styled.table`
   width: 100%;
@@ -161,7 +159,6 @@ export const ErrorText = styled.p`
   font-weight: 500;
   margin-top: 1.5rem;
 `;
-
 
 export const SummaryDetails = styled.div`
   margin-top: 2.5rem;

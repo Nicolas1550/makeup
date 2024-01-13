@@ -106,8 +106,6 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
   const handleSignUpClick = () => setIsSignUp(true);
   useEffect(() => {
     if (isDropdownOpen) {
-      /*       console.log("Dropdown está abierto");
-       */
     }
   }, [isDropdownOpen]);
   useEffect(() => {
@@ -135,26 +133,21 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
 
           // Decodificar el token JWT
           const token = localStorage.getItem("jwt");
-          console.log("Token obtenido del localStorage:", token); // Asegúrate de que este log muestra el token.
           if (token) {
             const decodedToken = jwt.decode(token);
-            console.log("Token decodificado:", decodedToken); // Verifica la estructura del token decodificado aquí.
             if (
               decodedToken &&
               typeof decodedToken === "object" &&
               "id" in decodedToken
             ) {
-              console.log("ID del usuario:", decodedToken.id);
             }
           }
         }
       })
       .catch((error) => {
         if (typeof error === "string") {
-          // Aquí manejas el error cuando es un string. Puede ser un mensaje general de error.
           dispatch(setLoginError(error));
         } else if (error && typeof error === "object") {
-          // Aquí manejas los errores específicos si los hubiera (por ejemplo, contraseña incorrecta)
           dispatch(
             setLoginError("Credenciales incorrectas o cuenta no encontrada")
           );

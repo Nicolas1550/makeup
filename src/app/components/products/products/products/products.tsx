@@ -61,7 +61,7 @@ const ProductCard: React.FC<ProductType & { highlighted?: boolean }> = ({
           <ProductImage
             src={
               imagen_url
-                ? `https://asdasdasd3.onrender.com${imagen_url}`
+                ? `https://sofiaportafolio.online${imagen_url}`
                 : "/path_to_default_image.jpg"
             }
             alt={nombre}
@@ -195,10 +195,10 @@ const Products: React.FC<{
 
   const titleVariants = {
     expanded: {
-      marginBottom: windowWidth > 768 ? "2.5rem" : "1rem", // Ajustar según sea necesario
+      marginBottom: windowWidth > 768 ? "2.5rem" : "1rem", 
     },
     collapsed: {
-      marginTop: windowWidth > 768 ? "2rem" : "2rem", // Ajustar según sea necesario
+      marginTop: windowWidth > 768 ? "2rem" : "2rem", 
     },
   };
   const filterProducts = useCallback(
@@ -245,7 +245,7 @@ const Products: React.FC<{
   // Variantes para la animación de margen superior
   const contentVariants = {
     expanded: {
-      marginTop: "80px", // Ajusta este valor según la altura de tu sidebar expandido
+      marginTop: "80px", 
     },
     collapsed: {
       marginTop: "0px",

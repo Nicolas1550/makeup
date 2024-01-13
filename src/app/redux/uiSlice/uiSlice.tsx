@@ -5,7 +5,7 @@ export const uiSlice = createSlice({
   name: "ui",
   initialState: {
     isSidebarExpanded: false,
-    sidebarOpenedByButton: false, // Nuevo estado
+    sidebarOpenedByButton: false, 
   },
   reducers: {
     toggleSidebar: (state) => {
@@ -15,7 +15,6 @@ export const uiSlice = createSlice({
       state.isSidebarExpanded = action.payload;
     },
     setSidebarOpenedByButton: (state, action) => {
-      // Nueva acción
       state.sidebarOpenedByButton = action.payload;
     },
   },

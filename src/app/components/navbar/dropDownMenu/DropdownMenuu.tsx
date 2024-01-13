@@ -52,14 +52,13 @@ interface DropdownMenuProps {
   onViewHistory: () => void;
   toggleDropdown: () => void;
   closeDropdown: () => void;
-  // Estos dos props son necesarios solo si los estás utilizando dentro de DropdownMenuComponent
   buttonRef: React.RefObject<HTMLButtonElement>;
 }
 
 const DropdownMenuComponent = forwardRef<HTMLDivElement, DropdownMenuProps>(
   (
     { onLogout, onViewHistory, toggleDropdown },
-    ref // Esta es la referencia pasada a través de forwardRef
+    ref 
   ) => {
     const userRoles = useAppSelector((state) => state.auth.userRoles);
     const userId = useAppSelector((state) => state.auth.userId);
@@ -78,7 +77,7 @@ const DropdownMenuComponent = forwardRef<HTMLDivElement, DropdownMenuProps>(
     const handleReservationsClick = (event: React.MouseEvent) => {
       event.stopPropagation();
       dispatch(openModal());
-      dispatch(resetNewReservationsCount()); // Resetear el contador aquí
+      dispatch(resetNewReservationsCount()); 
     };
 
     const handleViewHistoryClick = (event: React.MouseEvent) => {

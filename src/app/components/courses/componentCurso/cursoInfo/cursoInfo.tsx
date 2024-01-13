@@ -34,7 +34,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AnimatePresence, motion } from "framer-motion";
 import { format } from "date-fns";
-import ReservaModal from "./reservaModel"; // Asegúrate de importar correctamente ReservaModal
+import ReservaModal from "./reservaModel";
 import {
   ButtonGroup,
   FormContainer,
@@ -53,7 +53,6 @@ interface OptionType {
   value: string;
   label: string;
 }
-// Asumiendo que estos tipos ya están definidos en otro lugar
 export type Curso = {
   id: number;
   nombre?: string;
@@ -78,7 +77,7 @@ interface Disponibilidad {
   max_reservas: number;
   horarios?: HorarioDisponibilidad[];
   reservasActuales?: number;
-  estado?: string; // Agrega esta línea
+  estado?: string;
 }
 
 type CursoInfoProps = {
@@ -184,7 +183,7 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
     if (reservasActuales === undefined) {
       try {
         const response = await fetch(
-          `https://asdasdasd3.onrender.com/api/reservas/verificar/${disponibilidad.id}`
+          `https://sofiaportafolio.online/api/reservas/verificar/${disponibilidad.id}`
         );
         if (!response.ok) throw new Error("Error al verificar las reservas");
         const data = await response.json();
@@ -210,7 +209,7 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
   // Función para cerrar el modal de reserva
   const handleCloseReservaModal = () => {
     setIsReservaModalOpen(false);
-    setDisponibilidadSeleccionada(null); // Limpiar la disponibilidad seleccionada al cerrar el modal
+    setDisponibilidadSeleccionada(null);
   };
   const dayOptions = [
     { value: "Lunes", label: "Lunes" },
@@ -249,7 +248,7 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
         actualizarEstadoDisponibilidad({
           cursoId: curso.id,
           disponibilidadId,
-          nuevoEstado, // "inactiva" o "finalizada", según tu lógica de negocio
+          nuevoEstado, // "inactiva" o "finalizada"
         })
       )
         .unwrap()
@@ -259,8 +258,8 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
           dispatch(
             fetchDisponibilidades({
               cursoId: curso.id,
-              estado: "activa", // O el estado que necesites filtrar
-              limite: maxInicialDisponibilidades, // O el límite que desees aplicar
+              estado: "activa",
+              limite: maxInicialDisponibilidades,
             })
           );
         })
@@ -284,7 +283,6 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
   };
 
   const formatFecha = (fecha: string) => {
-    // Asumiendo que la fecha está en formato ISO (ej: "2023-11-22T03:00:00.000Z")
     return format(new Date(fecha), "dd/MM/yyyy");
   };
 
@@ -297,7 +295,6 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("handleSubmit iniciado"); // Log para depuración
 
     const logs = [];
 
@@ -371,8 +368,8 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
           dispatch(
             fetchDisponibilidades({
               cursoId: curso.id,
-              estado: "activa", // O el estado que necesites filtrar
-              limite: maxInicialDisponibilidades, // O el límite que desees aplicar
+              estado: "activa",
+              limite: maxInicialDisponibilidades,
             })
           );
         } else {
@@ -401,7 +398,6 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
         }
       }
     } else {
-      console.error("No se ha proporcionado ID de curso válido");
       logs.push("No se ha proporcionado ID de curso válido");
     }
 
@@ -409,7 +405,6 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
     localStorage.setItem("addDisponibilityLogs", JSON.stringify(logs));
   };
 
-  console.log("Disponibilidadess en componente:", disponibilidades);
   useEffect(() => {
     if (curso?.id) {
       // Esta llamada inicial carga las disponibilidades con estado 'activa' y limita los resultados
@@ -426,7 +421,6 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
   useEffect(() => {
     if (curso?.id) {
       setCargandoDisponibilidades(true);
-      // Aquí también se debe ajustar la llamada
       dispatch(
         fetchDisponibilidades({
           cursoId: curso.id,
@@ -437,7 +431,6 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
     }
   }, [curso, dispatch]);
 
-  console.log(nuevaDisponibilidad);
   if (!curso) {
     return (
       <CursoInfoContainer>

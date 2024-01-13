@@ -87,7 +87,7 @@ export const changeOrderStatus = createAsyncThunk<
 
     try {
       const response = await fetch(
-        `https://asdasdasd3.onrender.com/api/orders/update-status/${orderId}`,
+        `https://sofiaportafolio.online/api/orders/update-status/${orderId}`,
         {
           method: "PUT",
           headers: {
@@ -103,7 +103,6 @@ export const changeOrderStatus = createAsyncThunk<
       }
 
       const data: Order = await response.json();
-      console.log("Order status changed successfully. Updated order:", data);
       return data;
     } catch (error) {
       const err = error as Error;
@@ -129,7 +128,7 @@ export const fetchUserOrders = createAsyncThunk<
 
   try {
     const response = await fetch(
-      "https://asdasdasd3.onrender.com/api/orders/user-orders",
+      "https://sofiaportafolio.online/api/orders/user-orders",
       {
         headers: {
           "x-auth-token": userToken,
@@ -172,7 +171,7 @@ export const fetchOrdersByStatus = createAsyncThunk<
       );
     }
 
-    let url = `https://asdasdasd3.onrender.com/api/orders/orders-by-status/${status}`;
+    let url = `https://sofiaportafolio.online/api/orders/orders-by-status/${status}`;
     const queryParams = [];
     if (sortByDate) {
       queryParams.push(`sortByDate=${sortByDate}`);
@@ -198,7 +197,6 @@ export const fetchOrdersByStatus = createAsyncThunk<
       }
 
       const data: Order[] = await response.json();
-      console.log("Data received:", data); // <-- Agrega este log
       return data;
     } catch (error) {
       const err = error as Error;
@@ -225,7 +223,7 @@ export const deleteOrderById = createAsyncThunk<
 
   try {
     const response = await fetch(
-      `https://asdasdasd3.onrender.com/api/orders/order/${orderId}`,
+      `https://sofiaportafolio.online/api/orders/order/${orderId}`,
       {
         method: "DELETE",
         headers: {
@@ -254,13 +252,11 @@ const orderSlice = createSlice({
       state.orders = [];
       state.error = null;
       state.newOrdersCount = 0;
-      // Restablece cualquier otro estado que necesites
     },
     updateOrderState: (
       state,
       action: PayloadAction<{ orderId: number; newState: string }>
     ) => {
-      console.log("Trying to update order with ID:", action.payload.orderId);
       const orderIndex = state.orders.findIndex(
         (order) => order.id === action.payload.orderId
       );
@@ -280,8 +276,6 @@ const orderSlice = createSlice({
       );
     },
     incrementNewOrdersCount: (state) => {
-      console.log("Incrementando contador de órdenes nuevas.");
-
       state.newOrdersCount += 1;
     },
     resetNewOrdersCount: (state) => {
@@ -317,16 +311,9 @@ const orderSlice = createSlice({
         fetchUserOrders.fulfilled,
         (state, action: PayloadAction<Order[] | RejectWithValue<string>>) => {
           if (Array.isArray(action.payload)) {
-            console.log("Cargando órdenes del usuario:", action.payload);
-
             state.orders = action.payload;
             state.error = null;
           } else {
-            console.error(
-              "Error cargando órdenes del usuario:",
-              action.payload.action.error.message
-            );
-
             state.error = action.payload.action.error.message;
           }
         }
@@ -341,12 +328,9 @@ const orderSlice = createSlice({
         fetchOrdersByStatus.fulfilled,
         (state, action: PayloadAction<Order[] | RejectWithValue<string>>) => {
           if (Array.isArray(action.payload)) {
-            console.log("Cargando órdenes del usuario:", action.payload);
-
             state.orders = action.payload;
             state.error = null;
           } else {
-            // Manejo de error
           }
         }
       )

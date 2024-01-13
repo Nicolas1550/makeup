@@ -25,7 +25,7 @@ export const CategoryContainer = styled(motion.div).attrs(() => ({
   align-items: center;
 `;
 export const EditButton = styled.button`
-  background: #808080; // o cualquier otro color que prefieras
+  background: #808080; 
   color: white;
   padding: 8px 16px;
   border: none;
@@ -36,7 +36,7 @@ export const EditButton = styled.button`
   margin-top: 10px;
 
   &:hover {
-    background: #666666; // o cualquier otro color para el hover
+    background: #666666; 
     transform: translateY(-3px);
   }
 `;
@@ -122,7 +122,7 @@ export const ServiceModalContent = styled.div`
   text-align: center;
 
   & > img {
-    width: 200px; // Puedes ajustar esto según lo que necesites
+    width: 200px; 
     height: auto;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);

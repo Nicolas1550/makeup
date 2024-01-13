@@ -24,8 +24,8 @@ import {
 import {
   Description,
   Money,
-  CalendarToday, // ícono para la fecha
-  AccessTime, // ícono para el tiempo
+  CalendarToday,
+  AccessTime,
   School,
 } from "@mui/icons-material";
 import { Event as EventIcon } from "@mui/icons-material";
@@ -91,7 +91,6 @@ function UserReservations() {
         backgroundColor: "#f2e0e4",
       },
     }),
-    // Puedes seguir personalizando otras partes del componente Select aquí...
   };
 
   const handleSelectChange = (option: SingleValue<OptionType>) => {
@@ -107,21 +106,18 @@ function UserReservations() {
 
   useEffect(() => {
     if (userId !== null) {
-      console.log("Despachando fetchReservationsForUser con userId:", userId);
       dispatch(fetchReservationsForUser(userId));
     }
   }, [dispatch, userId]);
   useEffect(() => {
     if (userId !== null) {
-      const userIdNumber = Number(userId); // Convierte userId a número
+      const userIdNumber = Number(userId);
       dispatch(fetchReservasPorCursoYUsuario({ usuarioId: userIdNumber }));
     }
   }, [dispatch, userId]);
 
   if (isLoading) return <p>Cargando reservas...</p>;
   if (error) return <p>Error al cargar reservas: {error}</p>;
-
-  console.log("Reservaciones actuales en Redux:", reservations);
 
   return (
     <CardContainer>
@@ -252,7 +248,7 @@ function UserReservations() {
                           <CardValue>
                             {reservation.comprobante_path ? (
                               <CardLink
-                                href={`https://asdasdasd3.onrender.com/${reservation.comprobante_path}`}
+                                href={`https://sofiaportafolio.online/${reservation.comprobante_path}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                               >
@@ -378,7 +374,6 @@ function UserReservations() {
                             </a>
                           </CardDetails>
                         )}
-                        {/* Aquí puedes agregar más detalles si es necesario */}
                       </motion.div>
                     )}
                   </AnimatePresence>

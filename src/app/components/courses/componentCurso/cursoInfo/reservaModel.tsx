@@ -1,7 +1,7 @@
 // ReservaModal.tsx
 import React, { useEffect, useState } from "react";
 import Modal from "@mui/material/Modal";
-import Stepper from "./steper"; // Asumiendo que tienes un componente stepper
+import Stepper from "./steper";
 import {
   StyledModal,
   StyledButton,
@@ -20,13 +20,13 @@ import { toast } from "react-toastify";
 import {
   HorarioDisponibilidad,
   agregarReserva,
-  subirComprobantePago, // Asegúrate de importar esta acción
+  subirComprobantePago,
 } from "@/app/redux/coursesSlice/coursesSlice";
 import {
   useAppDispatch,
   useAppSelector,
 } from "../../../../redux/store/appHooks";
-import { isEmailValid, isPhoneValid, isTextValid } from "./validations"; // Asumiendo que tienes un archivo de validaciones
+import { isEmailValid, isPhoneValid, isTextValid } from "./validations";
 import { format } from "date-fns";
 
 interface Disponibilidad {
@@ -50,11 +50,11 @@ const ReservaModal: React.FC<ReservaModalProps> = ({
   disponibilidadSeleccionada,
 }) => {
   const [activeStep, setActiveStep] = useState(0);
-  const [comprobanteFile, setComprobanteFile] = useState<File | null>(null); // Estado para el archivo de comprobante
+  const [comprobanteFile, setComprobanteFile] = useState<File | null>(null);
   const [reservaEnProceso, setReservaEnProceso] = useState(false);
 
   const dispatch = useAppDispatch();
-  const usuarioId = useAppSelector((state) => state.auth.userId) as number; // Asumiendo que tienes esto en tu estado global
+  const usuarioId = useAppSelector((state) => state.auth.userId) as number;
   const [nombreUsuario, setNombreUsuario] = useState("");
   const [correoUsuario, setCorreoUsuario] = useState("");
   const [telefonoUsuario, setTelefonoUsuario] = useState("");
@@ -94,8 +94,6 @@ const ReservaModal: React.FC<ReservaModalProps> = ({
     return true;
   };
   const confirmarReserva = async () => {
-    console.log("La reserva ya está en proceso.");
-
     if (reservaEnProceso) return; // Evitar múltiples clics
     setReservaEnProceso(true);
     // Validar los datos del usuario antes de continuar
@@ -104,15 +102,6 @@ const ReservaModal: React.FC<ReservaModalProps> = ({
       setReservaEnProceso(false); // Re-habilitar el botón si la validación falla
       return; // Detener la ejecución si la validación falla
     }
-    console.log("Datos a enviar en la reserva:", {
-      disponibilidad_id: disponibilidadSeleccionada?.id,
-      usuario_id: usuarioId,
-      estado: "pendiente",
-      horarios: disponibilidadSeleccionada?.horarios || [],
-      nombre_usuario: nombreUsuario,
-      correo_usuario: correoUsuario,
-      telefono_usuario: telefonoUsuario,
-    });
 
     if (disponibilidadSeleccionada && comprobanteFile) {
       const resultAction = await dispatch(
@@ -163,7 +152,6 @@ const ReservaModal: React.FC<ReservaModalProps> = ({
       setCorreoUsuario("");
       setTelefonoUsuario("");
       setComprobanteFile(null);
-      // Cualquier otro estado que necesite ser reseteado
     }
   }, [open]);
 
@@ -241,7 +229,6 @@ const ReservaModal: React.FC<ReservaModalProps> = ({
           <StepContainer>
             <StyledTitle>Subir Comprobante de Pago</StyledTitle>
             <StyledInput type="file" onChange={handleComprobanteUpload} />
-          
           </StepContainer>
         );
       default:

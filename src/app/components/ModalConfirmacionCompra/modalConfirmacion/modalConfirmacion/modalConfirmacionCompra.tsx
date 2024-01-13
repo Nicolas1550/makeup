@@ -31,10 +31,9 @@ interface ModalConfirmacionCompraProps {
   isOpen: boolean;
   onClose: () => void;
   onContinuar: () => void;
-  closeModal: () => void; // Nueva prop
+  closeModal: () => void;
   loadedComprobante?: File | null;
 }
-
 
 interface DatosEnvioType {
   metodo_envio: string;
@@ -49,7 +48,7 @@ const ModalConfirmacionCompra: React.FC<ModalConfirmacionCompraProps> = ({
   isOpen,
   onClose,
   onContinuar,
-  closeModal, // Recibe la función callback para cerrar el modal
+  closeModal,
 }) => {
   const productos = useAppSelector((state) => state.cart);
   const [comprobanteMessage, setComprobanteMessage] = useState<string | null>(
@@ -138,7 +137,7 @@ const ModalConfirmacionCompra: React.FC<ModalConfirmacionCompraProps> = ({
                       producto?.imagen_url
                         ? producto.imagen_url.startsWith("http")
                           ? producto.imagen_url
-                          : `https://asdasdasd3.onrender.com${producto.imagen_url}`
+                          : `https://sofiaportafolio.online${producto.imagen_url}`
                         : "/path_to_default_image.jpg"
                     }
                     alt={producto.nombre}
@@ -206,7 +205,7 @@ const ModalConfirmacionCompra: React.FC<ModalConfirmacionCompraProps> = ({
       case 2:
         return (
           <DatosUsuario
-            datosExistentes={datosUsuario} // Pasar los datos existentes
+            datosExistentes={datosUsuario}
             onContinue={(data) => {
               setDatosUsuario(data);
               setOrdenId(data.orderId);
@@ -221,7 +220,7 @@ const ModalConfirmacionCompra: React.FC<ModalConfirmacionCompraProps> = ({
         return (
           <SeleccionEnvio
             orden_id={ordenId || ""}
-            datosEnvio={datosEnvio} // Pasar los datos de envío existentes
+            datosEnvio={datosEnvio}
             onContinue={(datos) => {
               setDatosEnvio(datos);
               setCurrentStep(currentStep + 1);

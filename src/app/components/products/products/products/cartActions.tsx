@@ -10,7 +10,6 @@ export const useHandleAddToCart = () => {
 
   const handleAddToCart = (product: ProductType) => {
     if (!product) {
-      console.error("No se puede agregar al carrito: Producto no disponible");
       return;
     }
 

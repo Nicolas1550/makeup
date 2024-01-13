@@ -27,7 +27,7 @@ const ListProduct: React.FC = () => {
   if (process.env.NODE_ENV === "development" && highlightedProductList) {
   }
   useEffect(() => {
-    const socket = io("https://asdasdasd3.onrender.com");
+    const socket = io("https://sofiaportafolio.online");
     socket.on("product-updated", () => {
       fetchProducts();
     });
@@ -41,13 +41,12 @@ const ListProduct: React.FC = () => {
 
   const fetchProducts = () => {
     axios
-      .get("https://asdasdasd3.onrender.com/api/products")
+      .get("https://sofiaportafolio.online/api/products")
       .then((response) => {
         setProductList(response.data);
         setHighlightedProductList(response.data.slice(0, 6));
       })
       .catch((error) => {
-        console.error("Error fetching products:", error);
       });
   };
 

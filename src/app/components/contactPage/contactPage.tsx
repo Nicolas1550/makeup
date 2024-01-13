@@ -1,6 +1,6 @@
 import React, { useState, FormEvent } from "react";
-import { useAppDispatch, useAppSelector } from "../../redux/store/appHooks"; // Ajusta la ruta según tu estructura
-import { sendContactForm, reset } from "../../redux/contactSlice/contactSlice"; // Ajusta la ruta según tu estructura
+import { useAppDispatch, useAppSelector } from "../../redux/store/appHooks";
+import { sendContactForm, reset } from "../../redux/contactSlice/contactSlice";
 import styled from "styled-components";
 import BackgroundImageWithTitle from "./backgroundImageWithTitle";
 
@@ -91,22 +91,19 @@ const ContactPage: React.FC = () => {
 
     // Validar que todos los campos estén llenos
     if (!name.trim() || !email.trim() || !message.trim()) {
-      alert("Por favor, complete todos los campos."); // O maneja este error de manera más sofisticada
+      alert("Por favor, complete todos los campos.");
       return;
     }
 
     dispatch(sendContactForm({ name, email, message }));
   };
 
-  // Opcional: Resetear el estado cuando el componente se desmonta
   React.useEffect(() => {
     return () => {
       dispatch(reset());
     };
   }, [dispatch]);
-  React.useEffect(() => {
-    console.log("Estado actualizado:", contactStatus);
-  }, [contactStatus]);
+  React.useEffect(() => {}, [contactStatus]);
   return (
     <>
       <BackgroundImageWithTitle />

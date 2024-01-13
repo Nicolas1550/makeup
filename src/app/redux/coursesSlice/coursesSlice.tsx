@@ -13,11 +13,11 @@ export interface ReservaConHorarios {
   fecha_reserva?: string;
   curso_nombre?: string;
   horarios: HorarioDisponibilidad[];
-  nombre_usuario?: string; // Nombre del usuario
-  correo_usuario?: string; // Correo del usuario
-  telefono_usuario?: string; // Teléfono del usuario
-  url_comprobante?: string; // URL del comprobante de pago
-  usuario_nombre?: string; // Nombre del usuario (agregado)
+  nombre_usuario?: string; 
+  correo_usuario?: string; 
+  telefono_usuario?: string; 
+  url_comprobante?: string; 
+  usuario_nombre?: string; 
   fecha_inicio?: string;
   fecha_fin?: string;
 }
@@ -29,14 +29,13 @@ interface Disponibilidad {
   fecha_fin: string;
   max_reservas: number;
   horarios?: HorarioDisponibilidad[];
-  reservasActuales?: number; // Asegúrate de que esta línea esté presente
-  estado?: string; // Agrega esta línea
+  reservasActuales?: number; 
+  estado?: string; 
 }
 interface CursoConDisponibilidades extends Curso {
   disponibilidades?: Disponibilidad[];
 }
 
-// Define las interfaces directamente en este archivo
 interface Clase {
   id: number;
   curso_id: number;
@@ -76,11 +75,11 @@ interface ActualizarEstadoReservaPayload {
 
 interface CursoState {
   cursoActual: CursoConDisponibilidades | null;
-  cursos: Curso[]; // Agregar esta línea si quieres manejar una lista de cursos
+  cursos: Curso[]; 
   disponibilidades: Disponibilidad[];
   loading: boolean;
   error: string | null;
-  reservas: ReservaConHorarios[]; // Asegúrate de que este tipo sea compatible con tu nueva estructura
+  reservas: ReservaConHorarios[]; 
 }
 export const actualizarEstadoDisponibilidad = createAsyncThunk(
   "cursos/actualizarEstadoDisponibilidad",
@@ -94,7 +93,7 @@ export const actualizarEstadoDisponibilidad = createAsyncThunk(
   ) => {
     try {
       const response = await fetch(
-        `https://asdasdasd3.onrender.com/api/cursos/${cursoId}/disponibilidades/${disponibilidadId}`,
+        `https://sofiaportafolio.online/api/cursos/${cursoId}/disponibilidades/${disponibilidadId}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -120,7 +119,7 @@ export const verificarReservasActuales = createAsyncThunk(
   async (disponibilidadId: number, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `https://asdasdasd3.onrender.com/api/reservas/verificar/${disponibilidadId}`
+        `https://sofiaportafolio.online/api/reservas/verificar/${disponibilidadId}`
       );
       if (!response.ok) throw new Error("Error al verificar las reservas");
       return await response.json();
@@ -142,7 +141,7 @@ export const subirComprobantePago = createAsyncThunk(
   ) => {
     try {
       const response = await fetch(
-        `https://asdasdasd3.onrender.com/api/reservas/${reservaId}/comprobante`,
+        `https://sofiaportafolio.online/api/reservas/${reservaId}/comprobante`,
         {
           method: "POST",
           body: comprobanteData,
@@ -174,7 +173,7 @@ export const actualizarEstadoReservaCurso = createAsyncThunk(
   ) => {
     try {
       const response = await fetch(
-        `https://asdasdasd3.onrender.com/api/reservas/cursos/${reservaId}/estado`,
+        `https://sofiaportafolio.online/api/reservas/cursos/${reservaId}/estado`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -183,7 +182,6 @@ export const actualizarEstadoReservaCurso = createAsyncThunk(
       );
       if (!response.ok)
         throw new Error("Error al actualizar estado de la reserva");
-      console.log("Reserva actualizada:", { reservaId, estado });
 
       return { reservaId, estado: estado };
     } catch (error) {
@@ -200,7 +198,7 @@ export const eliminarReservaCurso = createAsyncThunk(
   async (reservaId: number, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `https://asdasdasd3.onrender.com/api/reservas/cursos/${reservaId}`,
+        `https://sofiaportafolio.online/api/reservas/cursos/${reservaId}`,
         {
           method: "DELETE",
         }
@@ -221,13 +219,12 @@ export const fetchTodasLasReservas = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `https://asdasdasd3.onrender.com/api/reservas/todas`
+        `https://sofiaportafolio.online/api/reservas/todas`
       );
       if (!response.ok) {
         throw new Error("Error al obtener todas las reservas");
       }
       const reservas = await response.json();
-      console.log("Reservas recibidas con fechas de inicio y fiin:", reservas);
 
       return reservas as ReservaConHorarios[];
     } catch (error) {
@@ -247,7 +244,7 @@ export const updateCursoPrecio = createAsyncThunk<
   async ({ cursoId, nuevoPrecio }, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `https://asdasdasd3.onrender.com/api/cursos/${cursoId}/precio`,
+        `https://sofiaportafolio.online/api/cursos/${cursoId}/precio`,
         {
           method: "PUT",
           headers: {
@@ -280,7 +277,7 @@ export const fetchReservasAdminPorCurso = createAsyncThunk<
   async ({ cursoId }, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `https://asdasdasd3.onrender.com/api/cursos/${cursoId}/reservas/admin`
+        `https://sofiaportafolio.online/api/cursos/${cursoId}/reservas/admin`
       );
 
       if (!response.ok) {
@@ -288,7 +285,6 @@ export const fetchReservasAdminPorCurso = createAsyncThunk<
       }
 
       const reservas = await response.json();
-      console.log("Reservas recibidas en el thunk:", reservas); // Añade esta línea para el registro
       return reservas as ReservaConHorarios[];
     } catch (error) {
       return rejectWithValue(
@@ -307,7 +303,7 @@ export const fetchReservasPorCursoYUsuario = createAsyncThunk<
   async ({ usuarioId }, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `https://asdasdasd3.onrender.com/api/cursos/usuarios/${usuarioId}/reservas`
+        `https://sofiaportafolio.online/api/cursos/usuarios/${usuarioId}/reservas`
       );
 
       if (!response.ok) {
@@ -333,7 +329,7 @@ export const deleteImageFromCurso = createAsyncThunk<
   async ({ cursoId, imagenId }, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `https://asdasdasd3.onrender.com/api/cursos/${cursoId}/imagenes/${imagenId}`,
+        `https://sofiaportafolio.online/api/cursos/${cursoId}/imagenes/${imagenId}`,
         {
           method: "DELETE",
         }
@@ -344,9 +340,8 @@ export const deleteImageFromCurso = createAsyncThunk<
       }
 
       const data = await response.json();
-      return { message: data.message, imagenId }; // Asegúrate de que esto concuerde con la respuesta del servidor
+      return { message: data.message, imagenId }; 
     } catch (error) {
-      console.error("Error al eliminar imagen", error);
       return rejectWithValue(
         error instanceof Error ? error.message : "Error desconocido"
       );
@@ -363,7 +358,7 @@ export const agregarHorariosDisponibilidad = createAsyncThunk<
   async ({ disponibilidadId, horarios }, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `https://asdasdasd3.onrender.com/api/disponibilidades/${disponibilidadId}/horarios`,
+        `https://sofiaportafolio.online/api/disponibilidades/${disponibilidadId}/horarios`,
         {
           method: "POST",
           headers: {
@@ -395,7 +390,7 @@ export const fetchDisponibilidades = createAsyncThunk<
   "cursos/fetchDisponibilidades",
   async ({ cursoId, estado, limite }, { rejectWithValue }) => {
     try {
-      const url = `https://asdasdasd3.onrender.com/api/cursos/${cursoId}/disponibilidades`;
+      const url = `https://sofiaportafolio.online/api/cursos/${cursoId}/disponibilidades`;
  
       const params = new URLSearchParams();
       if (estado) {
@@ -438,14 +433,9 @@ export const agregarDisponibilidad = createAsyncThunk<
     { rejectWithValue }
   ) => {
     try {
-      console.log("Agregando disponibilidad:", {
-        cursoId,
-        fecha_inicio,
-        fecha_fin,
-        max_reservas,
-      }); // Nuevo log
+     
       const response = await fetch(
-        `https://asdasdasd3.onrender.com/api/cursos/${cursoId}/disponibilidades`,
+        `https://sofiaportafolio.online/api/cursos/${cursoId}/disponibilidades`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -458,11 +448,9 @@ export const agregarDisponibilidad = createAsyncThunk<
       }
 
       const nuevaDisponibilidad = await response.json();
-      console.log("Disponibilidad agregada:", nuevaDisponibilidad); // Nuevo log
 
       return nuevaDisponibilidad as Disponibilidad;
     } catch (error) {
-      console.error("Error en agregarDisponibilidad:", error); // Nuevo log
       return rejectWithValue(
         error instanceof Error ? error.message : "Error desconocido"
       );
@@ -474,7 +462,7 @@ export const agregarReservaConDatos = createAsyncThunk(
   async (datosReserva: ReservaConHorarios, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `https://asdasdasd3.onrender.com/api/reservas`,
+        `https://sofiaportafolio.online/api/reservas`,
         {
           method: "POST",
           headers: {
@@ -501,17 +489,15 @@ export const agregarReservaConDatos = createAsyncThunk(
   }
 );
 // Agregar reserva a una disponibilidad
-// Agregar reserva a una disponibilidad
 export const agregarReserva = createAsyncThunk<
   ReservaConHorarios, // Tipo de respuesta esperada
   ReservaConHorarios, // Tipo de argumento para la acción
   { rejectValue: string }
 >("cursos/agregarReserva", async (datosReserva, { rejectWithValue }) => {
-  console.log("Enviando datos de reserva:", datosReserva); // Log para depurar
 
   try {
     const response = await fetch(
-      `https://asdasdasd3.onrender.com/api/reservas`,
+      `https://sofiaportafolio.online/api/reservas`,
       {
         method: "POST",
         headers: {
@@ -547,9 +533,8 @@ export const addImageToCurso = createAsyncThunk<
   "cursos/addImageToCurso",
   async ({ cursoId, imageData }, { rejectWithValue }) => {
     try {
-      console.log("Enviando imagen al servidor", { cursoId, imageData });
       const response = await fetch(
-        `https://asdasdasd3.onrender.com/api/cursos/${cursoId}/imagenes`,
+        `https://sofiaportafolio.online/api/cursos/${cursoId}/imagenes`,
         {
           method: "POST",
           body: imageData,
@@ -561,10 +546,8 @@ export const addImageToCurso = createAsyncThunk<
       }
 
       const data = await response.json();
-      console.log("Respuesta del servidor al subir imagen", data);
-      return data as ImagenUploadResponse; // Asegúrate de que esto concuerde con la respuesta del servidor
+      return data as ImagenUploadResponse; 
     } catch (error) {
-      console.error("Error al subir imagen", error);
       return rejectWithValue(
         error instanceof Error ? error.message : "Error desconocido"
       );
@@ -578,18 +561,15 @@ export const fetchCursoCompletoById = createAsyncThunk<
   { rejectValue: string }
 >("cursos/fetchCursoCompletoById", async (cursoId, { rejectWithValue }) => {
   try {
-    console.log("Solicitando datos del curso", cursoId);
     const response = await fetch(
-      `https://asdasdasd3.onrender.com/api/cursos/${cursoId}/completo`
+      `https://sofiaportafolio.online/api/cursos/${cursoId}/completo`
     );
     if (!response.ok) {
       throw new Error("No se pudo cargar el curso");
     }
     const curso = await response.json();
-    console.log("Datos del curso recibidos", curso);
     return curso as Curso;
   } catch (error) {
-    console.error("Error al cargar datos del curso", error);
     return rejectWithValue(
       error instanceof Error ? error.message : "Error desconocido"
     );
@@ -598,7 +578,7 @@ export const fetchCursoCompletoById = createAsyncThunk<
 
 const initialState: CursoState = {
   cursoActual: null,
-  cursos: [], // Inicializar la lista de cursos aquí
+  cursos: [], 
   disponibilidades: [],
   reservas: [],
   loading: false,
@@ -685,10 +665,7 @@ const cursosSlice = createSlice({
         );
         if (reservaIndex !== -1) {
           state.reservas[reservaIndex].estado = estado;
-          console.log(
-            "Estado de reserva actualizado en el reducer",
-            state.reservas[reservaIndex]
-          );
+        
         }
       })
       .addCase(actualizarEstadoReservaCurso.rejected, (state, action) => {
@@ -703,7 +680,6 @@ const cursosSlice = createSlice({
         state.error = action.error.message || "Error desconocido";
       })
       .addCase(fetchTodasLasReservas.fulfilled, (state, action) => {
-        // Aquí puedes decidir cómo quieres almacenar estas reservas en el estado
         state.reservas = action.payload;
       })
       .addCase(fetchTodasLasReservas.rejected, (state, action) => {
@@ -739,12 +715,10 @@ const cursosSlice = createSlice({
         state.error = action.error.message || "Error desconocido";
       })
       .addCase(agregarReserva.fulfilled, (state, action) => {
-        // Asegúrate de que la acción devuelva un objeto de tipo ReservaConHorarios
         const nuevaReserva: ReservaConHorarios = action.payload;
         state.reservas.push(nuevaReserva);
       })
       .addCase(agregarReserva.rejected, (state, action) => {
-        // Aquí puedes manejar el error
         if (action.payload) {
           // Si el payload contiene un mensaje de error específico
           state.error = action.payload;
@@ -780,21 +754,18 @@ const cursosSlice = createSlice({
         state.error = action.error?.message || "Error desconocido";
       })
       .addCase(agregarDisponibilidad.fulfilled, (state, action) => {
-        // Aquí manejas la acción cuando se completa con éxito
         const nuevaDisponibilidad: Disponibilidad = action.payload;
 
         state.disponibilidades.push(nuevaDisponibilidad);
       })
       .addCase(agregarDisponibilidad.rejected, (state, action) => {
-        // Aquí manejas la acción cuando falla
         state.error = action.error.message || "Error desconocido";
       })
 
       .addCase(addImageToCurso.fulfilled, (state, action) => {
         if (state.cursoActual && state.cursoActual.imagenes) {
-          // Suponiendo que el backend devuelve el ID de la nueva imagen
           const nuevaImagen: ImagenCurso = {
-            id: state.cursoActual.imagenes.length + 1, // O el ID devuelto por el backend si está disponible
+            id: state.cursoActual.imagenes.length + 1, 
             curso_id: parseInt(action.meta.arg.cursoId),
             url_imagen: action.payload.path,
             descripcion: "",

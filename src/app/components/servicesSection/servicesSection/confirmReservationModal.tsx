@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../redux/store/appHooks"; // <-- Agregado useAppSelector
+import { useAppDispatch, useAppSelector } from "../../../redux/store/appHooks"; 
 import {
   ServiceOption,
   fetchServiceOptions,
@@ -32,7 +32,7 @@ import {
 } from "./stylesConfirmReservation";
 import ServiceOptionsSelector from "../servicesSection/serviceModal/ServiceOptionsSelector";
 
-const socket = io("https://asdasdasd3.onrender.com");
+const socket = io("https://sofiaportafolio.online");
 
 interface ConfirmReservationModalProps {
   isOpen: boolean;
@@ -113,8 +113,6 @@ const ConfirmReservationModal: React.FC<ConfirmReservationModalProps> = ({
   }, [step, onRequestClose]);
 
   const handleConfirmation = async () => {
-    console.log("Service ID a enviar:", serviceId);
-    console.log("Disponibilidad ID a enviar:", disponibilidadId);
     if (file && disponibilidadId) {
       try {
         const actionResult = await dispatch(
@@ -127,7 +125,7 @@ const ConfirmReservationModal: React.FC<ConfirmReservationModalProps> = ({
         );
 
         if (uploadProofOfPayment.fulfilled.match(actionResult)) {
-          setStep(4); // Pasamos al paso 4
+          setStep(4); 
           socket.emit("availabilityChanged", {
             disponibilidadId: disponibilidadId,
           });
@@ -151,9 +149,9 @@ const ConfirmReservationModal: React.FC<ConfirmReservationModalProps> = ({
   }, [serviceId, optionsForService, fetchedServices, dispatch]);
   useEffect(() => {
     if (!isOpen) {
-      setStep(1); // Reiniciar el paso al valor inicial
-      setSelectedOptions([]); // Opcional: reiniciar también las opciones seleccionadas si es necesario
-      setFile(null); // Reiniciar cualquier otro estado relevante para el modal
+      setStep(1); 
+      setSelectedOptions([]); 
+      setFile(null); 
     }
   }, [isOpen]);
 
@@ -184,7 +182,7 @@ const ConfirmReservationModal: React.FC<ConfirmReservationModalProps> = ({
             <OptionTitle>Selecciona Las Opciones:</OptionTitle>
             <ServiceOptionsSelector
               options={optionsForService}
-              selectedOptions={selectedOptions} // Paso de las opciones seleccionadas
+              selectedOptions={selectedOptions} 
               onOptionsSelected={handleOptionsSelected}
             />
           </ServiceOptionsContainer>

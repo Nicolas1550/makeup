@@ -1,6 +1,6 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import CloseIcon from "@mui/icons-material/Close"; // Asegúrate de importar CloseIcon
+import CloseIcon from "@mui/icons-material/Close";
 import {
   StyledDialog,
   StyledDialogTitle,
