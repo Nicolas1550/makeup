@@ -96,6 +96,10 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
   const disponibilidadesActivas = disponibilidades.filter(
     (d) => d.estado === "activa"
   );
+  const disponibilidadesOrdenadas = [...disponibilidadesActivas].sort(
+    (a, b) =>
+      new Date(a.fecha_inicio).getTime() - new Date(b.fecha_inicio).getTime()
+  );
 
   const [isReservaModalOpen, setIsReservaModalOpen] = useState(false);
   const [disponibilidadSeleccionada, setDisponibilidadSeleccionada] =
@@ -595,7 +599,7 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
           {cargandoDisponibilidades ? (
             <CircularProgress /> // Spinner mostrado durante la carga
           ) : (
-            disponibilidadesActivas
+            disponibilidadesOrdenadas
               .filter((d) => d.curso_id === curso.id)
               .slice(0, cantidadMostrada)
               .map((disp) => (

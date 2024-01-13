@@ -37,6 +37,7 @@ import {
   MobileMenuButton,
 } from "../navbarStyles/navBarResponsiveStyles";
 import MenuIcon from "@mui/icons-material/Menu";
+import { useSocket } from "../../admin/login/loginUserAdmin/useSocket";
 
 const linkVariants = {
   open: {
@@ -145,7 +146,7 @@ const Navbar: React.FC = () => {
   const [comprobanteCargado, setComprobanteCargado] = useState<{
     comprobante: File;
   } | null>(null);
-
+  useSocket();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [isMounted, setIsMounted] = useState(false);
@@ -268,16 +269,16 @@ const Navbar: React.FC = () => {
         setIsDropdownOpen(false);
       }
     };
-  
+
     // Añadir listener para el scroll
     window.addEventListener("scroll", handleScroll, { passive: true });
-  
+
     // Limpiar el listener para el scroll
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [isDropdownOpen, isReservationsModalOpen, isHistoryModalOpen]);
-  
+
   const handleMobileMenuToggle = () => {
     // Cambiar el estado del menú móvil
     setIsMenuOpen(!isMenuOpen);
