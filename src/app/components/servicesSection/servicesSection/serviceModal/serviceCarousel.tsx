@@ -98,10 +98,12 @@ const ServiceCarousel: React.FC<ServiceCarouselProps> = memo(
               <SwiperSlide key={index}>
                 <ImageContainer>
                   <img
-                    src={`https://asdasdasd3.onrender.com/uploads/${image}`}
+                    src={`https://asdasdasd3.onrender.com/${image.replace(
+                      /\\/g,
+                      "/"
+                    )}`}
                     alt={`Carousel ${index}`}
                   />
-
                   {isUserAssigned && isEditing && (
                     <DeleteIconButton onClick={() => handleDeleteImage(image)}>
                       🗑️
@@ -135,6 +137,6 @@ const ServiceCarousel: React.FC<ServiceCarouselProps> = memo(
     );
   }
 );
-ServiceCarousel.displayName = "ServiceCarousel"; // Asigna un nombre de visualización
+ServiceCarousel.displayName = 'ServiceCarousel'; // Asigna un nombre de visualización
 
 export default ServiceCarousel;

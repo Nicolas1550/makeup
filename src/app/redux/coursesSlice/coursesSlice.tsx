@@ -320,7 +320,7 @@ export const fetchReservasPorCursoYUsuario = createAsyncThunk<
   }
 );
 
-/* export const deleteImageFromCurso = createAsyncThunk<
+export const deleteImageFromCurso = createAsyncThunk<
   { message: string; imagenId: number },
   { cursoId: string; imagenId: number },
   { rejectValue: string }
@@ -347,8 +347,8 @@ export const fetchReservasPorCursoYUsuario = createAsyncThunk<
       );
     }
   }
-); */
-export const deleteImageFromCurso = createAsyncThunk<
+);
+/* export const deleteImageFromCurso = createAsyncThunk<
   { message: string; imagenId: number },
   { cursoId: string; imagenId: number },
   { rejectValue: string }
@@ -383,7 +383,7 @@ export const deleteImageFromCurso = createAsyncThunk<
       return { message: "Eliminación desactivada", imagenId };
     }
   }
-);
+); */
 
 export const agregarHorariosDisponibilidad = createAsyncThunk<
   HorarioDisponibilidad[],
@@ -559,7 +559,7 @@ export const agregarReserva = createAsyncThunk<
   }
 });
 
-/* export const addImageToCurso = createAsyncThunk<
+export const addImageToCurso = createAsyncThunk<
   ImagenUploadResponse,
   { cursoId: string; imageData: FormData },
   { rejectValue: string }
@@ -587,8 +587,8 @@ export const agregarReserva = createAsyncThunk<
       );
     }
   }
-); */
-export const addImageToCurso = createAsyncThunk<
+);
+/* export const addImageToCurso = createAsyncThunk<
   ImagenUploadResponse,
   { cursoId: string; imageData: FormData },
   { rejectValue: string }
@@ -629,7 +629,7 @@ export const addImageToCurso = createAsyncThunk<
       } as ImagenUploadResponse);
     }
   }
-);
+); */
 
 export const fetchCursoCompletoById = createAsyncThunk<
   Curso,
