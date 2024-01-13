@@ -98,12 +98,10 @@ const ServiceCarousel: React.FC<ServiceCarouselProps> = memo(
               <SwiperSlide key={index}>
                 <ImageContainer>
                   <img
-                    src={`https://asdasdasd3.onrender.com/uploads/${image.replace(
-                      /\\/g,
-                      "/"
-                    )}`}
+                    src={`https://asdasdasd3.onrender.com/uploads/${image}`}
                     alt={`Carousel ${index}`}
                   />
+
                   {isUserAssigned && isEditing && (
                     <DeleteIconButton onClick={() => handleDeleteImage(image)}>
                       🗑️
