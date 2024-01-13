@@ -131,12 +131,12 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
           </InnerTextBox>
         </TextContainer>
       </MainContainer>
-   {/*    {isAdmin && (
+      {isAdmin && (
         <Button onClick={toggleEditMode}>
           {isEditing ? <DoneIcon /> : <EditIcon />}
           {isEditing ? "Finalizar Edición" : "Editar"}
         </Button>
-      )} */}
+      )}
 
       {isEditing && (
         <div>
