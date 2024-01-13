@@ -33,7 +33,7 @@ const websocketMiddleware = (storeAPI: MiddlewareAPI) => {
 
     if (token) {
       axios
-        .post("https://sofiaportafolio.online/api/validateToken", { token })
+        .post("https://asdasdasd3.onrender.com/api/validateToken", { token })
         .then((response) => {
           if (response.data.isValid) {
             const decodedToken: DecodedToken = jwt_decode(token);
@@ -55,7 +55,7 @@ const websocketMiddleware = (storeAPI: MiddlewareAPI) => {
   }
 
   // Websocket events
-  const socket = io("https://sofiaportafolio.online");
+  const socket = io("https://asdasdasd3.onrender.com");
 
   socket.on("new-reservation", (data) => {
     thunkDispatch(fetchReservationDetails(data.reservationId));

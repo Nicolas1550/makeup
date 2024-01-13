@@ -270,7 +270,7 @@ const Historial: React.FC = () => {
                               detail?.imagen_url
                                 ? detail.imagen_url.startsWith("http")
                                   ? detail.imagen_url
-                                  : `https://sofiaportafolio.online${detail.imagen_url}`
+                                  : `https://asdasdasd3.onrender.com${detail.imagen_url}`
                                 : "/path_to_default_image.jpg"
                             }
                             alt={`Producto ${detail.nombre}`}
