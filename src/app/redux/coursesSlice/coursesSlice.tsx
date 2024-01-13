@@ -13,11 +13,11 @@ export interface ReservaConHorarios {
   fecha_reserva?: string;
   curso_nombre?: string;
   horarios: HorarioDisponibilidad[];
-  nombre_usuario?: string; 
-  correo_usuario?: string; 
-  telefono_usuario?: string; 
-  url_comprobante?: string; 
-  usuario_nombre?: string; 
+  nombre_usuario?: string;
+  correo_usuario?: string;
+  telefono_usuario?: string;
+  url_comprobante?: string;
+  usuario_nombre?: string;
   fecha_inicio?: string;
   fecha_fin?: string;
 }
@@ -29,8 +29,8 @@ interface Disponibilidad {
   fecha_fin: string;
   max_reservas: number;
   horarios?: HorarioDisponibilidad[];
-  reservasActuales?: number; 
-  estado?: string; 
+  reservasActuales?: number;
+  estado?: string;
 }
 interface CursoConDisponibilidades extends Curso {
   disponibilidades?: Disponibilidad[];
@@ -75,11 +75,11 @@ interface ActualizarEstadoReservaPayload {
 
 interface CursoState {
   cursoActual: CursoConDisponibilidades | null;
-  cursos: Curso[]; 
+  cursos: Curso[];
   disponibilidades: Disponibilidad[];
   loading: boolean;
   error: string | null;
-  reservas: ReservaConHorarios[]; 
+  reservas: ReservaConHorarios[];
 }
 export const actualizarEstadoDisponibilidad = createAsyncThunk(
   "cursos/actualizarEstadoDisponibilidad",
@@ -320,7 +320,7 @@ export const fetchReservasPorCursoYUsuario = createAsyncThunk<
   }
 );
 
-export const deleteImageFromCurso = createAsyncThunk<
+/* export const deleteImageFromCurso = createAsyncThunk<
   { message: string; imagenId: number },
   { cursoId: string; imagenId: number },
   { rejectValue: string }
@@ -345,6 +345,42 @@ export const deleteImageFromCurso = createAsyncThunk<
       return rejectWithValue(
         error instanceof Error ? error.message : "Error desconocido"
       );
+    }
+  }
+); */
+export const deleteImageFromCurso = createAsyncThunk<
+  { message: string; imagenId: number },
+  { cursoId: string; imagenId: number },
+  { rejectValue: string }
+>(
+  "cursos/deleteImageFromCurso",
+  async ({ cursoId, imagenId }, { rejectWithValue }) => {
+    // Condición para desactivar la eliminación real
+    const eliminarImagen = false; // Cambiar a 'true' para activar la eliminación
+
+    if (eliminarImagen) {
+      try {
+        const response = await fetch(
+          `https://asdasdasd3.onrender.com/api/cursos/${cursoId}/imagenes/${imagenId}`,
+          {
+            method: "DELETE",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("No se pudo eliminar la imagen");
+        }
+
+        const data = await response.json();
+        return { message: data.message, imagenId };
+      } catch (error) {
+        return rejectWithValue(
+          error instanceof Error ? error.message : "Error desconocido"
+        );
+      }
+    } else {
+      // Devolver un resultado fijo en caso de que la eliminación esté desactivada
+      return { message: "Eliminación desactivada", imagenId };
     }
   }
 );
@@ -391,7 +427,7 @@ export const fetchDisponibilidades = createAsyncThunk<
   async ({ cursoId, estado, limite }, { rejectWithValue }) => {
     try {
       const url = `https://asdasdasd3.onrender.com/api/cursos/${cursoId}/disponibilidades`;
- 
+
       const params = new URLSearchParams();
       if (estado) {
         params.append("estado", estado);
@@ -399,7 +435,7 @@ export const fetchDisponibilidades = createAsyncThunk<
       if (limite !== undefined) {
         params.append("limite", limite.toString());
       }
- 
+
       const fullUrl = `${url}?${params.toString()}`;
       const response = await fetch(fullUrl);
       if (!response.ok) {
@@ -433,7 +469,6 @@ export const agregarDisponibilidad = createAsyncThunk<
     { rejectWithValue }
   ) => {
     try {
-     
       const response = await fetch(
         `https://asdasdasd3.onrender.com/api/cursos/${cursoId}/disponibilidades`,
         {
@@ -494,7 +529,6 @@ export const agregarReserva = createAsyncThunk<
   ReservaConHorarios, // Tipo de argumento para la acción
   { rejectValue: string }
 >("cursos/agregarReserva", async (datosReserva, { rejectWithValue }) => {
-
   try {
     const response = await fetch(
       `https://asdasdasd3.onrender.com/api/reservas`,
@@ -525,7 +559,7 @@ export const agregarReserva = createAsyncThunk<
   }
 });
 
-export const addImageToCurso = createAsyncThunk<
+/* export const addImageToCurso = createAsyncThunk<
   ImagenUploadResponse,
   { cursoId: string; imageData: FormData },
   { rejectValue: string }
@@ -553,6 +587,48 @@ export const addImageToCurso = createAsyncThunk<
       );
     }
   }
+); */
+export const addImageToCurso = createAsyncThunk<
+  ImagenUploadResponse,
+  { cursoId: string; imageData: FormData },
+  { rejectValue: string }
+>(
+  "cursos/addImageToCurso",
+  async ({ cursoId, imageData }, { rejectWithValue }) => {
+    // Variable para controlar si se debe realizar la carga real
+    const realizarCarga = false;
+
+    if (realizarCarga) {
+      // Realiza la carga de la imagen si 'realizarCarga' es verdadero
+      try {
+        const response = await fetch(
+          `https://asdasdasd3.onrender.com/api/cursos/${cursoId}/imagenes`,
+          {
+            method: "POST",
+            body: imageData,
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("No se pudo cargar la imagen");
+        }
+
+        const data = await response.json();
+        return data as ImagenUploadResponse;
+      } catch (error) {
+        return rejectWithValue(
+          error instanceof Error ? error.message : "Error desconocido"
+        );
+      }
+    } else {
+      // Devuelve un resultado fijo si 'realizarCarga' es falso
+      return Promise.resolve({
+        message: "Carga de imagen simulada exitosamente",
+        imagenId: Date.now(), // Genera un ID falso para la imagen
+        path: "ruta/ficticia/de/la/imagen.jpg",
+      } as ImagenUploadResponse);
+    }
+  }
 );
 
 export const fetchCursoCompletoById = createAsyncThunk<
@@ -578,7 +654,7 @@ export const fetchCursoCompletoById = createAsyncThunk<
 
 const initialState: CursoState = {
   cursoActual: null,
-  cursos: [], 
+  cursos: [],
   disponibilidades: [],
   reservas: [],
   loading: false,
@@ -665,7 +741,6 @@ const cursosSlice = createSlice({
         );
         if (reservaIndex !== -1) {
           state.reservas[reservaIndex].estado = estado;
-        
         }
       })
       .addCase(actualizarEstadoReservaCurso.rejected, (state, action) => {
@@ -765,7 +840,7 @@ const cursosSlice = createSlice({
       .addCase(addImageToCurso.fulfilled, (state, action) => {
         if (state.cursoActual && state.cursoActual.imagenes) {
           const nuevaImagen: ImagenCurso = {
-            id: state.cursoActual.imagenes.length + 1, 
+            id: state.cursoActual.imagenes.length + 1,
             curso_id: parseInt(action.meta.arg.cursoId),
             url_imagen: action.payload.path,
             descripcion: "",
