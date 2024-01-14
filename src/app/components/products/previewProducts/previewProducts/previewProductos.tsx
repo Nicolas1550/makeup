@@ -49,6 +49,7 @@ const ProductPreview: React.FC<ProductPreviewProps> = ({ productList }) => {
               width={1500}
               height={500}
               quality={100} 
+              priority
             />
           </ProductSlide>
         ))}

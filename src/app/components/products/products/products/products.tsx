@@ -31,6 +31,8 @@ import { useAppSelector } from "@/app/redux/store/appHooks";
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useState } from "react";
 import LoadingSpinner from "./loadingSpinner";
+import Image from "next/image";
+import styles from "./ImageStyles.module.css";
 
 const getProductLink = (productId: number) => `/products/${productId}`;
 
@@ -57,13 +59,15 @@ const ProductCard: React.FC<ProductType & { highlighted?: boolean }> = ({
         style={{ textDecoration: "none" }}
       >
         <div style={{ cursor: "pointer" }}>
-          <ProductImage
+          <Image
             src={
               imagen_url
                 ? `https://asdasdasd3.onrender.com${imagen_url}`
                 : "/path_to_default_image.jpg"
             }
             alt={nombre}
+            priority
+            className={styles.productImage}
           />
 
           <ProductName>{nombre}</ProductName>
@@ -286,7 +290,7 @@ const Products: React.FC<{
         <CombinedFilterComponent />
 
         <SectionTitle>Productos Destacados</SectionTitle>
-      {/*   <SectionDescription>
+        {/*   <SectionDescription>
           Descubre los productos que están marcando tendencia esta temporada.
         </SectionDescription> */}
 
