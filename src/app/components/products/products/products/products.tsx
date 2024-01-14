@@ -30,7 +30,6 @@ import useProductSocket from "../products/useProductSocket";
 import { useAppSelector } from "@/app/redux/store/appHooks";
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useState } from "react";
-import BackgroundImageWithTitle from "./backgroundImageWithTitle";
 import LoadingSpinner from "./loadingSpinner";
 
 const getProductLink = (productId: number) => `/products/${productId}`;
