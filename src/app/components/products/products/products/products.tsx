@@ -286,9 +286,9 @@ const Products: React.FC<{
         <CombinedFilterComponent />
 
         <SectionTitle>Productos Destacados</SectionTitle>
-        <SectionDescription>
+      {/*   <SectionDescription>
           Descubre los productos que están marcando tendencia esta temporada.
-        </SectionDescription>
+        </SectionDescription> */}
 
         <HighlightedCarousel products={displayedHighlightedProducts} />
 
