@@ -51,8 +51,8 @@ const ProductImagee = ({
       src={src}
       alt={alt}
       priority={priority}
-      layout="fill" // Hace que la imagen llene el contenedor
-      objectFit="cover" // Mantén tu estilo original de object-fit
+      width={150}
+      height={150}
     />
   </ProductImageContainer>
 );

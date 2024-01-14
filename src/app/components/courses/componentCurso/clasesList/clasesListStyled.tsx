@@ -2,7 +2,6 @@ import { Button } from "@mui/material";
 import styled from "styled-components";
 
 export const ContenedorPrincipal = styled.div`
-  margin-top: 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -11,23 +10,21 @@ export const ContenedorPrincipal = styled.div`
   border-radius: 20px;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
   margin: auto;
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #faf3e0;
 
   @media (max-width: 768px) {
-    padding: 0px;
-    margin-top: 0px;
+    padding: 20px;
+    margin-top: 20px;
   }
 
   @media (max-width: 480px) {
-    padding: 1px;
-    margin-top: 0px;
+    padding: 10px;
+    margin-top: 10px;
   }
-  width: 100%; // Asegura que el componente cubra todo el ancho de la página
-
-  background-image: url("/img/12.webp"); // Ruta a tu imagen
-  background-size: cover; // Asegura que la imagen cubra completamente el área sin deformarse
-  background-position: center; // Centra la imagen en el contenedor
-  background-repeat: no-repeat; // Evita que la imagen se repita
-  background-color: #faf3e0;
 `;
 
 export const InfoYClasesContainer = styled.div`
@@ -44,8 +41,6 @@ export const InfoYClasesContainer = styled.div`
   }
 
   @media (max-width: 480px) {
-    flex-direction: column;
-    gap: 15px;
     margin-top: 20px;
   }
 `;
