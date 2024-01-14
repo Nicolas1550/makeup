@@ -45,8 +45,6 @@ const ProductImagee = ({
   src,
   alt,
   priority,
-  width,
-  height,
 }: ProductImageProps) => (
   <ProductImageContainer>
     <Image
