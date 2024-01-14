@@ -1,23 +1,5 @@
-/* ImageStyles.module.css */
-.productImage {
-  border-radius: 15px;
-  object-fit: cover;
-  object-position: center;
-  display: block;
-  margin: auto;
-  transition: transform 0.3s;
-  width: 150px;
-  height: 150px;
-}
-
-.productImage:hover {
-  transform: scale(1.1);
-  box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.1);
-}
-
-@media only screen and (max-width: 768px) {
-  .productImage {
-    width: 100px;
-    height: 100px;
+.imageContainer {
+    position: relative;
+    width: 150px; 
+    height: 150px;
   }
-}

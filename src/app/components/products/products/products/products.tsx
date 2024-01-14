@@ -32,6 +32,7 @@ import { motion } from "framer-motion";
 import { useCallback, useEffect, useState } from "react";
 import LoadingSpinner from "./loadingSpinner";
 import Image from "next/image";
+import styles from "./ImageStyles.module.css";
 
 const getProductLink = (productId: number) => `/products/${productId}`;
 
@@ -66,6 +67,7 @@ const ProductCard: React.FC<ProductType & { highlighted?: boolean }> = ({
             }
             alt={nombre}
             priority
+            className={styles.productImage}
           />
 
           <ProductName>{nombre}</ProductName>
