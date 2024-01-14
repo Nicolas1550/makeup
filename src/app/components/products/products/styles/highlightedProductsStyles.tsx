@@ -26,7 +26,7 @@ export const SectionTitle = styled(motion.h2)`
   color: ${colors.pinkDark};
   text-align: center;
   margin-bottom: 2.5rem; // Margen para escritorio
-
+  margin-top: 3.5rem;
   @media only screen and (max-width: 768px) {
     margin-bottom: 1rem; // Margen para tablet
   }
@@ -35,7 +35,4 @@ export const SectionTitle = styled(motion.h2)`
     margin-bottom: 0.5rem; // Margen para móvil
   }
 `;
-export const SectionDescription = styled(motion.div)`
- 
-  
-`;
+export const SectionDescription = styled(motion.div)``;
