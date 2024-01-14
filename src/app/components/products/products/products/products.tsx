@@ -284,16 +284,11 @@ const Products: React.FC<{
       <ProductContainer
         displayType={displayMode === "both" ? "fullList" : displayMode}
       >
-        <CombinedFilterComponent />
-        <motion.div
-          variants={titleVariants}
-          transition={{ duration: 0.5, ease: "linear" }}
-        >
+    
           <SectionTitle>Productos Destacados</SectionTitle>
           <SectionDescription>
             Descubre los productos que están marcando tendencia esta temporada.
           </SectionDescription>
-        </motion.div>
 
         <HighlightedCarousel products={displayedHighlightedProducts} />
 
