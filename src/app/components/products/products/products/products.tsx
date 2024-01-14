@@ -30,6 +30,7 @@ import useProductSocket from "../products/useProductSocket";
 import { useAppSelector } from "@/app/redux/store/appHooks";
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useState } from "react";
+import BackgroundImageWithTitle from "./backgroundImageWithTitle";
 import LoadingSpinner from "./loadingSpinner";
 
 const getProductLink = (productId: number) => `/products/${productId}`;
@@ -194,10 +195,10 @@ const Products: React.FC<{
 
   const titleVariants = {
     expanded: {
-      marginBottom: windowWidth > 768 ? "2.5rem" : "1rem", 
+      marginBottom: windowWidth > 768 ? "2.5rem" : "1rem",
     },
     collapsed: {
-      marginTop: windowWidth > 768 ? "2rem" : "2rem", 
+      marginTop: windowWidth > 768 ? "2rem" : "2rem",
     },
   };
   const filterProducts = useCallback(
@@ -244,7 +245,7 @@ const Products: React.FC<{
   // Variantes para la animación de margen superior
   const contentVariants = {
     expanded: {
-      marginTop: "80px", 
+      marginTop: "80px",
     },
     collapsed: {
       marginTop: "0px",
@@ -283,11 +284,12 @@ const Products: React.FC<{
       <ProductContainer
         displayType={displayMode === "both" ? "fullList" : displayMode}
       >
-    
-          <SectionTitle>Productos Destacados</SectionTitle>
-          <SectionDescription>
-            Descubre los productos que están marcando tendencia esta temporada.
-          </SectionDescription>
+        <CombinedFilterComponent />
+
+        <SectionTitle>Productos Destacados</SectionTitle>
+        <SectionDescription>
+          Descubre los productos que están marcando tendencia esta temporada.
+        </SectionDescription>
 
         <HighlightedCarousel products={displayedHighlightedProducts} />
 
