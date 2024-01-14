@@ -36,24 +36,6 @@ export const SectionTitle = styled(motion.h2)`
   }
 `;
 export const SectionDescription = styled(motion.div)`
-  font-size: 1.2em;
-  color: ${colors.darkerGray};
-  margin-bottom: 2rem;
-  text-align: center;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-
-  @media only screen and (max-width: ${breakpoints.tablet}) {
-    font-size: 1.1em;
-    max-width: 700px;
-    margin-bottom: 1.5rem;
-  }
-
-  @media only screen and (max-width: ${breakpoints.mobile}) {
-    font-size: 1em;
-    max-width: 90%;
-    margin-bottom: 1rem;
-  }
+ 
   
 `;
