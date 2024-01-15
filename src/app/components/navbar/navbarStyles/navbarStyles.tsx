@@ -14,6 +14,7 @@ export const NavbarContainer = styled.nav`
   position: fixed;
   width: 100%;
   top: 0;
+  left: 0px;
   zindex: 1000;
   background-color: ${colors.neutralLight};
   color: ${colors.darkerGray};
@@ -57,7 +58,7 @@ export const LogoSection = styled.div`
   }
 `;
 export const LogoImage = styled.img`
-  width: 70px;
+  width: 80px;
   height: 80px;
   @media (max-width: 1000px) {
     width: 40px; // Reducción del tamaño del logo
