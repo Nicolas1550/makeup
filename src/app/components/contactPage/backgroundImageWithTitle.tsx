@@ -28,10 +28,16 @@ const Title = styled(motion.h1)`
   color: #FFF0F5; // Asegúrate de que el color del texto contraste con la imagen
   font-size: 3.5rem; // Tamaño del título
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6); // Añade sombra al texto para mejorar la legibilidad
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     top: 50%;
     left: 10%;
     font-size: 2.5rem; // Tamaño del título
+
+  }
+  @media (max-width: 480px) {
+    top: 50%;
+    left: 10%;
+    font-size: 1.5rem; // Tamaño del título
 
   }
 }
