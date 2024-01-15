@@ -196,10 +196,10 @@ const Products: React.FC<{
 
   const titleVariants = {
     expanded: {
-      marginBottom: windowWidth > 768 ? "2.5rem" : "2rem", 
+      marginBottom: windowWidth > 768 ? "2.5rem" : "2rem",
     },
     collapsed: {
-      marginTop: windowWidth > 768 ? "2.5rem" : "0rem", 
+      marginTop: windowWidth > 768 ? "2.5rem" : "0rem",
     },
   };
   const filterProducts = useCallback(
@@ -246,13 +246,13 @@ const Products: React.FC<{
   // Variantes para la animación de margen superior
   const contentVariants = {
     expanded: {
-      marginTop: atTop ? "80px" : "40px", 
+      marginTop: atTop ? "80px" : windowWidth > 768 ? "40px" : "0px",
     },
     collapsed: {
       marginTop: "0px",
     },
   };
-  
+
   useEffect(() => {
     const newVisibleProducts = filterProducts(productList).slice(0, itemsCount);
     setVisibleProducts(newVisibleProducts);
@@ -281,16 +281,16 @@ const Products: React.FC<{
       const isAtTop = window.scrollY < 50; // Cambia '50' según tu necesidad
       setAtTop(isAtTop);
     };
-  
+
     // Escuchar el evento de desplazamiento
-    window.addEventListener('scroll', handleScroll);
-  
+    window.addEventListener("scroll", handleScroll);
+
     return () => {
       // Limpiar el evento
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-  
+
   return (
     <motion.div
       animate={isSidebarExpanded ? "expanded" : "collapsed"}
