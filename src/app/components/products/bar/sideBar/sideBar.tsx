@@ -303,16 +303,10 @@ const CombinedFilterComponent: React.FC = () => {
     const checkIfMobile = () => {
       const isMobileView = window.innerWidth <= 768;
       setIsMobile(isMobileView);
-      // Actualizar isExpanded y isFilterOpen solo en el montaje del componente
-      if (isMobileView) {
-        setIsExpanded(false);
-        setIsFilterOpen(false);
-      } else {
-        setIsExpanded(true);
-        setIsFilterOpen(true);
-      }
+      setIsExpanded(!isMobileView);
+      setIsFilterOpen(!isMobileView);
     };
-
+  
     checkIfMobile();
     window.addEventListener("resize", checkIfMobile);
     return () => window.removeEventListener("resize", checkIfMobile);
