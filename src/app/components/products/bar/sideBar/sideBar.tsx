@@ -469,7 +469,7 @@ const CombinedFilterComponent: React.FC = () => {
         });
       }
     }
-  };
+  }; 
 
   return (
     <>
