@@ -158,17 +158,7 @@ const Products: React.FC<{
   const [atTop, setAtTop] = useState(true);
 
   const [windowWidth, setWindowWidth] = useState<number>(0);
-  useEffect(() => {
-    // Actualizar el ancho de la ventana al montar y en cada cambio de tamaño de la ventana
-    const updateWindowWidth = () => {
-      setWindowWidth(window.innerWidth);
-    };
 
-    window.addEventListener("resize", updateWindowWidth);
-    updateWindowWidth(); // Llamar inmediatamente para obtener el ancho inicial
-
-    return () => window.removeEventListener("resize", updateWindowWidth);
-  }, []);
   const isSidebarOpenedByButton = useSelector(
     (state: RootState) => state.ui.sidebarOpenedByButton
   );
@@ -196,10 +186,10 @@ const Products: React.FC<{
 
   const titleVariants = {
     expanded: {
-      marginBottom: windowWidth > 768 ? "2.5rem" : "2rem",
+      marginBottom: windowWidth > 768 ? "0rem" : "0rem",
     },
     collapsed: {
-      marginTop: windowWidth > 768 ? "2.5rem" : "0rem",
+      marginTop: windowWidth > 768 ? "-2rem" : "0rem",
     },
   };
   const filterProducts = useCallback(
@@ -290,7 +280,17 @@ const Products: React.FC<{
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+  useEffect(() => {
+    // Actualizar el ancho de la ventana al montar y en cada cambio de tamaño de la ventana
+    const updateWindowWidth = () => {
+      setWindowWidth(window.innerWidth);
+    };
 
+    window.addEventListener("resize", updateWindowWidth);
+    updateWindowWidth(); // Llamar inmediatamente para obtener el ancho inicial
+
+    return () => window.removeEventListener("resize", updateWindowWidth);
+  }, []);
   return (
     <motion.div
       animate={isSidebarExpanded ? "expanded" : "collapsed"}
