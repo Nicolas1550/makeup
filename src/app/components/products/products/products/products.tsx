@@ -199,7 +199,7 @@ const Products: React.FC<{
       marginBottom: windowWidth > 768 ? "2.5rem" : "1rem", 
     },
     collapsed: {
-      marginTop: windowWidth > 768 ? "2.5rem" : "2rem", 
+      marginTop: windowWidth > 768 ? "2.5rem" : "0rem", 
     },
   };
   const filterProducts = useCallback(
