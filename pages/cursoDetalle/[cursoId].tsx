@@ -19,7 +19,7 @@ import {
 const CursoDetalle = () => {
   const dispatch = useAppDispatch();
   const { cursoActual, loading, error } = useAppSelector(
-    (state) => state.cursos
+    (state) => state.cursos 
   );
   const [mostrarTodasLasClases, setMostrarTodasLasClases] = useState(false);
   const router = useRouter();
