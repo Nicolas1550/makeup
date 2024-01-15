@@ -1,7 +1,7 @@
 import React from "react";
 import Navbar from "@/app/components/navbar/navbar/navbar";
 import { GetServerSidePropsContext } from "next";
-import { ProductPageContainer } from "../../src/app/components/products/products/styles/stylesTodosLosProductos/todosLosProductosStyles";
+import { ProductPageeContainer } from "../../src/app/components/products/products/styles/stylesTodosLosProductos/todosLosProductosStyles";
 import {
   CenteredContainer,
   ColorPreview,
@@ -52,7 +52,7 @@ const ProductDetail: React.FC<ProductProps> = ({ product }) => {
       : null;
 
   return (
-    <ProductPageContainer>
+    <ProductPageeContainer>
       <Navbar />
       <CenteredContainer>
         <ProductDetailContainer>
@@ -132,7 +132,7 @@ const ProductDetail: React.FC<ProductProps> = ({ product }) => {
           </DetailContainer>
         </ProductDetailContainer>
       </CenteredContainer>
-    </ProductPageContainer>
+    </ProductPageeContainer>
   );
 };
 
