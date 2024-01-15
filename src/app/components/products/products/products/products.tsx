@@ -155,6 +155,7 @@ const Products: React.FC<{
   );
   // Función para cargar más productos
   const [hasMoreProducts, setHasMoreProducts] = useState(true);
+  const [atTop, setAtTop] = useState(true);
 
   const [windowWidth, setWindowWidth] = useState<number>(0);
   useEffect(() => {
@@ -245,12 +246,13 @@ const Products: React.FC<{
   // Variantes para la animación de margen superior
   const contentVariants = {
     expanded: {
-      marginTop: "80px", 
+      marginTop: atTop ? "80px" : "40px", 
     },
     collapsed: {
       marginTop: "0px",
     },
   };
+  
   useEffect(() => {
     const newVisibleProducts = filterProducts(productList).slice(0, itemsCount);
     setVisibleProducts(newVisibleProducts);
@@ -274,7 +276,21 @@ const Products: React.FC<{
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [loading, hasMoreProducts, loadMoreProducts]);
-
+  useEffect(() => {
+    const handleScroll = () => {
+      const isAtTop = window.scrollY < 50; // Cambia '50' según tu necesidad
+      setAtTop(isAtTop);
+    };
+  
+    // Escuchar el evento de desplazamiento
+    window.addEventListener('scroll', handleScroll);
+  
+    return () => {
+      // Limpiar el evento
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+  
   return (
     <motion.div
       animate={isSidebarExpanded ? "expanded" : "collapsed"}
