@@ -31,6 +31,8 @@ const Title = styled(motion.h1)`
   @media (max-width: 480px) {
     top: 50%;
     left: 10%;
+    font-size: 2.5rem; // Tamaño del título
+
   }
 }
 
