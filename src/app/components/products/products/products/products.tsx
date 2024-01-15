@@ -196,7 +196,7 @@ const Products: React.FC<{
 
   const titleVariants = {
     expanded: {
-      marginBottom: windowWidth > 768 ? "2.5rem" : "1rem", 
+      marginBottom: windowWidth > 768 ? "2.5rem" : "2rem", 
     },
     collapsed: {
       marginTop: windowWidth > 768 ? "2.5rem" : "0rem", 
