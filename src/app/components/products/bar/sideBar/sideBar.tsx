@@ -112,6 +112,7 @@ const useStyles = makeStyles({
     },
   },
 });
+const isMobileDevice = () => window.innerWidth <= 768;
 
 const CombinedFilterComponent: React.FC = () => {
   const classes = useStyles();
@@ -123,11 +124,7 @@ const CombinedFilterComponent: React.FC = () => {
   const [isSidebarControlledByButton, setIsSidebarControlledByButton] =
     useState(false);
 
-  const [isFilterOpen, setIsFilterOpen] = useState(
-    typeof window !== "undefined" ? window.innerWidth > 768 : false
-  );
-
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(isMobileDevice());
   const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
   const toggleSubMenu = () => {
     setIsSubMenuOpen(!isSubMenuOpen);
@@ -141,9 +138,8 @@ const CombinedFilterComponent: React.FC = () => {
   const searchTerm = useSelector((state: RootState) => state.filter.searchTerm);
   const priceRange = useSelector((state: RootState) => state.filter.priceRange);
   const [isSticky, setIsSticky] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(
-    typeof window !== "undefined" ? window.innerWidth > 768 : false
-  );
+  const [isExpanded, setIsExpanded] = useState(!isMobile);
+  const [isFilterOpen, setIsFilterOpen] = useState(!isMobile);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [hasScrolled, setHasScrolled] = useState(false);
   const [menuPortalTarget, setMenuPortalTarget] = useState<HTMLElement | null>(
@@ -162,7 +158,18 @@ const CombinedFilterComponent: React.FC = () => {
   const selectedMarca = useSelector(
     (state: RootState) => state.filter.selectedMarca
   );
+  const handleWindowChange = useCallback(() => {
+    const isMobileView = isMobileDevice();
+    setIsMobile(isMobileView);
 
+    if (isMobileView) {
+      setIsExpanded(false);
+      setIsFilterOpen(false);
+    } else {
+      setIsExpanded(window.scrollY === 0);
+      setIsFilterOpen(true);
+    }
+  }, []);
   const customStyles: StylesConfig = {
     control: (provided, state) => ({
       ...provided,
@@ -287,6 +294,16 @@ const CombinedFilterComponent: React.FC = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+  useEffect(() => {
+    handleWindowChange();
+    window.addEventListener("resize", handleWindowChange);
+    window.addEventListener("scroll", handleWindowChange);
+
+    return () => {
+      window.removeEventListener("resize", handleWindowChange);
+      window.removeEventListener("scroll", handleWindowChange);
+    };
+  }, [handleWindowChange]);
 
   useEffect(() => {
     if (isFilterOpen) {
@@ -427,36 +444,7 @@ const CombinedFilterComponent: React.FC = () => {
       }
     }
   };
-  useEffect(() => {
-    const handleResizeAndScroll = () => {
-      const isMobileView = window.innerWidth <= 768;
-      const atTop = window.scrollY === 0;
 
-      setIsMobile(isMobileView);
-
-      // En dispositivos móviles, el sidebar debe estar colapsado a menos que el usuario lo haya expandido a través del botón
-      if (isMobileView) {
-        setIsExpanded(false);
-        setIsFilterOpen(false);
-      } else {
-        // En dispositivos de escritorio, expandir si estamos en la parte superior de la página
-        setIsExpanded(atTop);
-        setIsFilterOpen(atTop);
-      }
-    };
-
-    // Ejecutar inmediatamente para establecer el estado inicial
-    handleResizeAndScroll();
-
-    // Agregar manejadores para eventos de redimensionamiento y desplazamiento
-    window.addEventListener("resize", handleResizeAndScroll);
-    window.addEventListener("scroll", handleResizeAndScroll);
-
-    return () => {
-      window.removeEventListener("resize", handleResizeAndScroll);
-      window.removeEventListener("scroll", handleResizeAndScroll);
-    };
-  }, []);
   return (
     <>
       {isMobile && isButtonVisible && (
