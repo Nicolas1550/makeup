@@ -112,8 +112,14 @@ const useStyles = makeStyles({
     },
   },
 });
-const isMobileDevice = () => window.innerWidth <= 768;
+const isBrowser = typeof window !== "undefined";
 
+const isMobileDevice = () => {
+  if (isBrowser) {
+    return window.innerWidth <= 768;
+  }
+  return false; // Valor predeterminado para SSR
+};
 const CombinedFilterComponent: React.FC = () => {
   const classes = useStyles();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -124,7 +130,9 @@ const CombinedFilterComponent: React.FC = () => {
   const [isSidebarControlledByButton, setIsSidebarControlledByButton] =
     useState(false);
 
-  const [isMobile, setIsMobile] = useState(isMobileDevice());
+  const [isMobile, setIsMobile] = useState(
+    isBrowser ? isMobileDevice() : false
+  );
   const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
   const toggleSubMenu = () => {
     setIsSubMenuOpen(!isSubMenuOpen);
@@ -276,12 +284,14 @@ const CombinedFilterComponent: React.FC = () => {
   };
 
   useEffect(() => {
+    // Esta función se ejecutará solo en el lado del cliente
     const handleResize = () => {
       const isMobileView = window.innerWidth <= 768;
       setIsMobile(isMobileView);
 
       // Si estamos en vista móvil y el teclado virtual está abierto, mantener el estado
       if (isMobileView && document.activeElement instanceof HTMLInputElement) {
+        // Puedes dejar esto vacío o manejar el caso de teclado virtual abierto
       } else {
         // Ajustar el estado basado en si estamos en vista móvil o no
         setIsExpanded(!isMobileView);
@@ -289,22 +299,38 @@ const CombinedFilterComponent: React.FC = () => {
       }
     };
 
-    // Ejecutar inmediatamente para establecer el estado inicial basado en el ancho de la ventana
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    // Verificar si estamos en el lado del cliente antes de ejecutar la lógica relacionada con el navegador
+    if (typeof window !== "undefined") {
+      // Ejecutar inmediatamente para establecer el estado inicial basado en el ancho de la ventana
+      handleResize();
+
+      // Agregar el manejador de eventos
+      window.addEventListener("resize", handleResize);
+
+      // Limpiar el manejador de eventos en el desmontaje
+      return () => window.removeEventListener("resize", handleResize);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isBrowser) {
+      setMenuPortalTarget(document.getElementById("menu-portal"));
+    }
   }, []);
   useEffect(() => {
-    handleWindowChange();
-    window.addEventListener("resize", handleWindowChange);
-    window.addEventListener("scroll", handleWindowChange);
+    if (isBrowser) {
+      handleWindowChange();
+      window.addEventListener("resize", handleWindowChange);
+      window.addEventListener("scroll", handleWindowChange);
+    }
 
     return () => {
-      window.removeEventListener("resize", handleWindowChange);
-      window.removeEventListener("scroll", handleWindowChange);
+      if (isBrowser) {
+        window.removeEventListener("resize", handleWindowChange);
+        window.removeEventListener("scroll", handleWindowChange);
+      }
     };
   }, [handleWindowChange]);
-
   useEffect(() => {
     if (isFilterOpen) {
       document.body.style.overflow = "auto";
