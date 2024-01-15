@@ -24,6 +24,8 @@ export const HighlightedContainer = styled.div`
 export const SectionTitle = styled(motion.h2)`
   font-size: 2em;
   color: ${colors.pinkDark};
+  display: flex;
+  justify-content: center;
   text-align: center;
   margin-bottom: 2.5rem; // Margen para escritorio
   margin-top: 3.5rem;
