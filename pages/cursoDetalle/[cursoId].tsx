@@ -9,7 +9,6 @@ import {
   CursoTitulo,
 } from "../../src/app/components/courses/componentCurso/styleCursoId/cursoDetalle.styles";
 import ImageCarousel from "@/app/components/courses/componentCurso/imageCarousel/imageCarousel";
-import ImagenPrincipal from "@/app/components/courses/componentCurso/imagenPrincipal/imagenPrincipal";
 import ClasesList from "@/app/components/courses/componentCurso/clasesList/clasesList";
 import CursoInfo from "@/app/components/courses/componentCurso/cursoInfo/cursoInfo";
 import {
@@ -50,9 +49,6 @@ const CursoDetalle = () => {
 
   return (
     <>
-      <ImagenPrincipal
-        urlImagen={`https://asdasdasd3.onrender.com/image/${cursoActual?.imagen_principal}`}
-      />
       <CursoDetalleContainer>
         <ContenedorPrincipal>
           <ImageCarousel

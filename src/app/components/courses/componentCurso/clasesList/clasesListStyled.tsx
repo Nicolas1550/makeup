@@ -15,6 +15,7 @@ export const ContenedorPrincipal = styled.div`
   background-position: center;
   background-repeat: no-repeat;
   background-color: #faf3e0;
+  background-image: url("/img/12.webp"); 
 
   @media (max-width: 768px) {
     padding: 20px;
