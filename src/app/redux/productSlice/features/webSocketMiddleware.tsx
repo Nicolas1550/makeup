@@ -18,7 +18,6 @@ type DecodedToken = {
   role: string;
 };
 
-type ErrorType = { message?: string };
 
 const websocketMiddleware = (storeAPI: MiddlewareAPI) => {
   const thunkDispatch = storeAPI.dispatch as ThunkDispatch<
@@ -48,7 +47,7 @@ const websocketMiddleware = (storeAPI: MiddlewareAPI) => {
             localStorage.removeItem("jwt");
           }
         })
-        .catch((error) => {
+        .catch(() => {
           localStorage.removeItem("jwt");
         });
     }
@@ -66,14 +65,13 @@ const websocketMiddleware = (storeAPI: MiddlewareAPI) => {
       .then((action: AnyAction) => {
         if (fetchUpdatedProducts.fulfilled.match(action)) {
           const updatedProducts = action.payload;
-         
+
           updatedProducts.forEach((product) => {
             storeAPI.dispatch(syncCartWithUpdatedStock(product));
           });
         }
       })
-      .catch((error: ErrorType) => {
-      });
+      .catch(() => {});
   });
   socket.on("serviceImagesChanged", (data) => {
     thunkDispatch(fetchServiceImages(data.serviceId));

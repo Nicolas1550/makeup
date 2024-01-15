@@ -128,7 +128,7 @@ const Historial: React.FC = () => {
           dispatch(fetchUserOrders());
         }
       })
-      .catch((error) => {});
+      .catch(() => {});
   };
 
   if (orderError) {
@@ -222,7 +222,7 @@ const Historial: React.FC = () => {
                           }
                         }
                       })
-                      .catch((error) => {});
+                      .catch(() => {});
                   }
                 }}
               >

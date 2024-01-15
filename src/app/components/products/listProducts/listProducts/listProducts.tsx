@@ -46,7 +46,7 @@ const ListProduct: React.FC = () => {
         setProductList(response.data);
         setHighlightedProductList(response.data.slice(0, 6));
       })
-      .catch((error) => {
+      .catch(() => {
       });
   };
 

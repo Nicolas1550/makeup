@@ -4,7 +4,7 @@ import {
   createAsyncThunk,
   createAction,
 } from "@reduxjs/toolkit";
-import { RootState } from "../../redux/store/rootReducer"; 
+import { RootState } from "../../redux/store/rootReducer";
 import { SerializedError } from "@reduxjs/toolkit";
 
 import axios from "axios";
@@ -61,13 +61,13 @@ interface ServicesState {
   error: null | string;
   isUserAssigned: boolean | null;
   uploadProofOfPaymentStatus: "idle" | "loading" | "fulfilled" | "failed";
-  fetchedServiceIds: number[]; 
+  fetchedServiceIds: number[];
   serviceImages: Record<number, string[]>; // Un objeto que mapea IDs de servicios a arrays de URLs de imágenes
   serviceOptions: ServiceOptions;
   reservationsForAssistant: Reservation[];
   reservationsForUser: Reservation[];
   reservationsSummary?: ReservationSummary; // Puede ser opcional si inicialmente no hay datos
-  newReservationsCount: number; 
+  newReservationsCount: number;
   serviceData: Record<number, Service>; // Almacena los datos de los servicios individualmente
 }
 interface ErrorResponse {
@@ -88,14 +88,14 @@ export interface Reservation {
   opciones_seleccionadas: string;
   usuario_nombre: string;
   serviceTitle: string;
-  servicio_nombre: string; 
+  servicio_nombre: string;
 }
 interface ReservationSummary {
   totalIngresos: number;
   totalReservasCompletadas: number;
   totalIngresosPendientes: number;
   totalReservasPendientes: number;
-  detallesCompletadas: Reservation[]; 
+  detallesCompletadas: Reservation[];
   detallesPendientes: Reservation[];
 }
 
@@ -120,8 +120,8 @@ const initialState: ServicesState = {
     totalReservasCompletadas: 0,
     totalIngresosPendientes: 0,
     totalReservasPendientes: 0,
-    detallesCompletadas: [], 
-    detallesPendientes: [], 
+    detallesCompletadas: [],
+    detallesPendientes: [],
   },
 };
 
@@ -251,7 +251,6 @@ export const fetchReservationsForUser = createAsyncThunk<
   Reservation[],
   string | number
 >("services/fetchReservationsForUser", async (userId) => {
-
   const response = await axios.get(
     `https://asdasdasd3.onrender.com/api/servicios/reservasPorUsuario/${userId}`
   );
@@ -352,7 +351,7 @@ export const fetchServiceOptions = createAsyncThunk(
       if (error instanceof Error) {
         errorMessage = error.message;
       }
-     
+
       return thunkAPI.rejectWithValue(errorMessage);
     }
   }
@@ -402,7 +401,6 @@ export const uploadServiceImages = createAsyncThunk(
         }
       );
 
-
       // Extraer solo las rutas de las imágenes de la respuesta
       const uploadedImagePaths = response.data.imagePaths;
 
@@ -422,7 +420,7 @@ export const deleteServiceImage = createAsyncThunk(
     }
 
     try {
-      const response = await axios.delete(
+      await axios.delete(
         `https://asdasdasd3.onrender.com/api/servicios/${data.serviceId}/deleteImage`,
         {
           headers: {
@@ -457,7 +455,6 @@ export const fetchServiceImages = createAsyncThunk(
           },
         }
       );
-
 
       return { serviceId, images: response.data };
     } catch (error) {
@@ -530,7 +527,6 @@ export const uploadProofOfPayment = createAsyncThunk(
     file: File;
     selectedOptions: ServiceOption[];
   }) => {
-
     const userToken = localStorage.getItem("jwt");
     if (!userToken) {
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
@@ -637,7 +633,7 @@ export const addAvailability = createAsyncThunk(
       {
         fechaInicio: data.fechaInicio,
         fechaFin: data.fechaFin,
-        estado: "disponible", 
+        estado: "disponible",
       },
       {
         headers: {
@@ -765,8 +761,6 @@ const servicesSlice = createSlice({
       state,
       action: PayloadAction<{ availabilityId: number; newStatus: string }>
     ) => {
-     
-
       const { availabilityId, newStatus } = action.payload;
       const availability = state.availabilities.find(
         (a) => a.id === availabilityId
@@ -829,9 +823,7 @@ const servicesSlice = createSlice({
           state.reservationsForAssistant[indexToUpdate].estado = "pendiente";
         }
       })
-      .addCase(markReservationAsPending.rejected, (state, action) => {
-       
-      })
+      .addCase(markReservationAsPending.rejected, () => {})
 
       .addCase(deleteReservation.pending, (state) => {
         state.loading = true;
@@ -864,9 +856,7 @@ const servicesSlice = createSlice({
           state.reservationsForAssistant[indexToUpdate].estado = "completado";
         }
       })
-      .addCase(markReservationAsCompleted.rejected, (state, action) => {
-       
-      })
+      .addCase(markReservationAsCompleted.rejected, () => {})
 
       .addCase(fetchReservationsForUser.fulfilled, (state, action) => {
         state.reservationsForUser = action.payload;
@@ -885,8 +875,6 @@ const servicesSlice = createSlice({
         state.loading = false;
 
         for (const payload of action.payload) {
-          
-
           const newReservations = payload.reservations
             .filter(
               (reservation) =>
@@ -922,7 +910,6 @@ const servicesSlice = createSlice({
 
         // Asegurarse de que state.serviceOptions[serviceId] exista antes de continuar.
         if (!state.serviceOptions[serviceId]) {
-       
           return;
         }
 
@@ -945,8 +932,6 @@ const servicesSlice = createSlice({
       })
 
       .addCase(uploadServiceImages.fulfilled, (state, action) => {
-      
-
         const serviceToUpdate = state.services.find(
           (s) => s.id === action.payload.serviceId
         );
@@ -1056,12 +1041,12 @@ const servicesSlice = createSlice({
           action.error.message || "Error updating service description";
       })
       .addCase(uploadProofOfPayment.pending, (state) => {
-        state.uploadProofOfPaymentStatus = "loading"; 
+        state.uploadProofOfPaymentStatus = "loading";
       })
       .addCase(
         uploadProofOfPayment.fulfilled,
         (state, action: PayloadAction<{ availabilityId: number }>) => {
-          state.uploadProofOfPaymentStatus = "fulfilled"; 
+          state.uploadProofOfPaymentStatus = "fulfilled";
           state.loading = false;
 
           const availabilityId = action.payload.availabilityId;
@@ -1076,7 +1061,7 @@ const servicesSlice = createSlice({
         }
       )
       .addCase(uploadProofOfPayment.rejected, (state) => {
-        state.uploadProofOfPaymentStatus = "failed"; 
+        state.uploadProofOfPaymentStatus = "failed";
       })
 
       .addCase(reserveAvailability.pending, (state) => {
@@ -1140,9 +1125,7 @@ const servicesSlice = createSlice({
         state.error =
           action.error.message || "Error al verificar la asignación";
       })
-      .addCase(addAvailability.fulfilled, () => {
-      
-      })
+      .addCase(addAvailability.fulfilled, () => {})
       .addCase(fetchAvailabilities.pending, (state) => {
         state.loading = true;
       })
@@ -1155,7 +1138,6 @@ const servicesSlice = createSlice({
           state.loading = false;
           state.availabilities = action.payload;
           state.lastFetchedServiceId = action.meta.arg;
-
         }
       )
 
@@ -1200,7 +1182,7 @@ export const {
   setServiceDescription,
   incrementNewReservationsCount,
   resetNewReservationsCount,
-  setServiceData, 
+  setServiceData,
 } = servicesSlice.actions;
 
 export default servicesSlice.reducer;

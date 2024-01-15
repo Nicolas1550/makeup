@@ -93,7 +93,7 @@ const AssignAssistantToService: React.FC<Props> = ({ onClose }) => {
       })
     )
       .then(() => alert("Asignación exitosa!"))
-      .catch((error) => {
+      .catch(() => {
         alert("Hubo un error en la asignación");
       });
   };
@@ -102,7 +102,7 @@ const AssignAssistantToService: React.FC<Props> = ({ onClose }) => {
     if (!selectedService) return;
     dispatch(removeAssistant({ serviceId: selectedService, assistantId }))
       .then(() => alert("Ayudante desasignado con éxito!"))
-      .catch((error) => {
+      .catch(() => {
         alert("Hubo un error al desasignar el ayudante");
       });
   };

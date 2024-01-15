@@ -111,6 +111,8 @@ const CargarComprobante: React.FC<CargarComprobanteProps> = ({
           `https://asdasdasd3.onrender.com/api/orders/upload-comprobante/${orderId}`,
           formData
         );
+        console.log(response);
+        
         onUploadSuccess({ estado: "Aprobado", comprobante: file });
         setIsLoading(false);
       } catch (error) {

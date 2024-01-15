@@ -175,7 +175,7 @@ const ReservationsSummary: React.FC<ReservationsSummaryProps> = ({
     (reservations: Reservation[]): LineChartData[] => {
       const incomesByDate: Record<string, LineChartData> = {};
 
-      reservations.forEach((reservation) => {});
+      reservations.forEach(() => {});
       // Filtrar las reservas basándose en el servicio seleccionado
       const filteredReservations = reservations.filter((reservation) => {
         return (

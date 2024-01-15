@@ -87,7 +87,7 @@ const PasarelaPago: React.FC<PasarelaPagoProps> = ({
     dispatch(clearCart());
   };
 
-  const handleUploadError = (error: Error) => {};
+  const handleUploadError = () => {};
 
   const handlePayment = async () => {
     const paymentData = {

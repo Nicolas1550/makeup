@@ -195,7 +195,7 @@ function ReservationsForAssistant() {
   }, [services, fetchReservations]); 
   useEffect(() => {
     if (selectedOption?.value === "cursos") {
-      dispatch(fetchTodasLasReservas()).then((response) =>
+      dispatch(fetchTodasLasReservas()).then(() =>
         console.log(
           "Reservas de cursos actualizadas después de fetch",
           
