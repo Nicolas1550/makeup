@@ -303,8 +303,14 @@ const CombinedFilterComponent: React.FC = () => {
     const checkIfMobile = () => {
       const isMobileView = window.innerWidth <= 768;
       setIsMobile(isMobileView);
-      setIsExpanded(!isMobileView);
-      setIsFilterOpen(!isMobileView);
+      // Actualizar isExpanded y isFilterOpen solo en el montaje del componente
+      if (isMobileView) {
+        setIsExpanded(false);
+        setIsFilterOpen(false);
+      } else {
+        setIsExpanded(true);
+        setIsFilterOpen(true);
+      }
     };
 
     checkIfMobile();
@@ -401,13 +407,11 @@ const CombinedFilterComponent: React.FC = () => {
   useEffect(() => {
     const isMobileView = window.innerWidth <= 768;
     setIsMobile(isMobileView);
-
-    // Para dispositivos móviles, inicialmente no mostramos el filtro.
-    // Para dispositivos no móviles, los filtros pueden estar expandidos inicialmente.
-    setIsFilterOpen(!isMobileView);
-    setIsExpanded(!isMobileView);
+    if (isMobileView) {
+      setIsExpanded(false);
+      setIsFilterOpen(false);
+    }
   }, []);
-
   const scrollToSubMenu = () => {
     if (sidebarRef.current) {
       const submenuElement = sidebarRef.current.querySelector(
@@ -423,36 +427,6 @@ const CombinedFilterComponent: React.FC = () => {
       }
     }
   };
-  useEffect(() => {
-    const handleResizeAndScroll = () => {
-      const isMobileView = window.innerWidth <= 768;
-      const atTop = window.scrollY === 0;
-
-      setIsMobile(isMobileView);
-
-      // En dispositivos móviles, el sidebar debe estar colapsado a menos que el usuario lo haya expandido a través del botón
-      if (isMobileView) {
-        setIsExpanded(false);
-        setIsFilterOpen(false);
-      } else {
-        // En dispositivos de escritorio, expandir si estamos en la parte superior de la página
-        setIsExpanded(atTop);
-        setIsFilterOpen(atTop);
-      }
-    };
-
-    // Ejecutar inmediatamente para establecer el estado inicial
-    handleResizeAndScroll();
-
-    // Agregar manejadores para eventos de redimensionamiento y desplazamiento
-    window.addEventListener("resize", handleResizeAndScroll);
-    window.addEventListener("scroll", handleResizeAndScroll);
-
-    return () => {
-      window.removeEventListener("resize", handleResizeAndScroll);
-      window.removeEventListener("scroll", handleResizeAndScroll);
-    };
-  }, []);
 
   return (
     <>
