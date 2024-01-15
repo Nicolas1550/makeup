@@ -365,7 +365,7 @@ const CombinedFilterComponent: React.FC = () => {
     const currentScrollY = window.scrollY;
     setIsButtonVisible(currentScrollY > 200);
     setScrollY(currentScrollY);
-    setIsSticky(currentScrollY > 300);
+    setIsSticky(currentScrollY > 400);
 
     // Solo modificar isExpanded en escritorio
     if (!isMobile) {
