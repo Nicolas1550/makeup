@@ -134,8 +134,8 @@ const ProductDetail: React.FC<ProductProps> = ({ product }) => {
       </CenteredContainer>
     </ProductPageeContainer>
   );
-};
-
+}; 
+ 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
