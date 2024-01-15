@@ -28,6 +28,12 @@ export const ProductName = styled.h3`
   @media only screen and (max-width: ${breakpoints.mobile}) {
     font-size: 1.1em;
   }
+  @media (max-width: 768px) {
+    &:hover {
+      transform: none; // Anula el efecto de zoom en pantallas pequeñas
+      transition: none; // Opcional: anula la transición en pantallas pequeñas
+    }
+  }
 `;
 
 export const ProductImage = styled.img`
@@ -56,6 +62,12 @@ export const ProductImage = styled.img`
   @media only screen and (max-width: ${breakpoints.mobile}) {
     width: 100px;
     height: 100px;
+  }
+  @media (max-width: 768px) {
+    &:hover {
+      transform: none; // Anula el efecto de zoom en pantallas pequeñas
+      transition: none; // Opcional: anula la transición en pantallas pequeñas
+    }
   }
 `;
 
@@ -152,6 +164,12 @@ export const ProductOptions = styled.div`
       visibility: visible;
     }
   }
+  @media (max-width: 768px) {
+    &:hover {
+      transform: none; // Anula el efecto de zoom en pantallas pequeñas
+      transition: none; // Opcional: anula la transición en pantallas pequeñas
+    }
+  }
 `;
 
 export const ProductCardContainer = styled(motion.div)`
@@ -191,6 +209,12 @@ export const ProductCardContainer = styled(motion.div)`
   &:hover ${ProductOptions} {
     opacity: 1;
     visibility: visible;
+  }
+  @media (max-width: 768px) {
+    &:hover {
+      transform: none; // Anula el efecto de zoom en pantallas pequeñas
+      transition: none; // Opcional: anula la transición en pantallas pequeñas
+    }
   }
 `;
 export const AddToCartButton = styled.button`
@@ -234,6 +258,12 @@ export const AddToCartButton = styled.button`
     font-size: 0.9em; // Reducir el tamaño de la fuente
     &:before {
       font-size: 1em; // Reducir el tamaño del ícono
+    }
+    @media (max-width: 768px) {
+      &:hover {
+        transform: none; // Anula el efecto de zoom en pantallas pequeñas
+        transition: none; // Opcional: anula la transición en pantallas pequeñas
+      }
     }
   }
 `;

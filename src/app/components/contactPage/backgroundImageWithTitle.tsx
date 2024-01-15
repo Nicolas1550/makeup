@@ -18,6 +18,12 @@ const BackgroundImage = styled(motion.img)`
     transform: scale(1.05); // Efecto de zoom al pasar el cursor
     transition: transform 0.5s ease;
   }
+  @media (max-width: 768px) {
+    &:hover {
+      transform: none; // Anula el efecto de zoom en pantallas pequeñas
+      transition: none; // Opcional: anula la transición en pantallas pequeñas
+    }
+  }
 `;
 
 const Title = styled(motion.h1)`

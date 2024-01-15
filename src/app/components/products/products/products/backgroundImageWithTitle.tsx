@@ -16,6 +16,7 @@ const BackgroundContainer = styled.div`
     margin-top: 74px;
 
   }
+  
 `;
 
 const BackgroundImage = styled(motion.img)`
@@ -26,6 +27,12 @@ const BackgroundImage = styled(motion.img)`
   &:hover {
     transform: scale(1.05); // Efecto de zoom al pasar el cursor
     transition: transform 0.5s ease;
+  }
+  @media (max-width: 768px) {
+    &:hover {
+      transform: none; // Anula el efecto de zoom en pantallas pequeñas
+      transition: none; // Opcional: anula la transición en pantallas pequeñas
+    }
   }
 `;
 
