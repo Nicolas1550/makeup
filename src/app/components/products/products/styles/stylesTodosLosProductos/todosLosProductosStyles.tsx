@@ -5,4 +5,6 @@ export const ProductPageContainer = styled.div`
   min-height: 100vh;
   padding-bottom: 30px;
   padding-top: 30px;
+  padding-left: 10px;
+  padding-right: 10px;
 `;
