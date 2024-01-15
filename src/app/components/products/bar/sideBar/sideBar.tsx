@@ -407,11 +407,13 @@ const CombinedFilterComponent: React.FC = () => {
   useEffect(() => {
     const isMobileView = window.innerWidth <= 768;
     setIsMobile(isMobileView);
-    if (isMobileView) {
-      setIsExpanded(false);
-      setIsFilterOpen(false);
-    }
+
+    // Para dispositivos móviles, inicialmente no mostramos el filtro.
+    // Para dispositivos no móviles, los filtros pueden estar expandidos inicialmente.
+    setIsFilterOpen(!isMobileView);
+    setIsExpanded(!isMobileView);
   }, []);
+
   const scrollToSubMenu = () => {
     if (sidebarRef.current) {
       const submenuElement = sidebarRef.current.querySelector(
