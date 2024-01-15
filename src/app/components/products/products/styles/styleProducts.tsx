@@ -38,8 +38,8 @@ export const ProductName = styled.h3`
 
 export const ProductImage = styled.img`
   border-radius: 15px;
-  width: 150px; /* Ancho fijo */
-  height: 150px; /* Alto fijo */
+  width: auto; /* Ancho fijo */
+  height: auto; /* Alto fijo */
   object-fit: cover;
   object-position: center;
   max-width: 100%;
