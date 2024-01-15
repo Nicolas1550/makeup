@@ -9,6 +9,7 @@ export const ProductPageContainer = styled.div`
   padding-right: 10px;
   @media (max-width: 768px) {
     padding-top: 100px;
-
+    padding-left: 15px;
+    padding-right: 15px;
   }
 `;
