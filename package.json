@@ -104,6 +104,6 @@
     "eslint-plugin-styled-components": "^0.0.0"
   },
   "resolutions": {
-    "react": "^18.2.0"
+    "react": "^17.0.0"
   }
 }
