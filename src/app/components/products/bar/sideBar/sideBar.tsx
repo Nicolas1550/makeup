@@ -306,7 +306,7 @@ const CombinedFilterComponent: React.FC = () => {
       setIsExpanded(!isMobileView);
       setIsFilterOpen(!isMobileView);
     };
-  
+
     checkIfMobile();
     window.addEventListener("resize", checkIfMobile);
     return () => window.removeEventListener("resize", checkIfMobile);
@@ -423,6 +423,36 @@ const CombinedFilterComponent: React.FC = () => {
       }
     }
   };
+  useEffect(() => {
+    const handleResizeAndScroll = () => {
+      const isMobileView = window.innerWidth <= 768;
+      const atTop = window.scrollY === 0;
+
+      setIsMobile(isMobileView);
+
+      // En dispositivos móviles, el sidebar debe estar colapsado a menos que el usuario lo haya expandido a través del botón
+      if (isMobileView) {
+        setIsExpanded(false);
+        setIsFilterOpen(false);
+      } else {
+        // En dispositivos de escritorio, expandir si estamos en la parte superior de la página
+        setIsExpanded(atTop);
+        setIsFilterOpen(atTop);
+      }
+    };
+
+    // Ejecutar inmediatamente para establecer el estado inicial
+    handleResizeAndScroll();
+
+    // Agregar manejadores para eventos de redimensionamiento y desplazamiento
+    window.addEventListener("resize", handleResizeAndScroll);
+    window.addEventListener("scroll", handleResizeAndScroll);
+
+    return () => {
+      window.removeEventListener("resize", handleResizeAndScroll);
+      window.removeEventListener("scroll", handleResizeAndScroll);
+    };
+  }, []);
 
   return (
     <>
