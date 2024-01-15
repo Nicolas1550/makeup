@@ -281,7 +281,6 @@ const Products: React.FC<{
       variants={contentVariants}
       transition={{ duration: 0.5, ease: "linear" }}
     >
-      <BackgroundImageWithTitle></BackgroundImageWithTitle>
       <ProductContainer
         displayType={displayMode === "both" ? "fullList" : displayMode}
       >
