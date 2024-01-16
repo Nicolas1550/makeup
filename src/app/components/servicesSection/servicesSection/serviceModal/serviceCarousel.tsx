@@ -71,7 +71,7 @@ const ServiceCarousel: React.FC<ServiceCarouselProps> = memo(
         });
     }, [dispatch, serviceId]);
 
-    let displayImages = [...images, ...images, ...images, ...images]; updatedImages || []; // Usa updatedImages en lugar de images
+    const displayImages = [...images, ...images, ...images, ...images]; updatedImages || []; // Usa updatedImages en lugar de images
     return (
       <StyledCarouselContainer>
         {displayImages.length > 0 && (

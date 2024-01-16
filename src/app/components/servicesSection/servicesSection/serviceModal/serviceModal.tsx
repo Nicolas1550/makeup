@@ -42,7 +42,6 @@ import {
   ServiceModalContent,
   StyledButton,
   StyledModal,
-  StyledTextarea,
 } from "./styledModalService";
 import ServiceCarousel from "./serviceCarousel";
 import ServiceOptionsManager from "./serviceOptionsManager";
@@ -82,6 +81,7 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
     const serviceImages = useAppSelector(
       (state) => state.services.serviceImages[selectedService.id] || []
     );
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [isClient, setIsClient] = useState(false);
 
     const [isEditingOptions, setIsEditingOptions] = useState(false);
