@@ -18,7 +18,9 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import 'react-quill/dist/quill.snow.css'; 
 import Footer from "@/app/components/footer/footer";
+import 'react-quill/dist/quill.snow.css';
 
 const theme = createTheme();
 

@@ -124,6 +124,11 @@ const initialState: ServicesState = {
     detallesPendientes: [],
   },
 };
+// Define una interfaz para la respuesta esperada
+export interface FetchServiceImagesResponse {
+  serviceId: number;
+  images: string[];
+}
 
 const assignCategory = (serviceTitle: string): string => {
   switch (serviceTitle) {
@@ -438,30 +443,32 @@ export const deleteServiceImage = createAsyncThunk(
   }
 );
 
-export const fetchServiceImages = createAsyncThunk(
-  "services/fetchServiceImages",
-  async (serviceId: number) => {
-    const userToken = localStorage.getItem("jwt");
-    if (!userToken) {
-      throw new Error("No estás autenticado. Por favor, inicia sesión.");
-    }
-
-    try {
-      const response = await axios.get(
-        `https://asdasdasd3.onrender.com/api/servicios/${serviceId}/images`,
-        {
-          headers: {
-            "x-auth-token": userToken,
-          },
-        }
-      );
-
-      return { serviceId, images: response.data };
-    } catch (error) {
-      throw error;
-    }
+export const fetchServiceImages = createAsyncThunk<
+  FetchServiceImagesResponse,
+  number
+>("services/fetchServiceImages", async (serviceId, { rejectWithValue }) => {
+  const userToken = localStorage.getItem("jwt");
+  if (!userToken) {
+    return rejectWithValue(
+      new Error("No estás autenticado. Por favor, inicia sesión.")
+    );
   }
-);
+
+  try {
+    const response = await axios.get(
+      `https://asdasdasd3.onrender.com/api/servicios/${serviceId}/images`,
+      {
+        headers: {
+          "x-auth-token": userToken,
+        },
+      }
+    );
+    console.log("Response data from API:", response.data); // Agregar esta línea
+    return { serviceId, images: response.data };
+  } catch (error) {
+    return rejectWithValue(error);
+  }
+});
 
 export const updateSocialLinks = createAsyncThunk(
   "services/updateSocialLinks",
@@ -650,9 +657,7 @@ export const addAvailability = createAsyncThunk(
 export const fetchServices = createAsyncThunk(
   "services/fetchServices",
   async (_, { dispatch }) => {
-    const response = await axios.get(
-      "https://asdasdasd3.onrender.com/api/servicios"
-    );
+    const response = await axios.get("https://asdasdasd3.onrender.com/api/servicios");
     const data = response.data as Service[];
 
     const servicesWithCategoryAndIcon = data.map((service) => {
@@ -959,6 +964,7 @@ const servicesSlice = createSlice({
       })
 
       .addCase(deleteServiceImage.fulfilled, (state, action) => {
+        console.log("Image to delete:", action.payload.imagePath);
         const serviceToUpdate = state.services.find(
           (s) => s.id === action.payload.serviceId
         );
@@ -968,7 +974,7 @@ const servicesSlice = createSlice({
                 (path) => path !== action.payload.imagePath
               )
             : [];
-
+          console.log("Updated images after deletion:", updatedImages);
           serviceToUpdate.images = updatedImages;
           state.serviceImages[action.payload.serviceId] = updatedImages;
         }

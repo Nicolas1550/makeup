@@ -3,6 +3,8 @@ import React, { useCallback, useEffect, useState, memo } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore from "swiper";
 import { Autoplay } from "swiper/modules";
+import { unwrapResult } from "@reduxjs/toolkit";
+import { useAppSelector } from "../../../../redux/store/appHooks";
 
 import "swiper/css";
 import "swiper/css/pagination";
@@ -35,16 +37,14 @@ const ServiceCarousel: React.FC<ServiceCarouselProps> = memo(
   ({ serviceId, images, isUserAssigned, isEditing }) => {
     const [selectedImageFiles, setSelectedImageFiles] = useState<File[]>([]);
     const dispatch = useAppDispatch();
-
-    useEffect(() => {
-      dispatch(fetchServiceImages(serviceId));
-    }, [dispatch, serviceId]);
+    const updatedImages = useAppSelector(
+      (state) => state.services.serviceImages[serviceId]
+    );
 
     const handleDeleteImage = useCallback(
       (imagePath: string) => {
-        dispatch(deleteServiceImage({ serviceId, imagePath })).then(() => {
-          dispatch(fetchServiceImages(serviceId));
-        });
+        dispatch(deleteServiceImage({ serviceId, imagePath }));
+        // No necesitas setTimeout o llamar a fetchServiceImages aquí
       },
       [dispatch, serviceId]
     );
@@ -60,12 +60,23 @@ const ServiceCarousel: React.FC<ServiceCarouselProps> = memo(
       }
     }, [dispatch, serviceId, selectedImageFiles]);
 
-    const displayImages = [...images, ...images, ...images, ...images];
+    useEffect(() => {
+      dispatch(fetchServiceImages(serviceId))
+        .then(unwrapResult)
+        .then((result) => {
+          console.log("Images from Redux:", result.images); // Agregar esta línea
+        })
+        .catch((error) => {
+          console.error("Error fetching images:", error); // Capturar y loguear errores también es importante
+        });
+    }, [dispatch, serviceId]);
 
+    let displayImages = [...images, ...images, ...images, ...images]; updatedImages || []; // Usa updatedImages en lugar de images
     return (
       <StyledCarouselContainer>
         {displayImages.length > 0 && (
           <Swiper
+            key={images.length}
             spaceBetween={30} // Espacio entre slides
             slidesPerView={3} // Número de slides a mostrar en pantallas grandes
             centeredSlides={true}
@@ -94,24 +105,26 @@ const ServiceCarousel: React.FC<ServiceCarouselProps> = memo(
               },
             }}
           >
-            {displayImages.map((image, index) => (
-              <SwiperSlide key={index}>
-                <ImageContainer>
-                  <img
-                    src={`https://asdasdasd3.onrender.com/${image.replace(
-                      /\\/g,
-                      "/"
-                    )}`}
-                    alt={`Carousel ${index}`}
-                  />
-                  {isUserAssigned && isEditing && (
-                    <DeleteIconButton onClick={() => handleDeleteImage(image)}>
-                      🗑️
-                    </DeleteIconButton>
-                  )}
-                </ImageContainer>
-              </SwiperSlide>
-            ))}
+            {displayImages
+              .filter((image) => image) // Filtrar imágenes no válidas o indefinidas
+              .map((image, index) => (
+                <SwiperSlide key={index}>
+                  <ImageContainer>
+                    <img
+                      src={`https://asdasdasd3.onrender.com/uploads/${image}?${Date.now()}`}
+                      alt={`Carousel ${index}`}
+                    />
+
+                    {isUserAssigned && isEditing && (
+                      <DeleteIconButton
+                        onClick={() => handleDeleteImage(image)}
+                      >
+                        🗑️
+                      </DeleteIconButton>
+                    )}
+                  </ImageContainer>
+                </SwiperSlide>
+              ))}
           </Swiper>
         )}
         {isUserAssigned && isEditing && (
@@ -137,6 +150,6 @@ const ServiceCarousel: React.FC<ServiceCarouselProps> = memo(
     );
   }
 );
-ServiceCarousel.displayName = 'ServiceCarousel'; // Asigna un nombre de visualización
+ServiceCarousel.displayName = "ServiceCarousel"; // Asigna un nombre de visualización
 
 export default ServiceCarousel;

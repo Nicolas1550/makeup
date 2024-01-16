@@ -1,3 +1,4 @@
+"use client";
 import React, {
   useCallback,
   useEffect,
@@ -46,6 +47,8 @@ import {
 import ServiceCarousel from "./serviceCarousel";
 import ServiceOptionsManager from "./serviceOptionsManager";
 import { EventPropGetter } from "react-big-calendar";
+import "react-quill/dist/quill.snow.css";
+import dynamic from "next/dynamic";
 
 interface CalendarEvent {
   id?: number;
@@ -67,18 +70,19 @@ interface ServiceModalProps {
     image_url?: string;
     image_path?: string;
     modal_description?: string;
-    facebook_url?: string; 
-    whatsapp_url?: string; 
-    instagram_url?: string; 
+    facebook_url?: string;
+    whatsapp_url?: string;
+    instagram_url?: string;
   };
 }
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 const ServiceModal: React.FC<ServiceModalProps> = React.memo(
   ({ isOpen, onRequestClose, selectedService }) => {
     const serviceImages = useAppSelector(
       (state) => state.services.serviceImages[selectedService.id] || []
     );
-   
+    const [isClient, setIsClient] = useState(false);
 
     const [isEditingOptions, setIsEditingOptions] = useState(false);
 
@@ -105,13 +109,19 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
     );
     const [selectedAvailabilityId, setSelectedAvailabilityId] = useState<
       number | null
-    >(null); 
+    >(null);
     const [
       confirmReservationForHelperOpen,
       setConfirmReservationForHelperOpen,
     ] = useState(false);
+    useEffect(() => {
+      // Este efecto se ejecutará solo en el lado del cliente.
+      setIsClient(true);
+    }, []);
 
-    const [showCalendar, setShowCalendar] = useState(false); 
+    // Importación dinámica de ReactQuill solo en el cliente
+
+    const [showCalendar, setShowCalendar] = useState(false);
     const [isEditingDescription, setIsEditingDescription] = useState(false);
     const [editedDescription, setEditedDescription] = useState<string>("");
     const [isEditingCarousel, setIsEditingCarousel] = useState(false);
@@ -221,7 +231,6 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
       (state) => state.services.lastFetchedServiceId
     );
     const handleCloseModal = () => {
-
       setSelectedEvents([]); // Limpiamos las disponibilidades seleccionadas
       setShowCalendar(false); // Reiniciar el estado del calendario
 
@@ -247,7 +256,6 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
           dispatch(checkIfUserIsAssigned(selectedService.id));
           dispatch(setServiceData(selectedService));
         } else {
-         
         }
       }
     }, [isOpen, selectedService, dispatch, serviceData]);
@@ -261,8 +269,7 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
         selectedForDeletion.forEach((event) => {
           if (event.id) {
             dispatch(deleteAvailability(event.id))
-              .then(() => {
-              })
+              .then(() => {})
               .catch(() => {
                 alert(
                   "Error al eliminar la disponibilidad. Por favor intenta de nuevo."
@@ -275,6 +282,127 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
     };
 
     const fetchedRef = useRef(false);
+    const toolbarOptions = [
+      ["bold", "italic", "underline", "strike"], // Texto en negrita, cursiva, subrayado y tachado
+      ["blockquote", "code-block"], // Bloques de citas y código
+
+      [{ header: 1 }, { header: 2 }], // Encabezados de diferentes niveles
+      [{ list: "ordered" }, { list: "bullet" }], // Listas
+      [{ script: "sub" }, { script: "super" }], // Subíndices y superíndices
+      [{ indent: "-1" }, { indent: "+1" }], // Sangría
+      [{ direction: "rtl" }], // Texto de derecha a izquierda
+
+      // Tamaños de fuente personalizados
+      [
+        {
+          size: [
+            "small",
+            false,
+            "large",
+            "huge",
+            "10px",
+            "12px",
+            "14px",
+            "16px",
+            "18px",
+            "20px",
+          ],
+        },
+      ],
+
+      [{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+      // Colores personalizados para el texto y el fondo
+      [
+        {
+          color: [
+            "#000000",
+            "#e60000",
+            "#ff9900",
+            "#ffff00",
+            "#008a00",
+            "#0066cc",
+            "#9933ff",
+            "#ffffff",
+            "#facccc",
+            "#ffebcc",
+            "#ffffcc",
+            "#cce8cc",
+            "#cce0f5",
+            "#ebd6ff",
+            "#bbbbbb",
+            "#f06666",
+            "#ffc266",
+            "#ffff66",
+            "#66b966",
+            "#66a3e0",
+            "#c285ff",
+            "#888888",
+            "#a10000",
+            "#b26b00",
+            "#b2b200",
+            "#006100",
+            "#0047b2",
+            "#6b24b2",
+            "#444444",
+            "#5c0000",
+            "#663d00",
+            "#666600",
+            "#003700",
+            "#002966",
+            "#3d1466",
+          ],
+        },
+        {
+          background: [
+            "#000000",
+            "#e60000",
+            "#ff9900",
+            "#ffff00",
+            "#008a00",
+            "#0066cc",
+            "#9933ff",
+            "#ffffff",
+            "#facccc",
+            "#ffebcc",
+            "#ffffcc",
+            "#cce8cc",
+            "#cce0f5",
+            "#ebd6ff",
+            "#bbbbbb",
+            "#f06666",
+            "#ffc266",
+            "#ffff66",
+            "#66b966",
+            "#66a3e0",
+            "#c285ff",
+            "#888888",
+            "#a10000",
+            "#b26b00",
+            "#b2b200",
+            "#006100",
+            "#0047b2",
+            "#6b24b2",
+            "#444444",
+            "#5c0000",
+            "#663d00",
+            "#666600",
+            "#003700",
+            "#002966",
+            "#3d1466",
+          ],
+        },
+      ],
+
+      [{ font: [] }],
+      [{ align: [] }],
+
+      ["clean"], // Eliminar formato
+    ];
+
+    const modules = {
+      toolbar: toolbarOptions,
+    };
 
     useEffect(() => {
       if (
@@ -301,9 +429,8 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
         availabilityId: string;
         newStatus: string;
       }) => {
-
         const payload = {
-          availabilityId: parseInt(data.availabilityId, 10), 
+          availabilityId: parseInt(data.availabilityId, 10),
           newStatus: data.newStatus,
         };
         dispatch(updateAvailabilityStatus(payload));
@@ -359,7 +486,7 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
             modal_description: data.newDescription,
           }));
 
-          setForceRender((prev) => !prev); 
+          setForceRender((prev) => !prev);
         }
       };
 
@@ -371,11 +498,9 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
         );
       };
     }, [dispatch, selectedService]);
-    useEffect(() => {
-    }, [serviceImages]);
+    useEffect(() => {}, [serviceImages]);
     // Controla la renderización del modal
     useEffect(() => {
-
       if (isOpen) {
       } else {
         setSelectedEvents([]); // Limpieza cuando el modal se cierra
@@ -414,15 +539,20 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
 
                   <div className="description-container">
                     {isEditingDescription ? (
-                      <StyledTextarea
+                      <ReactQuill
+                        theme="snow"
                         value={editedDescription}
-                        onChange={(e) => setEditedDescription(e.target.value)}
+                        modules={modules} // Asegúrate de que se pasa la configuración aquí
+                        onChange={setEditedDescription}
                       />
                     ) : (
-                      <p>{localSelectedService.modal_description}</p>
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: localSelectedService.modal_description || "",
+                        }}
+                      />
                     )}
                   </div>
-
                   <div className="social-icons">
                     {isEditingSocialLinks ? (
                       <>
@@ -596,7 +726,7 @@ const ServiceModal: React.FC<ServiceModalProps> = React.memo(
                       }}
                       onSelectEvent={(event) => {
                         if (event.estado === "reservado") {
-                          return; 
+                          return;
                         }
                         if (isUserAssigned) {
                           if (typeof event.id === "number") {

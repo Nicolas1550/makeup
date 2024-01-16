@@ -4,7 +4,7 @@ export const CursoDetalleContainer = styled.div`
   min-height: 100vh;
   padding: 40px;
   background: linear-gradient(145deg, #FADADD, #FAF3E0);
-
+  padding-top: 130px;
   @media (max-width: 768px) {
     padding: 20px;
     

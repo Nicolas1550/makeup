@@ -168,7 +168,7 @@ export const StyledModal = styled(Modal)`
     width: 100%;
     flex: 1;
     overflow-x: hidden;
-
+    padding: 20px;
     @media (max-width: 768px) {
       flex-direction: row;
       text-align: justify; /* Alineación justa en dispositivos móviles */
@@ -481,6 +481,7 @@ export const StyledCarouselContainer = styled.div`
   padding: 20px;
   box-shadow: 0px 4px 25px rgba(0, 0, 0, 0.1);
   border-radius: 15px; // Bordes redondeados
+  margin-top: 100px;
 
   .swiper-slide {
     transform: scale(0.85);
