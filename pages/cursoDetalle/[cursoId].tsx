@@ -15,6 +15,7 @@ import {
   ContenedorPrincipal,
   InfoYClasesContainer,
 } from "@/app/components/courses/componentCurso/clasesList/clasesListStyled";
+import PageLoading from "@/app/components/courses/componentCurso/pageLoading/pageLoading";
 
 const CursoDetalle = () => {
   const dispatch = useAppDispatch();
@@ -32,11 +33,7 @@ const CursoDetalle = () => {
   }, [dispatch, router.isReady, cursoId]);
 
   if (loading) {
-    return (
-      <CursoDetalleContainer>
-        <CircularProgress />
-      </CursoDetalleContainer>
-    );
+    return <PageLoading />; 
   }
 
   if (error) {
