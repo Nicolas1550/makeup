@@ -119,8 +119,16 @@ const Footer = () => {
       </ContactInfo>
 
       <Copyright>
-        &copy; {new Date().getFullYear()} Created by Sofia Luciuk. All
-        rights reserved.
+        &copy; {new Date().getFullYear()} Created by{" "}
+        <a
+          href="https://www.linkedin.com/in/sofia-luciuk/"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: "#0a66c2", textDecoration: "none" }} // Estilos en línea para el enlace
+        >
+          Sofia Luciuk
+        </a>
+        . All rights reserved.
       </Copyright>
     </FooterContainer>
   );

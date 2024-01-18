@@ -226,8 +226,17 @@ export const deleteReservation = createAsyncThunk(
   "services/deleteReservation",
   async (reservationId: number, thunkAPI) => {
     try {
+      const userToken = localStorage.getItem("jwt"); // Obtener el token del localStorage
+      if (!userToken) {
+        throw new Error("No estás autenticado. Por favor, inicia sesión.");
+      }
       const response = await axios.delete(
-        `https://asdasdasd3.onrender.com/api/servicios/reservas/${reservationId}`
+        `https://asdasdasd3.onrender.com/api/servicios/reservas/${reservationId}`,
+        {
+          headers: {
+            'x-auth-token': userToken // Enviar el token bajo la clave 'x-auth-token'
+          }
+        }
       );
       return response.data;
     } catch (error) {
@@ -237,20 +246,35 @@ export const deleteReservation = createAsyncThunk(
     }
   }
 );
+
 export const markReservationAsCompleted = createAsyncThunk<
   string,
   number, // Pasar el ID de la reserva
   { rejectValue: { errorMessage: string } }
->("services/markReservationAsCompleted", async (reservationId, thunkAPI) => {
-  try {
-    const response = await axios.put(
-      `https://asdasdasd3.onrender.com/api/servicios/reservas/${reservationId}/completar`
-    );
-    return response.data.message;
-  } catch (error) {
-    return thunkAPI.rejectWithValue({ errorMessage: (error as Error).message });
+>(
+  "services/markReservationAsCompleted",
+  async (reservationId, thunkAPI) => {
+    try {
+      const userToken = localStorage.getItem("jwt"); // Obtener el token del localStorage
+      if (!userToken) {
+        throw new Error("No estás autenticado. Por favor, inicia sesión.");
+      }
+      const response = await axios.put(
+        `https://asdasdasd3.onrender.com/api/servicios/reservas/${reservationId}/completar`,
+        {}, // Datos a enviar en el body de la solicitud PUT, si es necesario
+        {
+          headers: {
+            'x-auth-token': userToken // Enviar el token bajo la clave 'x-auth-token'
+          }
+        }
+      );
+      return response.data.message;
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ errorMessage: (error as Error).message });
+    }
   }
-});
+);
+
 
 export const fetchReservationsForUser = createAsyncThunk<
   Reservation[],

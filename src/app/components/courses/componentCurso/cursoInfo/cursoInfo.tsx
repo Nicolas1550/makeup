@@ -444,6 +444,9 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
         {/* Información del curso */}
         <h2>{curso.nombre}</h2>
         <p>
+          <strong>Modalidad:</strong> {"Presencial"}
+        </p>
+        <p>
           <strong>Duración:</strong> {curso.duracion}
         </p>
         <p>
@@ -464,7 +467,7 @@ const CursoInfo: React.FC<CursoInfoProps> = ({ curso }) => {
         <p>
           <strong>Precio:</strong> ${curso.precio}
         </p>
-
+       
         {/* Botón para agregar disponibilidad */}
         {isAuthenticated && userRoles?.includes("admin") && (
           <Button variant="contained" onClick={handleOpenModal}>

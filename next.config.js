@@ -7,7 +7,7 @@ const nextConfig = {
     domains: [
       'localhost:3002',
       'localhost:3005',
-      'https://asdasdasd3.onrender.com',
+      'http://localhost:3002',
       'sofiaportafolio.online',
       'asdasdasd3.onrender.com',
       'localhost',
