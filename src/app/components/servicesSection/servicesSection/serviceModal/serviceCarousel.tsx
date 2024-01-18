@@ -62,15 +62,17 @@ const ServiceCarousel: React.FC<ServiceCarouselProps> = memo(
     useEffect(() => {
       dispatch(fetchServiceImages(serviceId))
         .then(unwrapResult)
-        .then((result) => {
-          console.log("Images from Redux:", result.images); // Agregar esta línea
-        })
-        .catch((error) => {
-          console.error("Error fetching images:", error); // Capturar y loguear errores también es importante
-        });
+        .then(() => {})
+        .catch(() => {});
     }, [dispatch, serviceId]);
 
-    const displayImages = [...images, ...images, ...images, ...images, ...updatedImages];
+    const displayImages = [
+      ...images,
+      ...images,
+      ...images,
+      ...images,
+      ...updatedImages,
+    ];
     return (
       <StyledCarouselContainer>
         {displayImages.length > 0 && (

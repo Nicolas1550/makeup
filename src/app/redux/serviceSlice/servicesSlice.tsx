@@ -487,7 +487,6 @@ export const fetchServiceImages = createAsyncThunk<
         },
       }
     );
-    console.log("Response data from API:", response.data); // Agregar esta línea
     return { serviceId, images: response.data };
   } catch (error) {
     return rejectWithValue(error);
@@ -988,7 +987,6 @@ const servicesSlice = createSlice({
       })
 
       .addCase(deleteServiceImage.fulfilled, (state, action) => {
-        console.log("Image to delete:", action.payload.imagePath);
         const serviceToUpdate = state.services.find(
           (s) => s.id === action.payload.serviceId
         );
@@ -998,7 +996,6 @@ const servicesSlice = createSlice({
                 (path) => path !== action.payload.imagePath
               )
             : [];
-          console.log("Updated images after deletion:", updatedImages);
           serviceToUpdate.images = updatedImages;
           state.serviceImages[action.payload.serviceId] = updatedImages;
         }

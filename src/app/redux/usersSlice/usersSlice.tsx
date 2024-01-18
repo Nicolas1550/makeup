@@ -44,9 +44,7 @@ export const fetchCurrentUser = createAsyncThunk(
       }
     );
     const user: User = response.data;
-    console.log("Usuario obtenido:", user);
     const isHelper = user.roles.includes("ayudante");
-    console.log("Es ayudante:", isHelper);
     return {
       user,
       isHelper,
@@ -71,9 +69,12 @@ export const assignRole = createAsyncThunk(
   "users/assignRole",
   async (userId: string, thunkAPI) => {
     try {
-      await axios.put(`https://asdasdasd3.onrender.com/api/users/assignRole/${userId}`, {
-        role: "ayudante",
-      });
+      await axios.put(
+        `https://asdasdasd3.onrender.com/api/users/assignRole/${userId}`,
+        {
+          role: "ayudante",
+        }
+      );
       return userId;
     } catch (error) {
       const axiosError = error as AxiosError; // Haciendo un type assertion
@@ -90,9 +91,12 @@ export const assignRole = createAsyncThunk(
 export const revokeRole = createAsyncThunk(
   "users/revokeRole",
   async (userId: string) => {
-    await axios.put(`https://asdasdasd3.onrender.com/api/users/revokeRole/${userId}`, {
-      role: "ayudante",
-    });
+    await axios.put(
+      `https://asdasdasd3.onrender.com/api/users/revokeRole/${userId}`,
+      {
+        role: "ayudante",
+      }
+    );
     return userId;
   }
 );
@@ -107,18 +111,12 @@ const userSlice = createSlice({
       .addCase(
         fetchCurrentUser.fulfilled,
         (state, action: PayloadAction<{ user: User; isHelper: boolean }>) => {
-          console.log("Action payload:", action.payload);
           if (action.payload.isHelper) {
             state.currentHelperId = action.payload.user.id;
             state.isCurrentUserHelper = true;
-            console.log(
-              "Se estableció currentHelperId:",
-              state.currentHelperId
-            );
           } else {
             state.currentHelperId = null;
             state.isCurrentUserHelper = false;
-            console.log("El usuario no es un ayudante.");
           }
         }
       )

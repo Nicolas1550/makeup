@@ -183,23 +183,20 @@ function ReservationsForAssistant() {
         fetchReservationsForAssistant({ ayudanteId: Number(ayudanteId) })
       );
     }
-  }, [ayudanteId, dispatch]); 
+  }, [ayudanteId, dispatch]);
 
   useEffect(() => {
     dispatch(fetchServices());
     fetchReservations();
-  }, [dispatch, ayudanteId, fetchReservations]); 
+  }, [dispatch, ayudanteId, fetchReservations]);
 
   useEffect(() => {
     fetchReservations();
-  }, [services, fetchReservations]); 
+  }, [services, fetchReservations]);
   useEffect(() => {
     if (selectedOption?.value === "cursos") {
       dispatch(fetchTodasLasReservas()).then(() =>
-        console.log(
-          "Reservas de cursos actualizadas después de fetch",
-          
-        )
+        console.log("Reservas de cursos actualizadas después de fetch")
       );
     }
   }, [dispatch, selectedOption]);
@@ -216,9 +213,7 @@ function ReservationsForAssistant() {
     }
   }, [reservations, selectedStatus, selectedOption, sortReservations]);
 
-
-  useEffect(() => {
-  }, [filteredCourseReservations]);
+  useEffect(() => {}, [filteredCourseReservations]);
   useEffect(() => {
     // Ordena las reservas de cursos cada vez que cambien las reservas filtradas, el orden de clasificación o la función de clasificación.
     setOrderedCourseReservations(sortReservations(filteredCourseReservations));
@@ -252,7 +247,6 @@ function ReservationsForAssistant() {
               onClick={toggleSortOrder}
               style={{ cursor: "pointer" }}
             />
-        
           </div>
         </>
       )}

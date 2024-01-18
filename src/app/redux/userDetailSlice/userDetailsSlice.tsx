@@ -26,7 +26,6 @@ const userDetailsSlice = createSlice({
     fetchUserDetailsSuccess: (state, action: PayloadAction<UserDetails>) => {
       state.userDetails = action.payload;
       state.isLoading = false;
-      console.log("Updated state:", state);
     },
     fetchUserDetailsError: (state) => {
       state.isLoading = false;
