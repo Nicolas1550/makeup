@@ -172,14 +172,23 @@ export const actualizarEstadoReservaCurso = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
+      const userToken = localStorage.getItem("jwt");
+      if (!userToken) {
+        throw new Error("No estás autenticado. Por favor, inicia sesión.");
+      }
+
       const response = await fetch(
         `https://asdasdasd3.onrender.com/api/reservas/cursos/${reservaId}/estado`,
         {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "x-auth-token": userToken, // Incluir el token en los headers
+          },
           body: JSON.stringify({ estado: estado }),
         }
       );
+
       if (!response.ok)
         throw new Error("Error al actualizar estado de la reserva");
 
@@ -197,12 +206,21 @@ export const eliminarReservaCurso = createAsyncThunk(
   "cursos/eliminarReservaCurso",
   async (reservaId: number, { rejectWithValue }) => {
     try {
+      const userToken = localStorage.getItem("jwt");
+      if (!userToken) {
+        throw new Error("No estás autenticado. Por favor, inicia sesión.");
+      }
+
       const response = await fetch(
         `https://asdasdasd3.onrender.com/api/reservas/cursos/${reservaId}`,
         {
           method: "DELETE",
+          headers: {
+            "x-auth-token": userToken, // Incluir el token en los headers
+          },
         }
       );
+
       if (!response.ok) throw new Error("Error al eliminar reserva");
       return reservaId;
     } catch (error) {
