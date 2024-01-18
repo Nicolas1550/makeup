@@ -38,9 +38,8 @@ const ServiceCarousel: React.FC<ServiceCarouselProps> = memo(
     const [selectedImageFiles, setSelectedImageFiles] = useState<File[]>([]);
     const dispatch = useAppDispatch();
     const updatedImages = useAppSelector(
-      (state) => state.services.serviceImages[serviceId]
+      (state) => state.services.serviceImages[serviceId] || []
     );
-
     const handleDeleteImage = useCallback(
       (imagePath: string) => {
         dispatch(deleteServiceImage({ serviceId, imagePath }));
@@ -71,7 +70,7 @@ const ServiceCarousel: React.FC<ServiceCarouselProps> = memo(
         });
     }, [dispatch, serviceId]);
 
-    const displayImages = [...images, ...images, ...images, ...images]; updatedImages || []; // Usa updatedImages en lugar de images
+    const displayImages = [...images, ...images, ...images, ...images, ...updatedImages];
     return (
       <StyledCarouselContainer>
         {displayImages.length > 0 && (
@@ -113,6 +112,7 @@ const ServiceCarousel: React.FC<ServiceCarouselProps> = memo(
                     <img
                       src={`https://asdasdasd3.onrender.com/uploads/${image}?${Date.now()}`}
                       alt={`Carousel ${index}`}
+                      loading="lazy" // Añadir atributo de carga perezosa
                     />
 
                     {isUserAssigned && isEditing && (
