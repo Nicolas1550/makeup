@@ -596,7 +596,7 @@ export const addImageToCurso = createAsyncThunk<
   "cursos/addImageToCurso",
   async ({ cursoId, imageData }, { rejectWithValue }) => {
     // Variable para controlar si se debe realizar la carga real
-    const realizarCarga = true;
+    const realizarCarga = false;
 
     if (realizarCarga) {
       // Realiza la carga de la imagen si 'realizarCarga' es verdadero
