@@ -29,6 +29,18 @@ interface ProductTableProps {
   products: Product[];
 }
 const CATEGORIAS = ["Ojos", "Rostro", "Labios", "Uñas"];
+const MAX_WORDS = 10;
+
+const getTrimmedDescription = (
+  description: string,
+  maxWords: number
+): string => {
+  const words = description.split(" ");
+  if (words.length > maxWords) {
+    return words.slice(0, maxWords).join(" ") + "...";
+  }
+  return description;
+};
 
 const ProductTable: React.FC<ProductTableProps> = ({}) => {
   const allProducts = useAppSelector(
@@ -269,7 +281,7 @@ const ProductTable: React.FC<ProductTableProps> = ({}) => {
                     onChange={handleInputChange}
                   />
                 ) : (
-                  product.descripcion
+                  getTrimmedDescription(product.descripcion ?? "", MAX_WORDS)
                 )}
               </td>
               <td>
