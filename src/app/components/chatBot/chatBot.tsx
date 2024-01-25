@@ -108,7 +108,7 @@ const Chatbot: React.FC = () => {
         return {
           author: "bot",
           content: `Producto encontrado: ${product.nombre} - ${product.descripcion}`,
-          imageUrl: product.imagen_url.startsWith('http') ? product.imagen_url : `http://localhost:3002${product.imagen_url}`,
+          imageUrl: product.imagen_url.startsWith('http') ? product.imagen_url : `https://asdasdasd3.onrender.com${product.imagen_url}`,
         };
       });
 
