@@ -112,7 +112,7 @@ const ServiceCarousel: React.FC<ServiceCarouselProps> = memo(
                 <SwiperSlide key={index}>
                   <ImageContainer>
                     <img
-                      src={`http://localhost:3002/uploads/${image}?${Date.now()}`}
+                      src={`https://asdasdasd3.onrender.com/uploads/${image}?${Date.now()}`}
                       alt={`Carousel ${index}`}
                       loading="lazy" // Añadir atributo de carga perezosa
                     />

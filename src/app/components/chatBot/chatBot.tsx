@@ -182,7 +182,7 @@ const Chatbot: React.FC = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3002/api/products/search",
+        "https://asdasdasd3.onrender.com/api/products/search",
         { query: input }
       );
       const { data, notFound } = response.data;
@@ -193,7 +193,7 @@ const Chatbot: React.FC = () => {
           content: `Producto encontrado: ${product.nombre} - ${product.descripcion}`,
           imageUrl: product.imagen_url.startsWith("http")
             ? product.imagen_url
-            : `http://localhost:3002${product.imagen_url}`,
+            : `https://asdasdasd3.onrender.com${product.imagen_url}`,
         }));
 
         setMessages((prevMessages) => [...prevMessages, ...botMessages]);

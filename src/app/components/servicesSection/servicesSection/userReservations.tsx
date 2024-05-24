@@ -248,7 +248,7 @@ function UserReservations() {
                           <CardValue>
                             {reservation.comprobante_path ? (
                               <CardLink
-                                href={`http://localhost:3002/${reservation.comprobante_path}`}
+                                href={`https://asdasdasd3.onrender.com/${reservation.comprobante_path}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                               >

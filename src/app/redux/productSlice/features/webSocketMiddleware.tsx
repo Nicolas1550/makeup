@@ -32,7 +32,7 @@ const websocketMiddleware = (storeAPI: MiddlewareAPI) => {
 
     if (token) {
       axios
-        .post("http://localhost:3002/api/validateToken", { token })
+        .post("https://asdasdasd3.onrender.com/api/validateToken", { token })
         .then((response) => {
           if (response.data.isValid) {
             const decodedToken: DecodedToken = jwt_decode(token);
@@ -54,7 +54,7 @@ const websocketMiddleware = (storeAPI: MiddlewareAPI) => {
   }
 
   // Websocket events
-  const socket = io("http://localhost:3002");
+  const socket = io("https://asdasdasd3.onrender.com");
 
   socket.on("new-reservation", (data) => {
     thunkDispatch(fetchReservationDetails(data.reservationId));

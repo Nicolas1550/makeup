@@ -60,7 +60,7 @@ const ProductTable: React.FC<ProductTableProps> = ({}) => {
   }, [dispatch]);
 
   useEffect(() => {
-    const socket = io("http://localhost:3002");
+    const socket = io("https://asdasdasd3.onrender.com");
 
     socket.on("prices-updated", () => {
       dispatch(apiGetAllProducts());
@@ -145,7 +145,7 @@ const ProductTable: React.FC<ProductTableProps> = ({}) => {
     if (image instanceof File) {
       return URL.createObjectURL(image);
     } else if (typeof image === "string" && image.startsWith("/")) {
-      return `http://localhost:3002${image}`;
+      return `https://asdasdasd3.onrender.com${image}`;
     }
     // Retornar una imagen por defecto o un placeholder si no hay imagen
     return "/path_to_default_image.jpg";

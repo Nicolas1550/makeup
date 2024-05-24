@@ -62,7 +62,7 @@ const ProductDetail: React.FC<ProductProps> = ({ product }) => {
                 currentProduct.imagen_url
                   ? currentProduct.imagen_url.startsWith("http")
                     ? currentProduct.imagen_url
-                    : `http://localhost:3002${currentProduct.imagen_url}`
+                    : `https://asdasdasd3.onrender.com${currentProduct.imagen_url}`
                   : "/path_to_default_image.jpg"
               }
               alt={currentProduct.nombre}
@@ -146,7 +146,7 @@ export const getServerSideProps = async (
   let product = {};
   try {
     const response = await axios.get(
-      `http://localhost:3002/api/products/${id}`
+      `https://asdasdasd3.onrender.com/api/products/${id}`
     );
     product = response.data;
   } catch (error) {}

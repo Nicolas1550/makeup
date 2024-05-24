@@ -21,11 +21,11 @@ const useProductSocket = (initialProduct?: ProductType) => {
   );
 
   useEffect(() => {
-    const socket = io("http://localhost:3002");
+    const socket = io("https://asdasdasd3.onrender.com");
 
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:3002/api/products");
+        const response = await axios.get("https://asdasdasd3.onrender.com/api/products");
         setProductList(response.data);
         if (currentProduct) {
           const updatedProduct = response.data.find(
