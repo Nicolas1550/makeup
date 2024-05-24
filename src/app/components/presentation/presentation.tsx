@@ -167,7 +167,7 @@ const AcercaDe: React.FC = () => (
       <Grid item xs={12} md={6}>
         <ContentWrapper>
           <StyledTypography variant="h2" gutterBottom>
-            Acerca de <HighlightedText>Fabiana Gimenez</HighlightedText>
+            Acerca de <HighlightedText>Sofia Luciuk</HighlightedText>
           </StyledTypography>
           <StyledTypography variant="h6" gutterBottom>
             Transformando la belleza, un rostro a la vez.

@@ -347,7 +347,7 @@ const Navbar: React.FC = () => {
             width={100}
             height={50}
           />
-          <LogoText>Fabiana Gimenez</LogoText>
+          <LogoText>Sofia Luciuk</LogoText>
         </LogoSection>
 
         {isMobile ? (

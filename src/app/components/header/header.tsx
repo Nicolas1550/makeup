@@ -118,7 +118,7 @@ const HeaderPresentation: React.FC = () => {
   return (
     <header style={styles.header}>
       <div style={{ ...styles.title, ...responsiveStyles.title }}>
-        Bienvenidos a Fabiana Gimenez
+        Bienvenidos a Sofia Luciuk
       </div>
       <div style={{ ...styles.subtitle, ...responsiveStyles.subtitle }}>
         Descubre la magia del maquillaje con nosotros.
