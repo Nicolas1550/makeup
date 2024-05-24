@@ -17,7 +17,7 @@ export default function Home() {
       <CoursesSection />
       <ServicesSection />
       <ParentComponent />
-      <Chatbot/>
+      <Chatbot />
     </div>
   );
 }

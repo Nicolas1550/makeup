@@ -2,14 +2,19 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const Alert: React.FC = () => {
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
 
   const handleClose = () => {
     setIsVisible(false);
   };
 
+  const handleBackgroundClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      handleClose();
+    }
+  };
+
   useEffect(() => {
-    // Mostrar la alerta al cargar la página
     setIsVisible(true);
   }, []);
 
@@ -21,6 +26,7 @@ const Alert: React.FC = () => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          onClick={handleBackgroundClick}
         >
           <motion.div
             initial={{ y: "-100vh" }}
@@ -59,9 +65,9 @@ const Alert: React.FC = () => {
               </a>
             </p>
             <p className="mb-4">
-              Si te registras en mi página, tendrás un minuto de acceso
-              como administrador para explorar las diferentes opciones, como el
-              panel de administración en la barra de navegación.
+              Si te registras en mi página, tendrás un minuto de acceso como
+              administrador para explorar las diferentes opciones, como el panel
+              de administración en la barra de navegación.
             </p>
             <button
               onClick={handleClose}
