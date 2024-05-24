@@ -50,7 +50,7 @@ const CursoDetalle = () => {
         <ContenedorPrincipal>
           <ImageCarousel
             images={cursoActual?.imagenes || []}
-            baseUrl={"https://asdasdasd3.onrender.com/"}
+            baseUrl={"http://localhost:3002/"}
             title={cursoActual?.nombre}
             description={cursoActual?.descripcion}
             cursoId={cursoId}

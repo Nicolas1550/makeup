@@ -47,7 +47,7 @@ export const verifyToken = createAsyncThunk<AuthThunkResponse, void>(
     try {
       const decodedToken = jwt_decode(token) as DecodedToken;
       const response = await axios.post(
-        "https://asdasdasd3.onrender.com/api/validateToken",
+        "http://localhost:3002/api/validateToken",
         { token }
       );
 
@@ -77,7 +77,7 @@ export const loginUser = createAsyncThunk(
 
     try {
       const response = await axios.post<LoginResponse>(
-        "https://asdasdasd3.onrender.com/api/login",
+        "http://localhost:3002/api/login",
         credentials
       );
       const token = response.data.token;
@@ -125,7 +125,7 @@ export const registerUser = createAsyncThunk(
 
     try {
       await axios.post(
-        "https://asdasdasd3.onrender.com/api/users/register",
+        "http://localhost:3002/api/users/register",
         userData
       );
       thunkAPI.dispatch(setLoading(false));

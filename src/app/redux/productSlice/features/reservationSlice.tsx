@@ -66,7 +66,7 @@ export const fetchReservationDetails =
       };
 
       const response = await axios.get(
-        `https://asdasdasd3.onrender.com/api/reservas/details/${reservationId}`,
+        `http://localhost:3002/api/reservas/details/${reservationId}`,
         config
       );
       if (response.data) {

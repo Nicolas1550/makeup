@@ -16,11 +16,9 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import 'react-quill/dist/quill.snow.css'; 
+import "react-quill/dist/quill.snow.css";
 import Footer from "@/app/components/footer/footer";
-import 'react-quill/dist/quill.snow.css';
+import Alert from "@/app/components/alert/alert";
 
 const theme = createTheme();
 
@@ -34,7 +32,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <ToastContainer />
         <div id="menu-portal"></div>
         <Navbar />
-
+        <Alert /> {/* Incluir la alerta aquí */}
         <Component {...pageProps} />
         <Footer />
       </ThemeProvider>

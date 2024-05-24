@@ -10,7 +10,7 @@ export const useSocket = () => {
   const userId = useSelector((state: RootState) => state.auth.userId);
 
   useEffect(() => {
-    const socket = io("https://asdasdasd3.onrender.com");
+    const socket = io("http://localhost:3002");
 
     socket.on("connect", () => {
       console.log("Conectado al servidor WebSocket");

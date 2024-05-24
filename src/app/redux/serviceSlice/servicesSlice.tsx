@@ -174,7 +174,7 @@ export const fetchReservationsSummary = createAsyncThunk(
 
     try {
       const response = await axios.get(
-        `https://asdasdasd3.onrender.com/api/servicios/reservas/cierreCaja`,
+        `http://localhost:3002/api/servicios/reservas/cierreCaja`,
         {
           params: { fechaInicio: args.fechaInicio, fechaFin: args.fechaFin },
           headers: {
@@ -214,7 +214,7 @@ export const markReservationAsPending = createAsyncThunk<
 >("services/markReservationAsPending", async (reservationId, thunkAPI) => {
   try {
     const response = await axios.put(
-      `https://asdasdasd3.onrender.com/api/servicios/reservas/${reservationId}/pendiente`
+      `http://localhost:3002/api/servicios/reservas/${reservationId}/pendiente`
     );
     return response.data.message;
   } catch (error) {
@@ -231,7 +231,7 @@ export const deleteReservation = createAsyncThunk(
         throw new Error("No estás autenticado. Por favor, inicia sesión.");
       }
       const response = await axios.delete(
-        `https://asdasdasd3.onrender.com/api/servicios/reservas/${reservationId}`,
+        `http://localhost:3002/api/servicios/reservas/${reservationId}`,
         {
           headers: {
             'x-auth-token': userToken // Enviar el token bajo la clave 'x-auth-token'
@@ -260,7 +260,7 @@ export const markReservationAsCompleted = createAsyncThunk<
         throw new Error("No estás autenticado. Por favor, inicia sesión.");
       }
       const response = await axios.put(
-        `https://asdasdasd3.onrender.com/api/servicios/reservas/${reservationId}/completar`,
+        `http://localhost:3002/api/servicios/reservas/${reservationId}/completar`,
         {}, // Datos a enviar en el body de la solicitud PUT, si es necesario
         {
           headers: {
@@ -281,7 +281,7 @@ export const fetchReservationsForUser = createAsyncThunk<
   string | number
 >("services/fetchReservationsForUser", async (userId) => {
   const response = await axios.get(
-    `https://asdasdasd3.onrender.com/api/servicios/reservasPorUsuario/${userId}`
+    `http://localhost:3002/api/servicios/reservasPorUsuario/${userId}`
   );
 
   return response.data;
@@ -299,7 +299,7 @@ export const fetchReservationsForAssistant = createAsyncThunk<
   for (const service of services) {
     const serviceId = service.id;
     const response = await axios.get(
-      `https://asdasdasd3.onrender.com/api/servicios/${serviceId}/reservasPorAyudante/${params.ayudanteId}`
+      `http://localhost:3002/api/servicios/${serviceId}/reservasPorAyudante/${params.ayudanteId}`
     );
     if (response.data.length > 0) {
       allReservations.push({
@@ -320,7 +320,7 @@ export const deleteServiceOption = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     await axios.delete(
-      `https://asdasdasd3.onrender.com/api/servicios/options/${optionId}`,
+      `http://localhost:3002/api/servicios/options/${optionId}`,
       {
         headers: {
           "x-auth-token": userToken,
@@ -340,7 +340,7 @@ export const editServiceOption = createAsyncThunk(
     }
 
     const response = await axios.put(
-      `https://asdasdasd3.onrender.com/api/servicios/options/${data.optionId}`,
+      `http://localhost:3002/api/servicios/options/${data.optionId}`,
       {
         nombre: data.name,
         precio: data.price,
@@ -372,7 +372,7 @@ export const fetchServiceOptions = createAsyncThunk(
   async (serviceId: number, thunkAPI) => {
     try {
       const response = await axios.get(
-        `https://asdasdasd3.onrender.com/api/servicios/${serviceId}/options`
+        `http://localhost:3002/api/servicios/${serviceId}/options`
       );
       return { serviceId, options: response.data };
     } catch (error) {
@@ -393,7 +393,7 @@ export const addServiceOption = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     const response = await axios.post(
-      `https://asdasdasd3.onrender.com/api/servicios/${data.serviceId}/options`,
+      `http://localhost:3002/api/servicios/${data.serviceId}/options`,
       {
         nombre: data.name,
         precio: data.price,
@@ -420,7 +420,7 @@ export const uploadServiceImages = createAsyncThunk(
 
     try {
       const response = await axios.post(
-        `https://asdasdasd3.onrender.com/api/servicios/${data.serviceId}/uploadImages`,
+        `http://localhost:3002/api/servicios/${data.serviceId}/uploadImages`,
         formData,
         {
           headers: {
@@ -450,7 +450,7 @@ export const deleteServiceImage = createAsyncThunk(
 
     try {
       await axios.delete(
-        `https://asdasdasd3.onrender.com/api/servicios/${data.serviceId}/deleteImage`,
+        `http://localhost:3002/api/servicios/${data.serviceId}/deleteImage`,
         {
           headers: {
             "x-auth-token": userToken,
@@ -480,7 +480,7 @@ export const fetchServiceImages = createAsyncThunk<
 
   try {
     const response = await axios.get(
-      `https://asdasdasd3.onrender.com/api/servicios/${serviceId}/images`,
+      `http://localhost:3002/api/servicios/${serviceId}/images`,
       {
         headers: {
           "x-auth-token": userToken,
@@ -506,7 +506,7 @@ export const updateSocialLinks = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     await axios.put(
-      `https://asdasdasd3.onrender.com/api/servicios/${data.serviceId}/socialLinks`,
+      `http://localhost:3002/api/servicios/${data.serviceId}/socialLinks`,
       {
         facebook_url: data.facebook_url,
         whatsapp_url: data.whatsapp_url,
@@ -536,7 +536,7 @@ export const updateServiceDescription = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     await axios.put(
-      `https://asdasdasd3.onrender.com/api/servicios/${data.serviceId}`,
+      `http://localhost:3002/api/servicios/${data.serviceId}`,
       { modal_description: data.newDescription },
       {
         headers: {
@@ -576,7 +576,7 @@ export const uploadProofOfPayment = createAsyncThunk(
     );
 
     const response = await axios.post(
-      `https://asdasdasd3.onrender.com/api/servicios/${data.serviceId}/availabilities/${data.disponibilidadId}/uploadProof`,
+      `http://localhost:3002/api/servicios/${data.serviceId}/availabilities/${data.disponibilidadId}/uploadProof`,
       formData,
       {
         headers: {
@@ -598,7 +598,7 @@ export const checkIfUserIsAssigned = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     const response = await axios.get(
-      `https://asdasdasd3.onrender.com/api/servicios/${serviceId}/isUserAssigned`,
+      `http://localhost:3002/api/servicios/${serviceId}/isUserAssigned`,
       {
         headers: {
           "x-auth-token": userToken,
@@ -616,7 +616,7 @@ export const deleteAvailability = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     await axios.delete(
-      `https://asdasdasd3.onrender.com/api/servicios/availability/${availabilityId}`,
+      `http://localhost:3002/api/servicios/availability/${availabilityId}`,
       {
         headers: {
           "x-auth-token": userToken,
@@ -635,7 +635,7 @@ export const fetchAvailabilities = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     const response = await axios.get(
-      `https://asdasdasd3.onrender.com/api/servicios/${serviceId}/availabilities`,
+      `http://localhost:3002/api/servicios/${serviceId}/availabilities`,
       {
         headers: {
           "x-auth-token": userToken,
@@ -659,7 +659,7 @@ export const addAvailability = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     await axios.post(
-      `https://asdasdasd3.onrender.com/api/servicios/${data.serviceId}/addAvailability`,
+      `http://localhost:3002/api/servicios/${data.serviceId}/addAvailability`,
       {
         fechaInicio: data.fechaInicio,
         fechaFin: data.fechaFin,
@@ -680,7 +680,7 @@ export const addAvailability = createAsyncThunk(
 export const fetchServices = createAsyncThunk(
   "services/fetchServices",
   async (_, { dispatch }) => {
-    const response = await axios.get("https://asdasdasd3.onrender.com/api/servicios");
+    const response = await axios.get("http://localhost:3002/api/servicios");
     const data = response.data as Service[];
 
     const servicesWithCategoryAndIcon = data.map((service) => {
@@ -708,7 +708,7 @@ export const reserveAvailability = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     const response = await axios.post(
-      `https://asdasdasd3.onrender.com/api/servicios/${data.serviceId}/reserve/${data.availabilityId}`,
+      `http://localhost:3002/api/servicios/${data.serviceId}/reserve/${data.availabilityId}`,
       {},
       {
         headers: {
@@ -733,7 +733,7 @@ export const completeReservation = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     await axios.post(
-      `https://asdasdasd3.onrender.com/api/servicios/reservations/${reservaId}/complete`,
+      `http://localhost:3002/api/servicios/reservations/${reservaId}/complete`,
       {},
       {
         headers: {
@@ -753,7 +753,7 @@ export const toggleServiceColor = createAsyncThunk(
       throw new Error("No estás autenticado. Por favor, inicia sesión.");
     }
     const response = await axios.put(
-      `https://asdasdasd3.onrender.com/api/servicios/${serviceId}/toggleColor`,
+      `http://localhost:3002/api/servicios/${serviceId}/toggleColor`,
       {},
       {
         headers: {
