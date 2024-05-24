@@ -6,10 +6,12 @@ import CoursesSection from "../src/app/components/courses/coursesSection";
 import ServicesSection from "../src/app/components/servicesSection/servicesSection/servicesSection";
 import ParentComponent from "../src/app/components/products/listProducts/listProducts/listProducts";
 import Chatbot from "@/app/components/chatBot/chatBot";
+import Alert from "@/app/components/alert/alert";
 
 export default function Home() {
   return (
     <div>
+      <Alert />
       <HeaderPresentation />
       <AcercaDe />
       <CoursesSection />
