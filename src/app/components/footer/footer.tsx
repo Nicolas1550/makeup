@@ -121,12 +121,12 @@ const Footer = () => {
       <Copyright>
         &copy; {new Date().getFullYear()} Created by{" "}
         <a
-          href="https://www.linkedin.com/in/sofia-luciuk/"
+          href="https://www.linkedin.com/in/nicolas-luciuk/"
           target="_blank"
           rel="noopener noreferrer"
           style={{ color: "#0a66c2", textDecoration: "none" }} // Estilos en línea para el enlace
         >
-          Sofia Luciuk
+          Nicolas Luciuk
         </a>
         . All rights reserved.
       </Copyright>
